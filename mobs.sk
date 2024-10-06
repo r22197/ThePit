@@ -1,0 +1,307 @@
+command /vikingboss [<text>]:
+	trigger:
+		if arg-1 is not set:
+			message "&7&m------------------------------------------"
+			message " &6Zakladni informace o eventu Viking Boss&7:"
+			message ""
+			message "&3 * &dViking Boss &7je event, kdy se uprostred pitu"
+			message "    &7objevi &fwither skeleton&7, ktereho musis zabit."
+			message "    &7Vyhrava ten, kdo udeli &cposkozeni &7posledni!"
+			message ""
+			message " &e&o,,Kdy se zase bude event poradat?"""
+			message "&3    &7Více info &f➜ &d/program"
+			message "&7&m------------------------------------------"
+		else:
+			if player doesn't have permission "pit.admin":
+				message "&8[&c&l!&8] &7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera."
+				stop
+			if arg-1 is not "start" or "kill":
+				message "&cSpatne pouzity prikaz. &7arg-1 &8= ""&fstart&8""&7, zacatek eventu. &7arg-1 &8 = ""&fkill&8""&7, zabiti bosse."
+				stop
+		if arg-1 is "start":
+			if {event::vikingboss} is set:
+				message "&8[&4&l!&8] &7Nelze spustit event &d&lViking Boss&7, jiz je spusten."
+				stop
+			set {event::vikingboss} to 1
+			#spawn skeleton:1 at player's location
+			if {witherboss} is not set:
+				set {witherboss} to 1
+				make console execute "summon Skeleton 0 83 0 {SkeletonType:1}"
+			else:
+				message "&cViking Boss jiz zije, pouzij &8""&d/witherboss kill&8"" &cpro zabiti."
+		if arg-1 is "kill":
+			kill all wither skeletons
+			delete {witherboss}
+
+on spawn of wither skeleton:
+	apply speed 2 to the event-entity for 9999 minutes
+	apply resistance 3 to the event-entity for 9999 minutes
+	apply health boost 50 to the event-entity for 9999 minutes
+	apply fire resistance 4 to the event-entity for 9999 minutes
+	set health of event-entity to 100
+	set name of the event-entity to "&d&lViking Boss&c &7[&c%health of event-entity%&4❤&7]"
+
+	set tool of Wither Skeleton to glowing diamond hoe
+	set chestplate of Wither Skeleton to glowing leather chestplate 
+	set leggings of Wither Skeleton to glowing leather leggings
+	set boots of Wither Skeleton to glowing leather boots
+
+	broadcast "&d&lVIKING BOSS! &7se objevil ve stredu, rychle ho &fzabij&7!"
+	send all players title "" with subtitle "&d&lViking Boss! &7se objevil ve stredu, rychle ho &fzabij&7!" for 3 seconds
+
+	wait 3 minutes
+	kill all wither skeletons
+
+
+on death of a wither skeleton:
+	if attacker is a player:
+		give attacker 1 player head with custom nbt "{SkullOwner:{Id:""2c43fd70-4e96-4d1c-bb85-f44d2eb3f563"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWJhMDlkZDRiMTU2ZjRjZTJlODk3ZjRjMzZhYmRiZDQ2YTk1OTNhNjE4NDU4NjE2ZThkYTM5YTEwYTg1M2Y2In19fQ==""}]}}}" named "&8[&cRandom Box&8]" with lore "||&5Obsah &lboxu&5!||&d&l ▶ &dNahodna maska||&d&l ▶ &dNovy level||&d&l ▶ &dBooster Zlataku||&d&l ▶ &dXP Booster||||&eKvalita boxu &8[&6&l✩✩✩✩✩&8]||&eVyhrano uzivatelem &f%attacker%&e.||||&eHodne stesti ti preje tym PvPCraftu. &4❤"
+		set {_gold.mobrandom} to a random integer between 200 and 300
+		set {_xp.mobrandom} to a random integer between 40 and 60
+
+		set {_gold.mobrandom} to GBooster({_gold.mobrandom}, attacker)
+		set {_xp.mobrandom} to XPBooster({_xp.mobrandom}, attacker)
+
+		set {_gold.mobrandom} to TierGBoost({_gold.mobrandom}, attacker)
+		set {_xp.mobrandom} to TierXPBoost({_xp.mobrandom}, attacker)
+
+		Zlataky("add", {_gold.mobrandom}, attacker)
+		XP("remove", {_xp.mobrandom}, attacker)
+		LevelSystem(attacker)
+
+		broadcast "&d&lVIKING BOSS! &7byl zabit hracem %{prestigebrackets::%attacker%}%[%{%attacker%.level.color}%%{level::%attacker%}%%{prestigebrackets::%attacker%}%] %coloured attacker's offline suffix%%attacker% &7a ziskal &cRandom Box&7."
+		send "&a&lZabil jsi &d&lViking Bosse&a&l! &6+&e%{_gold.mobrandom}% Ⓩ &3+&b%{_xp.mobrandom}%xp" to attacker
+	else:
+		broadcast "&d&lVIKING BOSS! &7byl zabit hracem &f&l???&7."
+	loop all players:
+		if {rating::%loop-player%::vikingboss} is not set:
+			json("%loop-player%", "&8[&6&l!&r&8] &eAnketa! &7Ohodnot event Viking Boss! ||&2[5✯]||cmd:/nazor vikingboss 5||ttp:&7Klikni zde pro &25✯&7.|| ||&a[4✯]||cmd:/nazor vikingboss 4||ttp:&7Klikni zde pro &a4✯&7.|| ||&e[3✯]||cmd:/nazor vikingboss 3||ttp:&7Klikni zde pro &e3✯&7.|| ||&c[2✯]||cmd:/nazor vikingboss 2||ttp:&7Klikni zde pro &e&c2✯&7.|| ||&4[1✯]||cmd:/nazor vikingboss 1||ttp:&7Klikni zde pro &41✯&7.")
+			if loop-player has permission "pit.admin":
+				send "&8[&c&l!&8] &4Admin! &7Podivej se na vysledky prikazem &d/vysledky&7." to loop-player
+
+	delete {witherboss}
+	delete {event::vikingboss}
+
+on damage:
+	if attacker is wither skeleton:
+		set damage to 15
+		ignite the victim
+
+	victim is wither skeleton
+	set name of the victim to "&d&lViking Boss&c &7[&c%health of victim%&4❤&7]"
+
+
+
+
+
+
+
+on script load:
+	kill all zombies
+	kill all skeletons
+	loop dropped items:
+		if item of loop-value is bone or arrow or rotten_flesh:
+			delete loop-value
+	set {minions} to 0
+
+
+on command "cmobovi":
+	cancel event
+	if player have permission "pit.admin":
+		kill all zombies
+		kill all skeletons 
+		loop dropped items:
+			if item of loop-value is bone or arrow or rotten_flesh:
+				delete loop-value
+		set {minions} to 0
+		send "&c##Admin&f: You have set mobs to &c0 active&f!"
+
+	else:
+		send "&8[&c&l!&8] &7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera."
+
+every 1 minute:
+	set {_p} to number of all players
+	{_p} is less than 5:
+		if {minions} is not 0:
+			kill all zombies
+			kill all skeletons 
+			set {minions} to 0
+			loop dropped items:
+				if item of loop-value is bone or arrow or rotten_flesh:
+					delete loop-value
+		stop
+
+	if {minions} is more than 5:
+		stop
+	else if {minions} is less than 5:
+		set {_mob} to random integer between 1 and 2
+
+		if {_mob} is 1: 
+			spawn an zombie at {mob.loc}
+		if {_mob} is 2:
+			spawn an skeleton at {mob.loc}
+
+on damage:
+	if attacker's name = "&6&lViking Minion&1":
+		set damage to 6
+	if attacker's name = "&6&lViking Minion&2":
+		set damage to 7
+	if attacker's name = "&6&lViking Minion&3":
+		set damage to 8
+	if attacker's name = "&c&nBoss Minion":
+		set damage to 10
+		ignite the victim
+	if attacker's name = "&9&lArcher Minion":
+		set damage to 7
+
+on spawn of a zombie:
+	set {_level} to random integer between 1 and 3
+	set target of zombie to player
+
+	if {_level} is 1:
+		if {minions} is less than 5:
+			set {_p} to "Daveses" parsed as offline player
+			add 1 to {minions}
+
+			apply speed 1 to the zombie for 9999 minutes
+			apply resistance 1 to the zombie for 9999 minutes
+
+			set name of the event-entity to "&6&lViking Minion&1"
+
+			set tool of zombie to gold shovel
+			set the helmet of zombie to {_p}'s skull #'
+			set chestplate of zombie to leather chestplate
+			set leggings of zombie to leather chestplate
+			set boots of zombie to leather chestplate
+			dye zombie's chestplate dark blue
+			dye zombie's leggings red
+			dye zombie's boots dark blue #'
+		else:
+			cancel event
+
+	if {_level} is 2:
+		if {minions} is less than 5:
+			set {_p} to "Sagous" parsed as offline player
+			add 1 to {minions}
+
+			apply speed 1 to the zombie for 9999 minutes
+			apply resistance 1 to the zombie for 9999 minutes
+			apply health boost 1 to the zombie for 9999 minutes
+
+			set name of the event-entity to "&6&lViking Minion&2"
+
+			set tool of zombie to diamond shovel
+			set the helmet of zombie to {_p}'s skull #'
+			set chestplate of zombie to leather chestplate
+			set leggings of zombie to leather chestplate
+			set boots of zombie to leather chestplate
+			dye zombie's chestplate light blue
+			dye zombie's leggings black
+			dye zombie's boots light blue #'
+		else:
+			cancel event
+
+	if {_level} is 3:
+		if {minions} is less than 5:
+			set {_p} to "LopezLordCZ" parsed as offline player
+			add 1 to {minions}
+
+			apply speed 1 to the zombie for 9999 minutes
+			apply resistance 1 to the zombie for 9999 minutes
+			apply health boost 3 to the zombie for 9999 minutes
+			apply strength 1 to the zombie for 9999 minutes
+
+			set name of the event-entity to "&6&lViking Minion&3"
+
+			set tool of zombie to glowing diamond shovel
+			set the helmet of zombie to {_p}'s skull #'
+			set chestplate of zombie to leather chestplate
+			set leggings of zombie to leather chestplate
+			set boots of zombie to leather chestplate
+			dye zombie's chestplate light red
+			dye zombie's leggings light green
+			dye zombie's boots light red #'
+		else:
+			cancel event
+
+
+
+
+
+on spawn of a skeleton:
+	if {minions} is less than 5:
+		set {_p} to "Mladej" parsed as offline player
+		set target of skeleton to player
+		add 1 to {minions}
+
+		apply speed 1 to the skeleton for 9999 minutes
+		apply resistance 1 to the skeleton for 9999 minutes
+		apply health boost 2 to the skeleton for 9999 minutes
+
+		set name of the event-entity to "&9&lArcher Minion"
+
+		set tool of skeleton to glowing bow
+		set the helmet of skeleton to {_p}'s skull #'
+		set chestplate of skeleton to leather chestplate
+		set leggings of skeleton to leather chestplate
+		set boots of skeleton to leather chestplate
+		dye skeleton's chestplate white
+		dye skeleton's leggings blue
+		dye skeleton's boots white #'
+	else:
+		cancel event
+
+
+on death of a zombie:
+	if attacker is a player:
+		remove 1 from {minions}
+
+		if victim's name is "&6&lViking Minion&1":
+			set {_gold.mobrandom} to a random integer between 1 and 6
+			set {_xp.mobrandom} to a random integer between 2 and 5
+		if victim's name is "&6&lViking Minion&2":
+			set {_gold.mobrandom} to a random integer between 7 and 10
+			set {_xp.mobrandom} to a random integer between 4 and 7
+		if victim's name is "&6&lViking Minion&3":
+			set {_gold.mobrandom} to a random integer between 10 and 15
+			set {_xp.mobrandom} to a random integer between 6 and 9
+
+		set {_gold.mobrandom} to GBooster({_gold.mobrandom}, attacker)
+		set {_xp.mobrandom} to XPBooster({_xp.mobrandom}, attacker)
+
+		set {_gold.mobrandom} to TierGBoost({_gold.mobrandom}, attacker)
+		set {_xp.mobrandom} to TierXPBoost({_xp.mobrandom}, attacker)
+
+		Zlataky("add", {_gold.mobrandom}, attacker)
+		XP("remove", {_xp.mobrandom}, attacker)
+		LevelSystem(attacker)
+
+		send "&a&lZabil jsi &6&lViking Miniona&a&l! &6+&e%{_gold.mobrandom}% Ⓩ &3+&b%{_xp.mobrandom}%xp" to attacker
+
+
+on death of a skeleton:
+	if attacker is a player:
+		remove 1 from {minions}
+
+		if victim's name = "&9&lArcher Minion":
+			set {_gold.mobrandom} to a random integer between 8 and 15
+			set {_xp.mobrandom} to 10
+
+		set {_gold.mobrandom} to GBooster({_gold.mobrandom}, attacker)
+		set {_xp.mobrandom} to XPBooster({_xp.mobrandom}, attacker)
+
+		set {_gold.mobrandom} to TierGBoost({_gold.mobrandom}, attacker)
+		set {_xp.mobrandom} to TierXPBoost({_xp.mobrandom}, attacker)
+
+		Zlataky("add", {_gold.mobrandom}, attacker)
+		XP("remove", {_xp.mobrandom}, attacker)
+		LevelSystem(attacker)
+
+		send "&a&lZabil jsi &9&lArcher Miniona&a&l! &6+&e%{_gold.mobrandom}% Ⓩ &3+&b%{_xp.mobrandom}%xp" to attacker
+
+on death:
+	remove all 1 xp from drops
+
+on death of a zombie or skeleton or wither skeleton:
+	loop drops:
+		remove loop-item from drops

@@ -1,0 +1,812 @@
+on script load:
+	loop {obsidian::*}:
+		loop {water::*}:
+			if location at {obsidian::%loop-index-1%} is {water::%loop-index-2%}:
+				set block at {obsidian::%loop-index-1%} to water:0
+				delete {obsidian::%loop-index-1%}
+		loop {lava::*}:
+			if location at {obsidian::%loop-index-1%} is {lava::%loop-index-2%}:
+				set block at {obsidian::%loop-index-1%} to lava
+				delete {obsidian::%loop-index-1%}
+		if {obsidian::%loop-index%} is set:
+			set block at {obsidian::%loop-index%} to air
+			delete {obsidian::%loop-index%}
+
+on right click with obsidian or cobweb or cobblestone or clay bricks stairs or clay bricks block:
+	if "%target block%" is "long grass" or "dead_shrub":
+		cancel event
+
+on place:
+	if player's gamemode is not creative:
+		if event-block is within {roh::1} to {roh::2}:
+			message "&8[&4&l!&8&l] &7Zde nelze stavet."
+			cancel event
+			stop
+		if y-coordinate of event-block's location is higher or equal to 180:
+			message "&8[&4&l!&8&l] &7Nelze stavet nad hranici &f180 bloku&7."
+			cancel event
+			stop
+		if "%region at block%" doesn't contain "antibuild" or "nopvpzone":
+			if event-block is obsidian or cobblestone or cobweb or lava:
+
+				add 1 to {block}
+				set {obsidian::%{block}%} to location at block
+				if event-block is cobweb:
+					set {_x} to "%30 + 30 * {tier.perk::%player%::buildbattler}% seconds" parsed as timespan
+					wait {_x}
+					loop {water::*}:
+						if location at block is {water::%loop-index%}:
+							set event-block to water:0
+							stop
+					loop {lava::*}:
+						if location at block is {lava::%loop-index%}:
+							set event-block to lava
+							stop
+					delete block
+
+				if event-block is lava:
+					remove 1 of tool from tool
+					set {_x} to "%30 + 30 * {tier.perk::%player%::buildbattler}% seconds" parsed as timespan
+					wait {_x}
+					loop {water::*}:
+						if location at block is {water::%loop-index%}:
+							set event-block to water:0
+							stop
+					loop {lava::*}:
+						if location at block is {lava::%loop-index%}:
+							set event-block to lava
+							stop
+					delete block
+
+				if event-block is obsidian:
+					if "%now%" contains "Tue":
+						Quest("tuesday4", 2, player)
+
+					if "%now%" contains "Sat":
+						Quest("saturday5", 2, player)
+
+					set {_x} to "%60 + 60 * {tier.perk::%player%::buildbattler}% seconds" parsed as timespan
+					wait {_x}
+					loop {water::*}:
+						if location at block is {water::%loop-index%}:
+							set event-block to water:0
+							stop
+					loop {lava::*}:
+						if location at block is {lava::%loop-index%}:
+							set event-block to lava
+							stop
+					delete block
+
+
+				if event-block is cobblestone:
+					set {_x} to "%30 + 30 * {tier.perk::%player%::buildbattler}% seconds" parsed as timespan
+					wait {_x}
+					loop {water::*}:
+						if location at block is {water::%loop-index%}:
+							set event-block to water:0
+							stop
+					loop {lava::*}:
+						if location at block is {lava::%loop-index%}:
+							set event-block to lava
+							stop
+					delete block
+
+
+			if event-block is brick:
+				set {_wait} to difference between {zed.%player%.lastused} and now
+				if {_wait} is less than 1 second:
+					message "&7Musis pockat &e%difference between 1 second and {_wait}%&7."
+					cancel event
+					stop
+				set {zed.%player%.lastused} to now
+
+				set {_face} to player's horizontal facing
+				set {_block} to event-block
+				add 1 to {block}
+				set {obsidian::%{block}%} to location at block
+
+				if {_face} is north or south:
+					set {_loc1} to block west {_block}
+					set {_loc2} to block 2 above block east {_block}
+					loop blocks within {_loc1} to {_loc2}:
+						if block at loop-block is air:
+							set block at loop-block to brick
+							add 1 to {block}
+							set {obsidian::%{block}%} to location at loop-block
+				if {_face} is east or west:
+					set {_loc1} to block north {_block}
+					set {_loc2} to block 2 above block south {_block}
+					loop blocks within {_loc1} to {_loc2}:
+						if block at loop-block is air:
+							set block at loop-block to brick
+							add 1 to {block}
+							set {obsidian::%{block}%} to location at loop-block
+				set {_x} to "%20 + 20 * {tier.perk::%player%::buildbattler}% seconds" parsed as timespan
+				wait {_x}
+				loop blocks within {_loc1} to {_loc2}:
+					if block at loop-block is brick:
+						set block at loop-block to air
+
+
+			if event-block is clay_bricks stairs:
+				set {_wait} to difference between {schody.%player%.lastused} and now
+				if {_wait} is less than 1 second:
+					message "&7Musis pockat &e%difference between 1 second and {_wait}%&7."
+					cancel event
+					stop
+				set {schody.%player%.lastused} to now
+
+				set {_face} to player's horizontal facing
+				set {_block} to event-block
+				add 1 to {block}
+				set {obsidian::%{block}%} to location at block
+
+				if {_face} is east:
+					set {_loc1} to block north {_block}
+					set {_loc2} to block south {_block}
+					loop blocks within {_loc1} to {_loc2}:
+						if block at loop-block is air:
+							set block at loop-block to clay_bricks stairs:0
+							add 1 to {block}
+							set {obsidian::%{block}%} to location at loop-block
+					set {_loc3} to block above block east block north {_block}
+					set {_loc4} to block above block east block south {_block}
+					loop blocks within {_loc3} to {_loc4}:
+						if block at loop-block is air:
+							set block at loop-block to clay_bricks stairs:0
+							add 1 to {block}
+							set {obsidian::%{block}%} to location at loop-block
+					set {_loc5} to block 2 above 2 east block north {_block}
+					set {_loc6} to block 2 above 2 east block south {_block}
+					loop blocks within {_loc5} to {_loc6}:
+						if block at loop-block is air:
+							set block at loop-block to clay_bricks stairs:0
+							add 1 to {block}
+							set {obsidian::%{block}%} to location at loop-block
+
+				if {_face} is west:
+					set {_loc1} to block north {_block}
+					set {_loc2} to block south {_block}
+					loop blocks within {_loc1} to {_loc2}:
+						if block at loop-block is air:
+							set block at loop-block to clay_bricks stairs:1
+							add 1 to {block}
+							set {obsidian::%{block}%} to location at loop-block
+					set {_loc3} to block above block west block north {_block}
+					set {_loc4} to block above block west block south {_block}
+					loop blocks within {_loc3} to {_loc4}:
+						if block at loop-block is air:
+							set block at loop-block to clay_bricks stairs:1
+							add 1 to {block}
+							set {obsidian::%{block}%} to location at loop-block
+					set {_loc5} to block 2 above 2 west block north {_block}
+					set {_loc6} to block 2 above 2 west block south {_block}
+					loop blocks within {_loc5} to {_loc6}:
+						if block at loop-block is air:
+							set block at loop-block to clay_bricks stairs:1
+							add 1 to {block}
+							set {obsidian::%{block}%} to location at loop-block
+
+				if {_face} is south:
+					set {_loc1} to block east {_block}
+					set {_loc2} to block west {_block}
+					loop blocks within {_loc1} to {_loc2}:
+						if block at loop-block is air:
+							set block at loop-block to clay_bricks stairs:2
+							add 1 to {block}
+							set {obsidian::%{block}%} to location at loop-block
+					set {_loc3} to block above block south block east {_block}
+					set {_loc4} to block above block south block west {_block}
+					loop blocks within {_loc3} to {_loc4}:
+						if block at loop-block is air:
+							set block at loop-block to clay_bricks stairs:2
+							add 1 to {block}
+							set {obsidian::%{block}%} to location at loop-block
+					set {_loc5} to block 2 above 2 south block east {_block}
+					set {_loc6} to block 2 above 2 south block west {_block}
+					loop blocks within {_loc5} to {_loc6}:
+						if block at loop-block is air:
+							set block at loop-block to clay_bricks stairs:2
+							add 1 to {block}
+							set {obsidian::%{block}%} to location at loop-block
+
+				if {_face} is north:
+					set {_loc1} to block east {_block}
+					set {_loc2} to block west {_block}
+					loop blocks within {_loc1} to {_loc2}:
+						if block at loop-block is air:
+							set block at loop-block to clay_bricks stairs:3
+							add 1 to {block}
+							set {obsidian::%{block}%} to location at loop-block
+					set {_loc3} to block above block north block east {_block}
+					set {_loc4} to block above block north block west {_block}
+					loop blocks within {_loc3} to {_loc4}:
+						if block at loop-block is air:
+							set block at loop-block to clay_bricks stairs:3
+							add 1 to {block}
+							set {obsidian::%{block}%} to location at loop-block
+					set {_loc5} to block 2 above 2 north block east {_block}
+					set {_loc6} to block 2 above 2 north block west {_block}
+					loop blocks within {_loc5} to {_loc6}:
+						if block at loop-block is air:
+							set block at loop-block to clay_bricks stairs:3
+							add 1 to {block}
+							set {obsidian::%{block}%} to location at loop-block
+
+					#if block 2 above 3 north {_block} is air:
+					#	set block 2 above 3 north {_block} to brick
+
+
+
+				set {_x} to "%20 + 20 * {tier.perk::%player%::buildbattler}% seconds" parsed as timespan
+				wait {_x}
+				if {_face} is east:
+					set {_loc1} to block north {_block}
+					set {_loc2} to block south {_block}
+					loop blocks within {_loc1} to {_loc2}:
+						if block at loop-block is clay_bricks stairs:
+							set block at loop-block to air
+					set {_loc3} to block above block east block north {_block}
+					set {_loc4} to block above block east block south {_block}
+					loop blocks within {_loc3} to {_loc4}:
+						if block at loop-block is clay_bricks stairs:
+							set block at loop-block to air
+					set {_loc5} to block 2 above 2 east block north {_block}
+					set {_loc6} to block 2 above 2 east block south {_block}
+					loop blocks within {_loc5} to {_loc6}:
+						if block at loop-block is clay_bricks stairs:
+							set block at loop-block to air
+				if {_face} is west:
+					set {_loc1} to block north {_block}
+					set {_loc2} to block south {_block}
+					loop blocks within {_loc1} to {_loc2}:
+						if block at loop-block is clay_bricks stairs:
+							set block at loop-block to air
+							add 1 to {block}
+							set {obsidian::%{block}%} to location at loop-block
+					set {_loc3} to block above block west block north {_block}
+					set {_loc4} to block above block west block south {_block}
+					loop blocks within {_loc3} to {_loc4}:
+						if block at loop-block is clay_bricks stairs:
+							set block at loop-block to air
+					set {_loc5} to block 2 above 2 west block north {_block}
+					set {_loc6} to block 2 above 2 west block south {_block}
+					loop blocks within {_loc5} to {_loc6}:
+						if block at loop-block is clay_bricks stairs:
+							set block at loop-block to air
+				if {_face} is south:
+					set {_loc1} to block east {_block}
+					set {_loc2} to block west {_block}
+					loop blocks within {_loc1} to {_loc2}:
+						if block at loop-block is clay_bricks stairs:
+							set block at loop-block to air
+							add 1 to {block}
+							set {obsidian::%{block}%} to location at loop-block
+					set {_loc3} to block above block south block east {_block}
+					set {_loc4} to block above block south block west {_block}
+					loop blocks within {_loc3} to {_loc4}:
+						if block at loop-block is clay_bricks stairs:
+							set block at loop-block to air
+					set {_loc5} to block 2 above 2 south block east {_block}
+					set {_loc6} to block 2 above 2 south block west {_block}
+					loop blocks within {_loc5} to {_loc6}:
+						if block at loop-block is clay_bricks stairs:
+							set block at loop-block to air
+				if {_face} is north:
+					set {_loc1} to block east {_block}
+					set {_loc2} to block west {_block}
+					loop blocks within {_loc1} to {_loc2}:
+						if block at loop-block is clay_bricks stairs:
+							set block at loop-block to air
+							add 1 to {block}
+							set {obsidian::%{block}%} to location at loop-block
+					set {_loc3} to block above block north block east {_block}
+					set {_loc4} to block above block north block west {_block}
+					loop blocks within {_loc3} to {_loc4}:
+						if block at loop-block is clay_bricks stairs:
+							set block at loop-block to air
+							add 1 to {block}
+							set {obsidian::%{block}%} to location at loop-block
+					set {_loc5} to block 2 above 2 north block east {_block}
+					set {_loc6} to block 2 above 2 north block west {_block}
+					loop blocks within {_loc5} to {_loc6}:
+						if block at loop-block is clay_bricks stairs:
+							set block at loop-block to air
+
+
+			if event-block is not obsidian or cobblestone or cobweb or lava:
+				cancel event
+		else:
+			cancel event
+on break:
+	if player's gamemode is not creative:
+		set {_x} to player's position
+		cancel event
+		if "%region at block%" doesn't contain "antibuild" or "nopvpzone":
+			if event-block is obsidian or cobblestone or cobweb or brick or clay_bricks stairs:
+				loop {obsidian::*}:
+					if location at block is {obsidian::%loop-index%}:
+						set event-block to air
+						stop loop
+		if block under player is air:
+			event-block is not 31 or 31:1 or 32 or torch or redstone wire or carpet or sugar cane
+			teleport player to {_x}
+
+
+on place of TNT:
+	if "%region at block%" contains "antibuild" or "nopvpzone":
+		player's gamemode is not creative
+		stop
+	else:
+		player's gamemode is not creative
+		cancel event
+
+		set {_wait} to difference between {tnt.%player%.lastused} and now
+		if {_wait} is less than 5 seconds:
+			message "&7Musis pockat &e%difference between 5 seconds and {_wait}%&7."
+			stop
+		set {tnt.%player%.lastused} to now
+		loop entities in radius 7 of the player:
+
+			cancel the event
+			create a safe explosion with force 2 at event-location
+			push the loop-entity upwards at speed 0.8
+			push the loop-entity backwards at speed 0.8
+			set fuse time of the last spawned primed TNT to 0
+		remove 1 TNT from player
+		wait 5 seconds 
+		delete {tnt.%player%.lastused}
+
+
+on right click with a snowball:
+	if "%region at player%" contains "nopvpzone":
+		cancel event
+	else:
+		set {_wait} to difference between {swap.%player%.lastused} and now
+		if {_wait} is less than 10 seconds:
+			message "&7Musis pockat &e%difference between 10 seconds and {_wait}%&7."
+			cancel event
+			stop
+		set {swap.%player%.lastused} to now
+		wait 10 seconds
+		delete {swap.%player%.lastused}
+
+on damage:
+	if check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]:
+		projectile exists
+		projectile is a snowball
+		set {_this} to victim's location
+		set {_that} to attacker's location
+		teleport victim to {_that}
+		teleport attacker to {_this}
+
+
+
+on projectile hit:
+	projectile is ender pearl
+	if {%shooter%.log.sec} is more than 0:
+		if "%region at projectile%" contains "nopvpzone":
+			kill shooter
+			message "&7Priste se nepokousej teleportovat do &eSafe Zone&7." to shooter
+
+
+
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	if name of attacker's tool contains "&bNuzky omraceni":
+		victim is player
+		set {_wait} to difference between {omraceni.%attacker%.lastused} and now
+		if {_wait} is less than 15 seconds:
+			message "&7Musis pockat &e%difference between 15 seconds and {_wait}%&7." to attacker
+			stop
+		set {omraceni.%attacker%.lastused} to now
+		set {_face} to attacker's horizontal facing
+		if {_face} is north or south:
+			set {_yaw} to yaw of attacker
+			set {_pitch} to pitch of attacker
+			set {_location} to location of victim
+			set {_yaw} to {_yaw} * -1
+			set {_pitch} to {_pitch} * -1
+			if "%{_yaw}%" contains ".":
+				set {_yaw} to "%{_yaw}%" parsed as number
+			else:
+				set {_yaw} to "%{_yaw}%.001" parsed as number
+			if "%{_pitch}%" contains ".":
+				set {_pitch} to "%{_pitch}%" parsed as number
+			else:
+				set {_pitch} to "%{_pitch}%.001" parsed as number
+			set {_location}'s yaw to {_yaw}
+			set {_location}'s pitch to {_pitch}
+			teleport victim to {_location}
+		if {_face} is east or west:
+			set {_yaw} to yaw of attacker
+			set {_pitch} to pitch of attacker
+			set {_location} to location of victim
+			set {_yaw} to {_yaw} * 1
+			set {_pitch} to {_pitch} * 1
+			if "%{_yaw}%" contains ".":
+				set {_yaw} to "%{_yaw}%" parsed as number
+			else:
+				set {_yaw} to "%{_yaw}%.001" parsed as number
+			if "%{_pitch}%" contains ".":
+				set {_pitch} to "%{_pitch}%" parsed as number
+			else:
+				set {_pitch} to "%{_pitch}%.001" parsed as number
+			set {_location}'s yaw to {_yaw}
+			set {_location}'s pitch to {_pitch}
+			teleport victim to {_location}
+
+		apply potion of blindness of tier 10 to the victim for 10 seconds
+		apply potion of slowness of tier 3 to the victim for 10 seconds
+
+		if line 7 of the lore of attacker's tool contains "&eMoznych pouziti &8[&f1&8]":
+			delete attacker's tool
+			play "ITEM_BREAK" to attacker
+		if line 7 of the lore of attacker's tool contains "&eMoznych pouziti &8[&f2&8]":
+			set line 7 of the lore of attacker's tool to "&eMoznych pouziti &8[&f1&8]"
+		if line 7 of the lore of attacker's tool contains "&eMoznych pouziti &8[&f3&8]":
+			set line 7 of the lore of attacker's tool to "&eMoznych pouziti &8[&f2&8]"
+		if line 7 of the lore of attacker's tool contains "&eMoznych pouziti &8[&f4&8]":
+			set line 7 of the lore of attacker's tool to "&eMoznych pouziti &8[&f3&8]"
+		if line 7 of the lore of attacker's tool contains "&eMoznych pouziti &8[&f5&8]":
+			set line 7 of the lore of attacker's tool to "&eMoznych pouziti &8[&f4&8]"
+		wait 15 seconds
+		delete {omraceni.%attacker%.lastused}
+on consume:
+	if name of player's tool contains "Upiri lektvar":
+		send player title "&c&lStal ses upirem!" with subtitle "&7Rychle utikej zabijet." for 4 seconds
+
+		if player has speed:
+			set {_tier} to tier of potion effect speed of player
+			if {_tier} is less or equal to 3:
+				remove speed from player
+				apply potion of speed of tier 3 to the player for 3 minutes
+		else:
+			apply potion of speed of tier 3 to the player for 3 minutes
+
+		if player has jump boost:
+			set {_tier} to tier of potion effect jump boost of player
+			if {_tier} is less or equal to 3:
+				remove jump boost from player
+				apply potion of jump boost of tier 3 to the player for 3 minutes
+		else:
+			apply potion of jump boost of tier 3 to the player for 3 minutes
+
+		if player has strength:
+			set {_tier} to tier of potion effect strength of player
+			if {_tier} is less or equal to 2:
+				remove strength from player
+				apply potion of strength of tier 2 to the player for 3 minutes
+		else:
+			apply potion of strength of tier 2 to the player for 3 minutes
+
+		wait 3 minutes and 2 ticks
+		if lore of player's helmet contains "Rychlost":
+			if player has speed:
+				set {_tier} to tier of potion effect speed of player
+				if {_tier} is 1:
+					remove speed from player
+					apply potion of speed of tier 1 to the player for 999 days
+			else:
+				apply potion of speed of tier 1 to the player for 999 days
+
+
+
+
+on rightclick with ink sack:
+	"%region at player%" doesn't contain "antibuild" or "nopvpzone"
+	line 6 of the lore of player's tool contains "&eMoznych pouziti"
+
+	set {_wait} to difference between {stit.%player%.lastused} and now
+	if {_wait} is less than 60 seconds:
+		message "&7Musis pockat &e%difference between 60 seconds and {_wait}%&7."
+		stop
+	set {stit.%player%.lastused} to now
+
+	set {_block} to player's location
+
+	if block 2 northeast {_block} is air:
+		set block 2 northeast {_block} to light blue glass block
+	if block 2 southeast {_block} is air:
+		set block 2 southeast {_block} to light blue glass block
+	if block 2 southwest {_block} is air:
+		set block 2 southwest {_block} to light blue glass block
+	if block 2 northwest {_block} is air:
+		set block 2 northwest {_block} to light blue glass block
+	if block 3 north {_block} is air:
+		set block 3 north {_block} to light blue glass block
+	if block 3 north 1 west {_block} is air:
+		set block 3 north 1 west {_block} to light blue glass block	
+	if block 3 north 1 east {_block} is air:
+		set block 3 north 1 east {_block} to light blue glass block
+	if block 3 east {_block} is air:
+		set block 3 east {_block} to light blue glass block
+	if block 3 east 1 north {_block} is air:
+		set block 3 east 1 north {_block} to light blue glass block
+	if block 3 east 1 south {_block} is air:
+		set block 3 east 1 south {_block} to light blue glass block
+	if block 3 south {_block} is air:
+		set block 3 south {_block} to light blue glass block
+	if block 3 south 1 west {_block} is air:
+		set block 3 south 1 west {_block} to light blue glass block
+	if block 3 south 1 east {_block} is air:
+		set block 3 south 1 east {_block} to light blue glass block
+	if block 3 west {_block} is air:
+		set block 3 west {_block} to light blue glass block
+	if block 3 west 1 north {_block} is air:
+		set block 3 west 1 north {_block} to light blue glass block
+	if block 3 west 1 south {_block} is air:
+		set block 3 west 1 south {_block} to light blue glass block
+	if block 1 above 2 northeast {_block} is air:
+		set block 1 above 2 northeast {_block} to light blue glass block
+	if block 1 above 2 southeast {_block} is air:
+		set block 1 above 2 southeast {_block} to light blue glass block
+	if block 1 above 2 southwest {_block} is air:
+		set block 1 above 2 southwest {_block} to light blue glass block
+	if block 1 above 2 northwest {_block} is air:
+		set block 1 above 2 northwest {_block} to light blue glass block
+	if block 1 above 3 north {_block} is air:
+		set block 1 above 3 north {_block} to light blue glass block
+	if block 1 above 3 north 1 west {_block} is air:
+		set block 1 above 3 north 1 west {_block} to light blue glass block
+	if block 1 above 3 north 1 east {_block} is air:
+		set block 1 above 3 north 1 east {_block} to light blue glass block
+	if block 1 above 3 east {_block} is air:
+		set block 1 above 3 east {_block} to light blue glass block
+	if block 1 above 3 east 1 north {_block} is air:
+		set block 1 above 3 east 1 north {_block} to light blue glass block
+	if block 1 above 3 east 1 south {_block} is air:
+		set block 1 above 3 east 1 south {_block} to light blue glass block
+	if block 1 above 3 south {_block} is air:
+		set block 1 above 3 south {_block} to light blue glass block
+	if block 1 above 3 south 1 west {_block} is air:
+		set block 1 above 3 south 1 west {_block} to light blue glass block
+	if block 1 above 3 south 1 east {_block} is air:
+		set block 1 above 3 south 1 east {_block} to light blue glass block
+	if block 1 above 3 west {_block} is air:
+		set block 1 above 3 west {_block} to light blue glass block
+	if block 1 above 3 west 1 north {_block} is air:
+		set block 1 above 3 west 1 north {_block} to light blue glass block
+	if block 1 above 3 west 1 south {_block} is air:
+		set block 1 above 3 west 1 south {_block} to light blue glass block
+	if block 2 above 3 north {_block} is air:
+		set block 2 above 3 north {_block} to light blue glass block
+	if block 2 above 3 east {_block} is air:
+		set block 2 above 3 east {_block} to light blue glass block
+	if block 2 above 3 south {_block} is air:
+		set block 2 above 3 south {_block} to light blue glass block
+	if block 2 above 3 west {_block} is air:
+		set block 2 above 3 west {_block} to light blue glass block
+	if block 2 above 2 north 1 east {_block} is air:
+		set block 2 above 2 north 1 east {_block} to light blue glass block
+	if block 2 above 2 south 1 east {_block} is air:
+		set block 2 above 2 south 1 east {_block} to light blue glass block
+	if block 2 above 2 south 1 west {_block} is air:
+		set block 2 above 2 south 1 west {_block} to light blue glass block
+	if block 2 above 2 north 1 west {_block} is air:
+		set block 2 above 2 north 1 west {_block} to light blue glass block
+	if block 2 above 1 north 2 east {_block} is air:
+		set block 2 above 1 north 2 east {_block} to light blue glass block
+	if block 2 above 1 south 2 east {_block} is air:
+		set block 2 above 1 south 2 east {_block} to light blue glass block
+	if block 2 above 1 south 2 west {_block} is air:
+		set block 2 above 1 south 2 west {_block} to light blue glass block
+	if block 2 above 1 north 2 west {_block} is air:
+		set block 2 above 1 north 2 west {_block} to light blue glass block
+	if block 3 above {_block} is air:
+		set block 3 above {_block} to light blue glass block
+	if block 3 above 1 north 1 east {_block} is air:
+		set block 3 above 1 north 1 east {_block} to light blue glass block
+	if block 3 above 1 south 1 east {_block} is air:
+		set block 3 above 1 south 1 east {_block} to light blue glass block
+	if block 3 above 1 south 1 west {_block} is air:
+		set block 3 above 1 south 1 west {_block} to light blue glass block
+	if block 3 above 1 north 1 west {_block} is air:
+		set block 3 above 1 north 1 west {_block} to light blue glass block
+	if block 3 above 1 north {_block} is air:
+		set block 3 above 1 north {_block} to light blue glass block
+	if block 3 above 1 east {_block} is air:
+		set block 3 above 1 east {_block} to light blue glass block
+	if block 3 above 1 south {_block} is air:
+		set block 3 above 1 south {_block} to light blue glass block
+	if block 3 above 1 west {_block} is air:
+		set block 3 above 1 west {_block} to light blue glass block
+	if block 3 above 2 north {_block} is air:
+		set block 3 above 2 north {_block} to light blue glass block
+	if block 3 above 2 east {_block} is air:
+		set block 3 above 2 east {_block} to light blue glass block
+	if block 3 above 2 south {_block} is air:
+		set block 3 above 2 south {_block} to light blue glass block
+	if block 3 above 2 west {_block} is air:
+		set block 3 above 2 west {_block} to light blue glass block
+	if block 1 under 2 northeast {_block} is air:
+		set block 1 under 2 northeast {_block} to light blue glass block
+	if block 1 under 2 southeast {_block} is air:
+		set block 1 under 2 southeast {_block} to light blue glass block
+	if block 1 under 2 southwest {_block} is air:
+		set block 1 under 2 southwest {_block} to light blue glass block
+	if block 1 under 2 northwest {_block} is air:
+		set block 1 under 2 northwest {_block} to light blue glass block
+	if block 1 under 3 north {_block} is air:
+		set block 1 under 3 north {_block} to light blue glass block
+	if block 1 under 3 north 1 west {_block} is air:
+		set block 1 under 3 north 1 west {_block} to light blue glass block
+	if block 1 under 3 north 1 east {_block} is air:
+		set block 1 under 3 north 1 east {_block} to light blue glass block
+	if block 1 under 3 east {_block} is air:
+		set block 1 under 3 east {_block} to light blue glass block
+	if block 1 under 3 east 1 north {_block} is air:
+		set block 1 under 3 east 1 north {_block} to light blue glass block
+	if block 1 under 3 east 1 south {_block} is air:
+		set block 1 under 3 east 1 south {_block} to light blue glass block
+	if block 1 under 3 south {_block} is air:
+		set block 1 under 3 south {_block} to light blue glass block
+	if block 1 under 3 south 1 west {_block} is air:
+		set block 1 under 3 south 1 west {_block} to light blue glass block
+	if block 1 under 3 south 1 east {_block} is air:
+		set block 1 under 3 south 1 east {_block} to light blue glass block
+	if block 1 under 3 west {_block} is air:
+		set block 1 under 3 west {_block} to light blue glass block
+	if block 1 under 3 west 1 north {_block} is air:
+		set block 1 under 3 west 1 north {_block} to light blue glass block
+	if block 1 under 3 west 1 south {_block} is air:
+		set block 1 under 3 west 1 south {_block} to light blue glass block
+
+	if line 6 of the lore of player's tool contains "&eMoznych pouziti &8[&f1&8]":
+		delete player's tool
+		play "ITEM_BREAK" to player
+
+	if line 6 of the lore of player's tool contains "&eMoznych pouziti &8[&f2&8]":
+		set line 6 of the lore of player's tool to "&eMoznych pouziti &8[&f1&8]"
+
+	if line 6 of the lore of player's tool contains "&eMoznych pouziti &8[&f3&8]":
+		set line 6 of the lore of player's tool to "&eMoznych pouziti &8[&f2&8]"
+
+	wait 15 seconds
+	if block 2 northeast {_block} is light blue glass block:
+		set block 2 northeast {_block} to air
+	if block 2 southeast {_block} is light blue glass block:
+		set block 2 southeast {_block} to air
+	if block 2 southwest {_block} is light blue glass block:
+		set block 2 southwest {_block} to air
+	if block 2 northwest {_block} is light blue glass block:
+		set block 2 northwest {_block} to air
+	if block 3 north {_block} is light blue glass block:
+		set block 3 north {_block} to air
+	if block 3 north 1 west {_block} is light blue glass block:
+		set block 3 north 1 west {_block} to air	
+	if block 3 north 1 east {_block} is light blue glass block:
+		set block 3 north 1 east {_block} to air
+	if block 3 east {_block} is light blue glass block:
+		set block 3 east {_block} to air
+	if block 3 east 1 north {_block} is light blue glass block:
+		set block 3 east 1 north {_block} to air
+	if block 3 east 1 south {_block} is light blue glass block:
+		set block 3 east 1 south {_block} to air
+	if block 3 south {_block} is light blue glass block:
+		set block 3 south {_block} to air
+	if block 3 south 1 west {_block} is light blue glass block:
+		set block 3 south 1 west {_block} to air
+	if block 3 south 1 east {_block} is light blue glass block:
+		set block 3 south 1 east {_block} to air
+	if block 3 west {_block} is light blue glass block:
+		set block 3 west {_block} to air
+	if block 3 west 1 north {_block} is light blue glass block:
+		set block 3 west 1 north {_block} to air
+	if block 3 west 1 south {_block} is light blue glass block:
+		set block 3 west 1 south {_block} to air
+	if block 1 above 2 northeast {_block} is light blue glass block:
+		set block 1 above 2 northeast {_block} to air
+	if block 1 above 2 southeast {_block} is light blue glass block:
+		set block 1 above 2 southeast {_block} to air
+	if block 1 above 2 southwest {_block} is light blue glass block:
+		set block 1 above 2 southwest {_block} to air
+	if block 1 above 2 northwest {_block} is light blue glass block:
+		set block 1 above 2 northwest {_block} to air
+	if block 1 above 3 north {_block} is light blue glass block:
+		set block 1 above 3 north {_block} to air
+	if block 1 above 3 north 1 west {_block} is light blue glass block:
+		set block 1 above 3 north 1 west {_block} to air
+	if block 1 above 3 north 1 east {_block} is light blue glass block:
+		set block 1 above 3 north 1 east {_block} to air
+	if block 1 above 3 east {_block} is light blue glass block:
+		set block 1 above 3 east {_block} to air
+	if block 1 above 3 east 1 north {_block} is light blue glass block:
+		set block 1 above 3 east 1 north {_block} to air
+	if block 1 above 3 east 1 south {_block} is light blue glass block:
+		set block 1 above 3 east 1 south {_block} to air
+	if block 1 above 3 south {_block} is light blue glass block:
+		set block 1 above 3 south {_block} to air
+	if block 1 above 3 south 1 west {_block} is light blue glass block:
+		set block 1 above 3 south 1 west {_block} to air
+	if block 1 above 3 south 1 east {_block} is light blue glass block:
+		set block 1 above 3 south 1 east {_block} to air
+	if block 1 above 3 west {_block} is light blue glass block:
+		set block 1 above 3 west {_block} to air
+	if block 1 above 3 west 1 north {_block} is light blue glass block:
+		set block 1 above 3 west 1 north {_block} to air
+	if block 1 above 3 west 1 south {_block} is light blue glass block:
+		set block 1 above 3 west 1 south {_block} to air
+	if block 2 above 3 north {_block} is light blue glass block:
+		set block 2 above 3 north {_block} to air
+	if block 2 above 3 east {_block} is light blue glass block:
+		set block 2 above 3 east {_block} to air
+	if block 2 above 3 south {_block} is light blue glass block:
+		set block 2 above 3 south {_block} to air
+	if block 2 above 3 west {_block} is light blue glass block:
+		set block 2 above 3 west {_block} to air
+	if block 2 above 2 north 1 east {_block} is light blue glass block:
+		set block 2 above 2 north 1 east {_block} to air
+	if block 2 above 2 south 1 east {_block} is light blue glass block:
+		set block 2 above 2 south 1 east {_block} to air
+	if block 2 above 2 south 1 west {_block} is light blue glass block:
+		set block 2 above 2 south 1 west {_block} to air
+	if block 2 above 2 north 1 west {_block} is light blue glass block:
+		set block 2 above 2 north 1 west {_block} to air
+	if block 2 above 1 north 2 east {_block} is light blue glass block:
+		set block 2 above 1 north 2 east {_block} to air
+	if block 2 above 1 south 2 east {_block} is light blue glass block:
+		set block 2 above 1 south 2 east {_block} to air
+	if block 2 above 1 south 2 west {_block} is light blue glass block:
+		set block 2 above 1 south 2 west {_block} to air
+	if block 2 above 1 north 2 west {_block} is light blue glass block:
+		set block 2 above 1 north 2 west {_block} to air
+	if block 3 above {_block} is light blue glass block:
+		set block 3 above {_block} to air
+	if block 3 above 1 north 1 east {_block} is light blue glass block:
+		set block 3 above 1 north 1 east {_block} to air
+	if block 3 above 1 south 1 east {_block} is light blue glass block:
+		set block 3 above 1 south 1 east {_block} to air
+	if block 3 above 1 south 1 west {_block} is light blue glass block:
+		set block 3 above 1 south 1 west {_block} to air
+	if block 3 above 1 north 1 west {_block} is light blue glass block:
+		set block 3 above 1 north 1 west {_block} to air
+	if block 3 above 1 north {_block} is light blue glass block:
+		set block 3 above 1 north {_block} to air
+	if block 3 above 1 east {_block} is light blue glass block:
+		set block 3 above 1 east {_block} to air
+	if block 3 above 1 south {_block} is light blue glass block:
+		set block 3 above 1 south {_block} to air
+	if block 3 above 1 west {_block} is light blue glass block:
+		set block 3 above 1 west {_block} to air
+	if block 3 above 2 north {_block} is light blue glass block:
+		set block 3 above 2 north {_block} to air
+	if block 3 above 2 east {_block} is light blue glass block:
+		set block 3 above 2 east {_block} to air
+	if block 3 above 2 south {_block} is light blue glass block:
+		set block 3 above 2 south {_block} to air
+	if block 3 above 2 west {_block} is light blue glass block:
+		set block 3 above 2 west {_block} to air
+	if block 1 under 2 northeast {_block} is light blue glass block:
+		set block 1 under 2 northeast {_block} to air
+	if block 1 under 2 southeast {_block} is light blue glass block:
+		set block 1 under 2 southeast {_block} to air
+	if block 1 under 2 southwest {_block} is light blue glass block:
+		set block 1 under 2 southwest {_block} to air
+	if block 1 under 2 northwest {_block} is light blue glass block:
+		set block 1 under 2 northwest {_block} to air
+	if block 1 under 3 north {_block} is light blue glass block:
+		set block 1 under 3 north {_block} to air
+	if block 1 under 3 north 1 west {_block} is light blue glass block:
+		set block 1 under 3 north 1 west {_block} to air
+	if block 1 under 3 north 1 east {_block} is light blue glass block:
+		set block 1 under 3 north 1 east {_block} to air
+	if block 1 under 3 east {_block} is light blue glass block:
+		set block 1 under 3 east {_block} to air
+	if block 1 under 3 east 1 north {_block} is light blue glass block:
+		set block 1 under 3 east 1 north {_block} to air
+	if block 1 under 3 east 1 south {_block} is light blue glass block:
+		set block 1 under 3 east 1 south {_block} to air
+	if block 1 under 3 south {_block} is light blue glass block:
+		set block 1 under 3 south {_block} to air
+	if block 1 under 3 south 1 west {_block} is light blue glass block:
+		set block 1 under 3 south 1 west {_block} to air
+	if block 1 under 3 south 1 east {_block} is light blue glass block:
+		set block 1 under 3 south 1 east {_block} to air
+	if block 1 under 3 west {_block} is light blue glass block:
+		set block 1 under 3 west {_block} to air
+	if block 1 under 3 west 1 north {_block} is light blue glass block:
+		set block 1 under 3 west 1 north {_block} to air
+	if block 1 under 3 west 1 south {_block} is light blue glass block:
+		set block 1 under 3 west 1 south {_block} to air
+	

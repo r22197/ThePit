@@ -1,0 +1,106 @@
+on join:
+	if {%player%.sword} is 1:
+		Zlataky("add", 550, player)
+	if {%player%.sword} is 2:
+		Zlataky("add", 1550, player)
+	if {%player%.sword} is 3:
+		Zlataky("add", 4050, player)
+	if {%player%.sword} is 4:
+		Zlataky("add", 9050, player)
+	if {%player%.sword} is 5:
+		Zlataky("add", 16350, player)
+	delete {%player%.sword}
+
+	if {%player%.armor.prot} is 1:
+		Zlataky("add", 12500, player)
+	if {%player%.armor.prot} is 2:
+		Zlataky("add", 32500, player)
+	delete {%player%.armor.prot}
+
+	if {%player%.armor.projectileprot} is 1:
+		Zlataky("add", 7500, player)
+	if {%player%.armor.projectileprot} is 2:
+		Zlataky("add", 17500, player)
+	if {%player%.armor.projectileprot} is 2:
+		Zlataky("add", 32500, player)
+	delete {%player%.armor.projectileprot}
+
+
+#command /test:
+#	trigger:
+#		set {_x} to x-coordinate of player
+#		set {_y} to y-coordinate of player
+#		set {_z} to z-coordinate of player
+#		loop 5 times:
+#			if player's x-coordinate is not {_x}:
+#				message "&cNO! x"
+#			if player's y-coordinate is not {_y}:
+#				message "&cNO! y"
+#			if player's z-coordinate is not {_z}:
+#				message "&cNO! z"
+#			wait 1 second
+#			message "%{_x}%"
+
+command /name [<text>]:
+	permission: pit.admin
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.	
+	trigger:
+		set name of player's held item to colored arg-1
+
+command /lore [<text>]:
+	permission: pit.admin
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.	
+	trigger:
+		set lore of player's held item to colored arg-1
+
+command /setadmin [<text>]:
+	permission: pit.admin
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.	
+	trigger:
+		set {admin} to player's location
+	
+command /admin:
+	permission: pit.admin
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.	
+	trigger:
+		teleport player to {admin}
+
+on join:
+	send player title "&4&lTYMOVANI ZAKAZANO!" with subtitle "&7Davej si pozor, muzes byt &fzabanovan&7." for 5 seconds
+# 	SEPSAT PRAVIDLA PRO T�MOV�N�
+#	OZN�MEN� NA DISCORD
+#	OZN�MEN� T�MY - INFO O TOM, KDY BANOVAT (FOCUS ALLOWED)
+	
+#set {test::*} to "test", "test"
+#loop {test::*}:
+
+command /customfish:
+	permission: pit.admin
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.	
+	trigger:
+		customFishGUI(player)
+     
+function customFishGUI(p: player):
+	open chest inventory with 6 rows named "&9&lFishing Drops" to {_p}
+	set {_i} to 0
+	loop {fishingdrops::*}:
+		set slot {_i} of {_p}'s current inventory to loop-value
+		add 1 to {_i}
+	while name of current inventory of {_p} is "&9&lFishing Drops":
+		delete {_items::*}
+		set {_items::*} to items in current inventory of {_p}
+		wait 1 tick
+	delete {fishingdrops::*}
+	set {fishingdrops::*} to {_items::*}
+ 
+on fish:
+	fish state is CAUGHT_FISH
+	set {_p} to number of all players
+	{_p} is less than 5:
+		cancel event
+		message "&8[&4&l!&8] &7Na serveru musi byt alespon &a+&f5 &7hracu &aonline&7."
+		stop	
+	set {_e} to caught fish
+	{_e} is set
+	set {_i} to random element out of {fishingdrops::*}
+	set item of {_e} to {_i}

@@ -1,0 +1,398 @@
+every 15 minutes:
+	if {AutoMessage} is not set:
+		set {AutoMessage} to 1
+	else if {AutoMessage} is 1:
+		set {AutoMessage} to 2
+		broadcast ""
+		broadcast "&f                        &9&lFacebook"
+		broadcast ""
+		broadcast "&7        Más rád facebook a chces &fzískávat"
+		loop all players:
+			json("%loop-player%", "&7             &fnovinky&7 o serveru? &8┃ ||&aKlikni||url:https://www.facebook.com/PvPCraft||ttp:&eKlikni sem!")
+		broadcast ""
+	else if {AutoMessage} is 2:
+		set {AutoMessage} to 3
+		loop all players:
+			if {rating::%loop-player%::pvp} is not set:
+				json("%loop-player%", "&8[&6&l!&r&8] &eAnketa! &7Jak se ti libi styl pvp? ||&2[5✯]||cmd:/nazor pvp 5||ttp:&7Klikni zde pro &25✯&7.|| ||&a[4✯]||cmd:/nazor pvp 4||ttp:&7Klikni zde pro &a4✯&7.|| ||&e[3✯]||cmd:/nazor pvp 3||ttp:&7Klikni zde pro &e3✯&7.|| ||&c[2✯]||cmd:/nazor pvp 2||ttp:&7Klikni zde pro &e&c2✯&7.|| ||&4[1✯]||cmd:/nazor pvp 1||ttp:&7Klikni zde pro &41✯&7.")
+				if loop-player has permission "pit.admin":
+					send "&8[&c&l!&8] &4Admin! &7Podivej se na vysledky prikazem &d/vysledky&7." to loop-player
+	else if {AutoMessage} is 3:
+		set {AutoMessage} to 4
+		broadcast ""
+		broadcast "&f                        &b&lDiscord"
+		broadcast ""
+		broadcast "&7        Potrebujes se na neco &fzeptat &7nebo"
+		loop all players:
+			json("%loop-player%", "&7          &fpsát&7 s ostatními &fv chatu&7? &8┃ ||&aKlikni||url:https://discord.gg/suzTg4D||ttp:&eKlikni sem!")
+		broadcast ""
+	else if {AutoMessage} is 4:
+		set {AutoMessage} to 5
+		broadcast "&6TIP&7: &7Nastav si inventar pomoci prikazu &d/inventar&7."
+	else if {AutoMessage} is 5:
+		set {AutoMessage} to 6
+		loop all players:
+			if {rating::%loop-player%::admintym} is not set:
+				json("%loop-player%", "&8[&6&l!&r&8] &eAnketa! &7Jaky ti prijde admin tym? ||&2[5✯]||cmd:/nazor admintym 5||ttp:&7Klikni zde pro &25✯&7.|| ||&a[4✯]||cmd:/nazor admintym 4||ttp:&7Klikni zde pro &a4✯&7.|| ||&e[3✯]||cmd:/nazor admintym 3||ttp:&7Klikni zde pro &e3✯&7.|| ||&c[2✯]||cmd:/nazor admintym 2||ttp:&7Klikni zde pro &e&c2✯&7.|| ||&4[1✯]||cmd:/nazor admintym 1||ttp:&7Klikni zde pro &41✯&7.")
+				if loop-player has permission "pit.admin":
+					send "&8[&c&l!&8] &4Admin! &7Podivej se na vysledky prikazem &d/vysledky&7." to loop-player
+	else if {AutoMessage} is 6:
+		set {AutoMessage} to 7
+		broadcast ""
+		broadcast "&f                        &6&lWebová stránka"
+		broadcast ""
+		broadcast "&7           Chces &fzjistit informace&7 o serveru nebo"
+		loop all players:
+			json("%loop-player%", "&7                jenom &fprohlédnout web&7? &8┃ ||&aKlikni||url:https://www.pvpcraft.cz||ttp:&eKlikni sem!")
+		broadcast ""
+	else if {AutoMessage} is 7:
+		set {AutoMessage} to 8
+		broadcast "&6TIP&7: &7Nastav si hru podle sebe pomoci prikazu &d/nastaveni&7."
+	else if {AutoMessage} is 8:
+		set {AutoMessage} to 9
+		broadcast "&6TIP&7: &7Hlasuj pro nas &fNetwork &7a ziskej &e200 Ⓩ&7, odkaz zjistis prikazem &d/hlasuj&7."
+	else if {AutoMessage} is 9:
+		set {AutoMessage} to 10
+		loop all players:
+			if {rating::%loop-player%::mapa} is not set:
+				json("%loop-player%", "&8[&6&l!&r&8] &eAnketa! &7Jak se ti libi mapa? ||&2[5✯]||cmd:/nazor mapa 5||ttp:&7Klikni zde pro &25✯&7.|| ||&a[4✯]||cmd:/nazor mapa 4||ttp:&7Klikni zde pro &a4✯&7.|| ||&e[3✯]||cmd:/nazor mapa 3||ttp:&7Klikni zde pro &e3✯&7.|| ||&c[2✯]||cmd:/nazor mapa 2||ttp:&7Klikni zde pro &e&c2✯&7.|| ||&4[1✯]||cmd:/nazor mapa 1||ttp:&7Klikni zde pro &41✯&7.")
+				if loop-player has permission "pit.admin":
+					send "&8[&c&l!&8] &4Admin! &7Podivej se na vysledky prikazem &d/vysledky&7." to loop-player
+	else if {AutoMessage} is 10:
+		set {AutoMessage} to 11
+		broadcast "&6TIP&7: &7Zakup si &fKrumpac &7v &d&lMagickych upgradech &7a za kazde znicene &eGold Ore &7ziskas &ezlataky&7."
+	else if {AutoMessage} is 11:
+		set {AutoMessage} to 12
+		broadcast "&6TIP&7: &7Program a seznam eventu zjistis prikazem &d/program&7."
+	else if {AutoMessage} is 12:
+		set {AutoMessage} to 13
+		broadcast "&6TIP&7: &7Dostal jsi &anapad&7, co pridat? &7Napis nam ho prikazem &d/napad&7."
+	else if {AutoMessage} is 13:
+		set {AutoMessage} to 14
+		loop all players:
+			if {rating::%loop-player%::nastaveni} is not set:
+				json("%loop-player%", "&8[&6&l!&r&8] &eAnketa! &7Jak hodnotis nastaveni serveru? ||&2[5✯]||cmd:/nazor nastaveni 5||ttp:&7Klikni zde pro &25✯&7.|| ||&a[4✯]||cmd:/nazor nastaveni 4||ttp:&7Klikni zde pro &a4✯&7.|| ||&e[3✯]||cmd:/nazor nastaveni 3||ttp:&7Klikni zde pro &e3✯&7.|| ||&c[2✯]||cmd:/nazor nastaveni 2||ttp:&7Klikni zde pro &e&c2✯&7.|| ||&4[1✯]||cmd:/nazor nastaveni 1||ttp:&7Klikni zde pro &41✯&7.")
+				if loop-player has permission "pit.admin":
+					send "&8[&c&l!&8] &4Admin! &7Podivej se na vysledky prikazem &d/vysledky&7." to loop-player
+	else if {AutoMessage} is 14:
+		set {AutoMessage} to 15
+		broadcast "&6TIP&7: &7Chces vice odmen z &b&lBattle Passu&7? Vice info a ostatni vyhody zjistis prikazem &d/vip&7."
+	else if {AutoMessage} is 15:
+		set {AutoMessage} to 16
+		broadcast "&6TIP&7: &7Hrajes &6ThePit &7poprve? Vice info zjistis prikazem &d/pit&7."
+	else if {AutoMessage} is 16:
+		set {AutoMessage} to 17
+		broadcast "&6TIP&7: &7Nasel si &fchybu&7? Nahlas ji prikazem &d/bugreport &7a ziskej odmenu."
+	else if {AutoMessage} is 17:
+		set {AutoMessage} to 18
+		loop all players:
+			if {rating::%loop-player%::hratelnost} is not set:
+				json("%loop-player%", "&8[&6&l!&r&8] &eAnketa! &7Jaka je hratelnost ThePitu? ||&2[5✯]||cmd:/nazor hratelnost 5||ttp:&7Klikni zde pro &25✯&7.|| ||&a[4✯]||cmd:/nazor hratelnost 4||ttp:&7Klikni zde pro &a4✯&7.|| ||&e[3✯]||cmd:/nazor hratelnost 3||ttp:&7Klikni zde pro &e3✯&7.|| ||&c[2✯]||cmd:/nazor hratelnost 2||ttp:&7Klikni zde pro &e&c2✯&7.|| ||&4[1✯]||cmd:/nazor hratelnost 1||ttp:&7Klikni zde pro &41✯&7.")
+				if loop-player has permission "pit.admin":
+					send "&8[&c&l!&8] &4Admin! &7Podivej se na vysledky prikazem &d/vysledky&7." to loop-player
+	else if {AutoMessage} is 18:
+		set {AutoMessage} to 19
+		broadcast "&6TIP&7: &7Vice info o eventu zjistis prikazem &d/nazev-eventu&7."
+	else if {AutoMessage} is 19:
+		set {AutoMessage} to 20
+		loop all players:
+			if {rating::%loop-player%::minihra} is not set:
+				json("%loop-player%", "&8[&6&l!&r&8] &eAnketa! &7Libi se ti tato minihra? ||&2[5✯]||cmd:/nazor minihra 5||ttp:&7Klikni zde pro &25✯&7.|| ||&a[4✯]||cmd:/nazor minihra 4||ttp:&7Klikni zde pro &a4✯&7.|| ||&e[3✯]||cmd:/nazor minihra 3||ttp:&7Klikni zde pro &e3✯&7.|| ||&c[2✯]||cmd:/nazor minihra 2||ttp:&7Klikni zde pro &e&c2✯&7.|| ||&4[1✯]||cmd:/nazor minihra 1||ttp:&7Klikni zde pro &41✯&7.")
+				if loop-player has permission "pit.admin":
+					send "&8[&c&l!&8] &4Admin! &7Podivej se na vysledky prikazem &d/vysledky&7." to loop-player
+	else if {AutoMessage} is 20:
+		set {AutoMessage} to 1
+		broadcast "&6TIP&7: &7Informace o ekonomice zjistis prikazem &d/ekonomika&7."
+
+
+command /vysledky:
+	permission: pit.admin
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.	
+	trigger:
+		open chest with 6 rows named "&eKoukás na vysledky.." to player
+		wait 1 ticks
+		set {_blackSlots::*} to 0, 1, 2, 3, 4, 5, 6, 8, 14, 23, 32, 33, 34, 35, 41, 45, 46, 47, 48, 49 and 50
+		format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+		VysledkyGUI(19, "&7&o,,Jak se ti libi styl &c&oPvP&7&o?""", "pvp", golden sword, player)
+		VysledkyGUI(20, "&7&o,,Jaka je &a&oHratelnost &7&oThePitu?""", "hratelnost", iron chestplate, player)
+		VysledkyGUI(21, "&7&o,,Jaky ti prijde &f&oAdmin Tym&7&o?""", "admintym", player head, player)
+		VysledkyGUI(28, "&7&o,,Libi se ti tato &e&oMinihra&7&o?""", "minihra", hopper, player)
+		VysledkyGUI(29, "&7&o,,Jak se ti libi &2&oMapa&7&o?""", "mapa", brick block, player)
+		VysledkyGUI(30, "&7&o,,Jak hodnotis &b&oNastaveni Serveru&7&o?""", "nastaveni", redstone comparator item, player)
+
+		format a gui slot 7 of player with nether star named "&dHodnoceni eventu!" 
+
+		VysledkyGUI(16, "&fEvent &8| &4&lRage Pit", "ragepit", (skull of "Gospa" parsed as offlineplayer), player)
+		VysledkyGUI(17, "&fEvent &8| &5&lFloor", "floor", (skull of "JustJimbo" parsed as offlineplayer), player)
+		VysledkyGUI(24, "&fEvent &8| &6&lRaffle", "raffle", (skull of "Brand_Deal" parsed as offlineplayer), player)
+		VysledkyGUI(25, "&fEvent &8| &5&lTDM", "tdm", (skull of "Emily_1505" parsed as offlineplayer), player)
+		VysledkyGUI(26, "&fEvent &8| &6&lRobbery", "robbery", (skull of "_bartt" parsed as offlineplayer), player)
+
+		VysledkyGUI(42, "&fEvent &8| &6&lGold Raid", "goldraid", gold ingot, player)
+		VysledkyGUI(43, "&fEvent &8| &d&lViking Boss", "vikingboss", wither skeleton head, player)
+		VysledkyGUI(44, "&fEvent &8| &2&l2x Rewards", "2xrewards", 2 diamond block, player)
+		VysledkyGUI(51, "&fEvent &8| &a&lKotL", "kotl", ladder, player)
+		VysledkyGUI(52, "&fEvent &8| &5&lDragon Egg", "dragonegg", dragon egg, player)
+		VysledkyGUI(53, "&fEvent &8| &d&lObrovsky Dort", "cake", cake_item, player)
+
+function VysledkyGUI(s: number, q: text, t: text, i: item, p: player):
+	loop 5 times:
+		if {rating::total.%{_t}%.%loop-number%} is not set:
+			set {_gui::%loop-number%} to 0
+		else:
+			set {_gui::%loop-number%} to {rating::total.%{_t}%.%loop-number%}
+		add {rating::total.%{_t}%.%loop-number%} to {_x}
+	format a gui slot {_s} of {_p} with {_i} with no nbt named "%{_q}%" with lore "&8&m--------------------|| &8| &25✯ &7- &f%{_gui::5}%&7x|| &8| &a4✯ &7- &f%{_gui::4}%&7x|| &8| &e3✯ &7- &f%{_gui::3}%&7x|| &8| &c2✯ &7- &f%{_gui::2}%&7x|| &8| &41✯ &7- &f%{_gui::1}%&7x||||&dPrumer &7➠ &f%{rating::max.%{_t}%} / {_x}%✯||&8&m--------------------"
+
+command /nazor [<text>] [<number>]:
+	trigger:
+		if arg-1 or arg-2 is not set:
+			message "&8[&4&l!&8] &cNeco se nepovedlo."
+			stop
+		if arg-1 is not "pvp" or "hratelnost" or "admintym" or "minihra" or "mapa" or "nastaveni" or "ragepit" or "floor" or "raffle" or "tdm" or "robbery" or "goldraid" or "vikingboss" or "2xrewards" or "kotl" or "dragonegg" or "cake":
+			message "&8[&4&l!&8] &cNeco se nepovedlo."
+			stop
+		if arg-2 is not number:
+			message "&8[&4&l!&8] &cNeco se nepovedlo."
+			stop
+
+		if {rating::%player%::%arg-1%} is set:
+			remove 1 from {rating::total.%arg-1%.%{rating::%player%::%arg-1%}%}
+			remove {rating::%player%::%arg-1%} from {rating::max.%arg-1%}
+
+		message "&8[&2&l!&8] &aDekujeme za tvuj nazor."
+		set {rating::%player%::%arg-1%} to arg-2
+
+		add 1 to {rating::total.%arg-1%.%arg-2%}
+		add arg-2 to {rating::max.%arg-1%}
+		
+command /pit:
+	trigger:
+		open chest with 5 rows named "Zakladni informace" to player
+		wait 1 tick
+
+		set {_blackSlots::*} to 0, 1, 2, 3, 4, 5, 6, 7, 8, 36, 37, 38, 39, 40, 41, 42, 43 and 44
+		format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+		format a gui slot 19 of player with Iron Sword named "           &f&lThe Pit" with lore "&8&m----------------------------||&3» &bLeveluj &7- &cBojuj &7- &eVylepsuj!||||&3» &7Skoc dolu, do Pitu a zabij||   &7ostatni hrace! Tim ziskas||   &6goldy &7za ktere si koupis &fitemy&7.||&8&m----------------------------" 
+		format a gui slot 20 of player with diamond sword named "            &d&lMagické upgrady" with lore "&8&m-----------------------------||&3» &7Pomoci &dupgradu &7si muzes zlepsit||   &6zbran&7, &6luk&7, a take &6brneni&7.||||&3» &7Cim vyssi &blevel &7mas, tim jsi||   &7neporazitelnejsi a ostatni||   &7nemaji proti tobe &fsanci&7!||&8&m-----------------------------" 
+		format a gui slot 21 of player with enchanted book named "            &c&lZbrojírna" with lore "&8&m------------------------------||&3» &7Pomoci &cvylepseni &7si na sve brneni||   &7muzes dat take &eenchantmenty&7.||||&3» &7Momentalne je mozne zakoupit||   &7az &f3 &7enchantmenty.||&8&m------------------------------" 
+		format a gui slot 22 of player with 397 named "               &2&lMMORPG" with lore "&8&m-----------------------------------||&3» &7Pro ty, kteri maji radeji MMORPG||   &7zde mame take &cMrtve z Podsveti&7.||   &7Ty najdes ruzne po mape.||||&3» &7Take je zde &dViking Boss&7, ktereho||   &7najdes na souradnicich &eX&7: &a+&f80&7, &eZ&7: &c-&f20&7.||&8&m-----------------------------------" 
+		#format a gui slot 23 of player with Player Head named "                   &2Clany" with lore "&8&m----------------------------||&3» &7Obsad Outpost a ziskej nejaky efekt idk||&8&m----------------------------" 
+		format a gui slot 24 of player with Player Head named "                &9&lMasky" with lore "&8&m------------------------------||&3» &7Masky maji &cspecialni vlastnosti&7,||   &7ktere ti pomohou v pvp. Muzes si||   &7zakoupit az &f9 &7ruznych masek.|||| &dObchod masek najdes v marketu.||&8&m------------------------------" 
+		format a gui slot 25 of player with arrow named "                &a&lSpecialni Sipy" with lore "&8&m----------------------------------||&3» &7Oslep, nebo sehli na ostatni blesky||   &7diky &aspecialnim sipum&7. Celkem je mozne||   &7si zakoupit az &f5 &7ruznych sipu.|||| &dObchod s sipy najdes v marketu.||&8&m----------------------------------" 
+
+command /pvpcoiny:
+	aliases: /pvpcoin
+	trigger:
+		set {_tokeny::%player%} to placeholder "tm_tokens_raw" from player parsed as number
+		set {_token} to splitCoins("%{_tokeny::%player%}%")
+		message ""
+		message "&8&m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯&r&8[ &6PvPCoiny &8]&8&m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯&r"
+		message "&fPokud nevís co jsou pvpcoiny nebo na"
+		message "&fco se pouzívají, tak napis &e/ekonomika&f."
+		message "&8 ➽ &7Vlastnís: &6%{_token}% Ⓟ"
+		message ""
+		json("%player%", "&8 ➽ &7Obchod: &fobchod.pvpcraft.cz &8[&aKlikni&8]||url:https://obchod.pvpcraft.cz/||ttp:&eKlikni sem!")
+		message "&8&m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
+
+command /ekonomika:
+	trigger:
+		open chest with 5 rows named "&eProhlízís si mystické vylepsení..&0" to player
+		wait 1 tick
+		set {_blackSlots::*} to 0, 1, 2, 3, 4, 5, 6, 7, 8, 36, 37, 38, 39, 40, 41, 42, 43 and 44
+		format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+		format a gui slot 20 of player with 1 player head with custom nbt "{SkullOwner:{Id:""2c43fd70-4e96-4d1c-bb85-f44d2eb3f563"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGUyNzM4Y2FmNDZjNWEyMDMyOWM0Y2Y4ODBiZGMwY2U1ZjkwOWY3YTgxMmRmOWM1OTFkYmJjNTJjZGM0ODkxNCJ9fX0=""}]}}}" named "&e&lZlatáky &8┃ &fServerová mena" with lore "&8&m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯||&fZákladní herní mena, která má||&fvyuzití pouze na tomhle serveru.||||&e* Kde získám zlaťáky?||||&8 » &7Hlasovaním &d/hlasuj||&8 » &7Zabijenim &fhracu||&8 » &7Ucasti na &feventech &8(&d/program&8)||||&e* Kde utratím zlatáky?||||&8 » &7Upgrady||&8 » &7Market||&8 » &7Zbrojirna||&8 » &7Perky||&8&m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
+		format a gui slot 24 of player with 1 player head with custom nbt "{SkullOwner:{Id:""2c43fd70-4e96-4d1c-bb85-f44d2eb3f563"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTU2NGU1NTM4MGQzOTkwMDJlMDFjZjBiMTI3NzRjZGE2YTdhMjZkODZiNTliZjg2MjkyODRlZjFhMzg3ZDRkMCJ9fX0=""}]}}}" named "&6&lPvPCoiny &8┃ &fNetworková mena" with lore "&8&m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯||&fSpeciální herní mena, která je||&fpropojená mezi vsemi servery.||||&e* Kde získám pvpcoiny?||||&8 » &7Hlasovaním &d/hlasuj||&8 » &7Na serveru event &8(&d/event&8)||||&e* Kde utratím pvpcoiny?||||&8 » &7Zakoupením VIP||&8 » &7V Premiovem obchode||&8&m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
+
+command /money:
+	aliases: /pay
+	trigger:
+		message ""
+		message "&8[&5&l!&8] &7Vse dulezite o ekonomice zjistis prikazem &d/ekonomika&7."
+		message "&8[&5&l!&8] &7Penize lze posilat pouze prikazem &d/trade &8<&fhrac&8>&7."
+		message ""
+
+command /odkazy:
+	trigger:
+		message ""
+		message "&6Odkazy"
+		message ""
+		json("%player%", "&8» &7/web &8┃ ||&aKlikni||url:http://www.pvpcraft.cz||ttp:&eKlikni sem!")
+		json("%player%", "&8» &7/facebook &8┃ ||&aKlikni||url:https://www.facebook.com/PvPCraft||ttp:&eKlikni sem!")
+		json("%player%", "&8» &7/discord &8┃ ||&aKlikni||url:https://discord.gg/vWuZvd6||ttp:&eKlikni sem!")
+		json("%player%", "&8» &7/obchod &8┃ ||&aKlikni||url:https://obchod.pvpcraft.cz||ttp:&eKlikni sem!")
+		json("%player%", "&8» &7/pravidla &8┃ ||&aKlikni||url:http://www.pvpcraft.cz/pravidla||ttp:&eKlikni sem!")
+		message "&8» &7/teamspeak &8┃ &fts3.pvpcraft.cz"
+		message ""
+
+command /discord:
+	trigger:
+		message ""
+		message "&f                        &b&lDiscord"
+		message ""
+		message "&7        Potrebujes se na neco &fzeptat &7nebo"
+		json("%player%", "&7          &fpsát&7 s ostatními &fv chatu&7? &8┃ ||&aKlikni||url:https://discord.gg/suzTg4D||ttp:&eKlikni sem!")
+		message ""
+
+command /facebook:
+	trigger:
+		message ""
+		message "&f                        &9&lFacebook"
+		message ""
+		message "&7        Más rád facebook a chces &fzískávat"
+		json("%player%", "&7             &fnovinky&7 o serveru? &8┃ ||&aKlikni||url:https://www.facebook.com/PvPCraft||ttp:&eKlikni sem!")
+		message ""
+
+command /web:
+	aliases: /website
+	trigger:
+		message ""
+		message "&f                        &6&lWebová stránka"
+		message ""
+		message "&7           Chces &fzjistit informace&7 o serveru nebo"
+		json("%player%", "&7                jenom &fprohlédnout web&7? &8┃ ||&aKlikni||url:https://www.pvpcraft.cz||ttp:&eKlikni sem!")
+		message ""
+
+command /obchod:
+	aliases: /shop
+	trigger:
+		message ""
+		message "&f                        &6&lObchod"
+		message ""
+		message "&7           Chces si koupit &eVIP&7, ale nemás"
+		json("%player%", "&7             dostatek &6PvPcoinu&7? &8┃ ||&aKlikni||url:https://obchod.pvpcraft.cz||ttp:&eKlikni sem!")
+		message ""
+
+
+command /instagram:
+	aliases: /ig
+	trigger:
+		message ""
+		message "&f                   &d&lInstagram"
+		message "&7     Sleduj zhavé fotky na instagramu."
+		json("%player%", "&7                       ||&aClick||url:https://www.instagram.com/pvpcraft.cz/||ttp:&eKlikni sem!")
+		message ""
+
+command /youtube:
+	aliases: /yt
+	trigger:
+		message ""
+		message "                   &4&lYouTube"
+		message "&7     Sleduj novinky a vtipné videa."
+		json("%player%", "&7                      ||&aClick||url:https://www.youtube.com/channel/UC6Ivyw5bSKjws9UDCZPRU6A||ttp:&eKlikni sem!")
+		message ""
+
+command /vote:
+	aliases: /hlas, /hlasuj
+	trigger:
+		message ""
+		message "&f                        &d&lHlasování"
+		message ""
+		message "&7             Podpor server svym hlasem."
+		json("%player%", "&7                   &fCzech-Craft &8┃ ||&aKlikni||url:https://czech-craft.eu/server/pvpcraft/vote/?user=%player%||ttp:&eKlikni sem!")
+		message ""
+
+command /rules:
+	aliases: /pravidla
+	trigger:
+		message ""
+		message "&f                        &4&lPravidla"
+		message ""
+		message "&7         Nevis kde najít &cpravidla&7 serveru,"
+		json("%player%", "&7          bez kterych nelze hrát? &8┃ ||&aKlikni||url:https://www.pvpcraft.cz/pravidla/||ttp:&eKlikni sem!")
+		message ""
+
+
+command /teamspeak:
+	aliases: /ts, ts3
+	trigger:
+		message ""
+		message "&f                        &3&lTeamSpeak"
+		message ""
+		message "&7          Nemás kde &fmluvit s kamarádem&7 nebo"
+		message "&7         potrebujes &fpomoc? &8┃ &ats3.pvpcraft.cz"
+		message ""
+
+
+command /help:
+	aliases: /prikazy
+	trigger:
+		send "&7&m------------------------------------------"
+		send "&6 Zakladni informace&7:"
+		send ""
+		send "&3 * &7Spadni do Pitu a zabij ostatni,"
+		send "    &7a tim vylepsis svuj level."
+		send ""
+		send "&6 Uzitecne prikazy&7:"
+		send ""
+		send "&3 * &d/report &8<&fhrac&8> &8<&fduvod&8> &7- Nahlaseni hrace."
+		send "&3 * &d/request &8<&fduvod&8> &7- Zadost o pomoc."
+		send "&3 * &d/vip &7- Zakladni informace o VIP."
+		send "&3 * &d/bugreport &8<&fduvod&8> &7- Nahlaseni chyby."
+		send "&3 * &d/napad &8<&fnapad&8> &7- Napis napad co zlepsit."
+		send "&3 * &d/program &7- Program dennich eventu."
+		send "&3 * &d/booster &7- GUI s boostery."
+		send "&3 * &d/settings &7- GUI se vsemi nastavenimi."
+		send "&3 * &d/tgc &7- Vypnuti, nebo zapnuti globalniho chatu."
+		send "&3 * &d/tpm &7- Vypnuti, nebo zapnuti privatnich zprav."
+		send "&3 * &d/sounds &7- Vypnuti zvuku privatnich zprav."
+		send "&7&m------------------------------------------"
+		
+command /?:
+	trigger:
+		send "&7&m------------------------------------------"
+		send "&6 Zakladni informace&7:"
+		send ""
+		send "&3 * &7Spadni do Pitu a zabij ostatni,"
+		send "    &7a tim vylepsis svuj level."
+		send ""
+		send "&6 Uzitecne prikazy&7:"
+		send ""
+		send "&3 * &d/report &8<&fhrac&8> &8<&fduvod&8> &7- Nahlaseni hrace."
+		send "&3 * &d/request &8<&fduvod&8> &7- Zadost o pomoc."
+		send "&3 * &d/vip &7- Zakladni informace o VIP."
+		send "&3 * &d/bugreport &8<&fduvod&8> &7- Nahlaseni chyby."
+		send "&3 * &d/napad &8<&fnapad&8> &7- Napis napad co zlepsit."
+		send "&3 * &d/program &7- Program dennich eventu."
+		send "&3 * &d/booster &7- GUI s boostery."
+		send "&3 * &d/settings &7- GUI se vsemi nastavenimi."
+		send "&3 * &d/tgc &7- Vypnuti, nebo zapnuti globalniho chatu."
+		send "&3 * &d/tpm &7- Vypnuti, nebo zapnuti privatnich zprav."
+		send "&3 * &d/sounds &7- Vypnuti zvuku privatnich zprav."
+		send "&7&m------------------------------------------"
+
+command /booster:
+	trigger:
+		close player's inventory
+		wait 2 ticks
+		open chest with 6 rows named "&eProhlízís si boostery.." to player
+		wait 1 tick
+		create a gui slot 0 of player with rose red named "&cJit zpatky" with lore "||&eKlikni zde pro hlavni menu!||&r" to run:
+			make player execute command "/menu"
+
+		set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52 and 53
+		format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+		if {%player%.gbooster} is more than 0:
+			create a gui slot 30 of player with xp bottle named "&e&lBooster Zlataku" with lore "||&5Info o &lboosteru&5!||&d&l ▶ &7Booster mas aktivni na &e%{%player%.gbooster}% minut&7.||||&e&oTento booster ti pridava o 30%% vice goldu!"
+		else:
+			create a gui slot 30 of player with bottle named "&e&lBooster Zlataku" with lore "||&5Info o &lboosteru&5!||&d&l ▶ &7Momentalne &4nemas &7Booster zlataku.||||&d&l ▶ &7Booster lze ziskat z &cRandom||    &cBoxu&7, ktery pada z &dViking Bosse&7,||    &7nebo lze ho ziskat z &bBattle Passu&7.||&d&l ▶ &7Take lze zakoupit v &fPremium Obchode&7.||||&e&oTento booster ti pridava o 20%% vice zlataku!"
+		if {%player%.xpbooster} is more than 0:
+			create a gui slot 32 of player with xp bottle named "&b&lXP Booster" with lore "||&5Info o &lboosteru&5!||&d&l ▶ &7Booster mas aktivni na &e%{%player%.xpbooster}% minut&7.||||&e&oTento booster ti pridava o 30%% vice XP!"
+		else:
+			create a gui slot 32 of player with bottle named "&b&lXP Booster" with lore "||&5Info o &lboosteru&5!||&d&l ▶ &7Momentalne &4nemas &7XP booster.||||&d&l ▶ &7Booster lze ziskat z &cRandom||    &cBoxu&7, ktery pada z &dViking Bosse&7,||    &7nebo lze ho ziskat z &bBattle Passu&7.||&d&l ▶ &7Take lze zakoupit v &fPremium Obchode&7.||||&e&oTento booster ti pridava o 30%% vice XP!"
+
+on join:
+	while player is online:
+		wait 1 minute
+		if {%player%.xpbooster} is more than 0:
+			remove 1 from {%player%.xpbooster}
+		if {%player%.gbooster} is more than 0:
+			remove 1 from {%player%.gbooster}
+		if {%player%.xpbooster} is 0:
+			delete {%player%.xpbooster}
+		if {%player%.gbooster} is 0:
+			delete {%player%.gbooster}

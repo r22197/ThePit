@@ -1,0 +1,855 @@
+command /cps [<offlineplayer>] [<number>]:
+	permission: pit.staff
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.	
+	trigger:
+		if arg-1 is not set:
+			message "&cZapomnel jsi uvest hrace."
+			message "&3 * &d/cps &8<&fhrac&8> &8<&fcislo&8>"
+			stop
+		else:
+			if arg-1 is offline:
+				message "&c%arg 1% je offline."
+				stop
+			if arg-1 is not set:
+				message "&cZapomnel jsi uvest cislo."
+				message "&3 * &d/cps &8<&fhrac&8> &8<&fcislo&8>"
+				stop
+
+			if arg-2 is higher than 30:
+				message "&cPrilis moc! &7Maximalni cislo (cas) = &f30&7s."
+				message "&3 * &d/cps &8<&fhrac&8> &8<&fcislo&8>"
+				stop
+
+			set {autoclicker::%arg 1%} to "%player%"
+			if {autoclicker.total::%arg 1%} is not set:
+				set {autoclicker.total::%arg 1%} to 0
+			send "&9[CPS Check] &7Zacal jsi kontrolovat cps pro %coloured arg-1's offline prefix%%arg 1%."
+			loop arg-2 times:
+				wait 1 second
+				add 1 to {_t}
+				if {autoclicker.second::%arg 1%} is not set:
+					set {autoclicker.second::%arg 1%} to 0
+				send "&9[CPS Check] %coloured arg-1's offline prefix%%arg 1% &7kliknul &f%{autoclicker.second::%arg 1%}%x&7. (Prumer &d%{autoclicker.total::%arg 1%}/{_t}% cps&7.)"
+				delete {autoclicker.second::%arg 1%}
+				if {_t} is arg-2:
+					if {autoclicker::%arg 1%} is "%player%":
+						delete {autoclicker::%arg 1%}
+						delete {autoclicker.second::%arg 1%}
+						delete {autoclicker.total::%arg 1%}
+					stop
+
+on left click:
+	if {autoclicker::%player%} is set:
+		add 1 to {autoclicker.total::%player%}
+		add 1 to {autoclicker.second::%player%}
+
+on skript start:
+	delete {autoclicker::*}
+	delete {autoclicker.total::*}
+	delete {autoclicker.second::*}
+
+command /notes [<offlineplayer>] [<text>]:
+	aliases: /note
+	permission: pit.staff
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.	
+	trigger:
+		if arg-1 is not set:
+			message "&cZapomnel jsi uvest hrace a poznamku."
+			message "&3 * &d/notes &8<&fhrac&8> &8<&fnote&8>"
+			message "&3 * &d/notes &8<&fhrac&8> &dget &8- &7Pro zobrazeni poznamek."
+			message "&3 * &d/notes &8<&fhrac&8> &dclear &8- &7Pro resetovani poznamek."
+			stop
+		else:
+			if arg-2 is not set:
+				message "&cZapomnel jsi uvest poznamku."
+				message "&3 * &d/notes &8<&fhrac&8> &8<&fnote&8>"
+				message "&3 * &d/notes &8<&fhrac&8> &dget &8- &7Pro zobrazeni poznamek."
+				message "&3 * &d/notes &8<&fhrac&8> &dclear &8- &7Pro resetovani poznamek."
+				stop
+
+			if arg-2 is "get":
+				message "&ePoznamky pro &6%arg-1%&7:"
+				if size of {chat::%uuid of arg-1%::*} is greater than 0:
+					message "&7&m------------------------------------------"
+
+					loop {chat::%uuid of arg-1%::*}:
+						message "%loop-value%"
+					message ""
+					message "&3 * &d/note &8<&fhrac&8> &dclear &8- &7Odstraneni poznamek."
+					message "&7&m------------------------------------------"
+
+				else:
+					message "&7&m------------------------------------------"
+					message "&3&l ▶ &7Bez poznamek."
+					message ""
+					message "&3 * &d/note &8<&fhrac&8> <&fpoznamka&8> - &7Vytvoreni poznamky."
+					message "&7&m------------------------------------------"
+
+			else if arg-2 is "clear":
+				clear {chat::%uuid of arg-1%::*}
+				clear {gui::%uuid of arg-1%::*}
+				set {note.%arg-1%.notescount} to 0
+				message "&7Vsechny poznamky byly smazany pro %coloured arg-1's offline prefix%%arg-1%&7."
+			else if arg-2 is set:
+				add 1 to {note.%arg-1%.notescount}
+				set {chat::%uuid of arg-1%::%{note.%arg-1%.notescount}%} to "&8[&f%{note.%arg-1%.notescount}%&8] %coloured player's offline prefix%%player%&7: &e%arg-2%"
+				set {gui::%uuid of arg-1%::%{note.%arg-1%.notescount}%} to "||&8[&f%{note.%arg-1%.notescount}%&8] %coloured player's offline prefix%%player%&7: &e%arg-2%"
+				message "&7Poznamka &8""&f%arg-2%&8"" &7 byla pridana pro %coloured arg-1's offline suffix%%arg-1%&7."
+
+
+
+
+
+command /invsee [<offlineplayer>]:
+	aliases: /seeinv, /inv, /viewi, /check
+	permission: pit.staff
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.	
+
+	trigger:
+		if arg-1 is not set:
+			send "&cZapomnel jsi uvest hrace." to player
+			send "&3 * &d/invsee &8<&fhrac&8>" to player
+			stop trigger
+		else:
+			if arg-1 is offline:
+				send "&c%arg-1% je offline." to player
+				stop trigger
+
+			set {_tokeny::%arg-1%} to placeholder "tm_tokens_raw" from arg-1 parsed as number
+			close player's inventory
+			wait 2 ticks
+			set {target.%player%} to arg
+			open chest with 6 rows named "%arg%" to player
+			set {_playerinv} to arg
+			set {_slot} to 0
+			loop 36 times:
+				set {view::%arg%::%{_slot}%} to slot {_slot} of arg's inventory
+				add 1 to {_slot}
+
+			set {_slot} to 9
+			set {_slotmenu} to 0
+			wait 1 tick
+			loop 27 times:
+				format a gui slot {_slotmenu} of player with {view::%arg%::%{_slot}%} 
+				add 1 to {_slot}
+				add 1 to {_slotmenu}
+			set {_slot} to 0
+			set {_slotmenu} to 27
+			wait 1 tick
+			loop 9 times:
+				format a gui slot {_slotmenu} of player with {view::%arg%::%{_slot}%} 
+				add 1 to {_slot}
+				add 1 to {_slotmenu}
+
+			delete {view::%arg%::*}
+
+			set {_slot} to 36
+			loop 9 times:
+				format a gui slot {_slot} of player with Black Stained Glass Pane named "&7:^)" 
+				add 1 to {_slot}
+			if helmet of arg-1 is empty or air:
+				format a gui slot 45 of player with Stone Button named "&cHelma" 
+			else:
+				format a gui slot 45 of player with arg-1's helmet 
+			if chestplate of arg-1 is empty or air:
+				format a gui slot 46 of player with Stone Button named "&cChestplate" 
+			else:
+				format a gui slot 46 of player with arg-1's chestplate 
+			if leggings of arg-1 is empty or air:
+				format a gui slot 47 of player with Stone Button named "&cKalhoty" 
+			else:
+				format a gui slot 47 of player with arg-1's leggings 
+			if boots of arg-1 is empty or air:
+				format a gui slot 48 of player with Stone Button named "&cBoty" 
+			else:
+				format a gui slot 48 of player with arg-1's boots 
+			if {note.%arg-1%.notescount} is not set:
+				set {note.%arg-1%.notescount} to 0
+			if size of {gui::%uuid of arg-1%::*} is higher than 0:
+				loop {gui::%uuid of arg-1%::*}:
+					set {_notes::%arg-1%::*} to "%loop-value%"
+			else:
+				set {gui::%uuid of arg-1%::*} to "||&3&l ▶ &7Bez poznamek. &f➜ &d/note &8<&fhrac&8> &8<&fduvod&8>"
+			format a gui slot 49 of player with Black Stained Glass Pane named "&7:^)" 
+			format slot 50 of player with Clock named "&2Zmerit cps &8┃ %coloured arg-1's offline prefix%%arg-1%" with lore "||&8&l ▶ &7Pro overeni cps hrace.||&8&l ▶ &7Mereni cps trva &e5 sekund&7.|||| &aKlikni zde pro &2zmereni cps &ahrace." to close then run [make player execute command "/cps %arg-1%"]
+			format slot 51 of player with bars_ named "&3Zkontrolovat &8┃ %coloured arg-1's offline prefix%%arg-1%" with lore "&8&l ▶ &7Zmrazeni se deli na dve stadia.||&8&m------------------------------||    &6##&e1. &7Nejprve se hraci zobrazi GUI,||    &7ktere ho vyzve, aby se pripojil||    &7na &9Discord&7, &fTeamspeak &7nebo &cpriznal se&7.||||    &6##&e2. &7Pokud prikaz napises prikaz znovu,||    &7hraci se GUI &czrusi&7.|||| &bKlikni zde pro &3zmrazeni &bhrace."  to close then run [make player execute command "/ss %arg-1%"]
+			format slot 52 of player with skull of ("%arg-1%" parsed as an offline player) named "&6Informace &8┃ %coloured arg-1's offline prefix%%arg-1%" with lore "&8&m------------------------||&8&l ▶ &7Level: %{prestigebrackets::%arg-1%}%[%{%arg-1%.level.color}%%{level::%arg-1%}%%{prestigebrackets::%arg-1%}%]||&8&l ▶ &7PvPCoiny: &6%{_tokeny::%arg-1%}% Ⓟ||&8&l ▶ &7Zlataky: &e%{gold::%arg-1%}% Ⓩ||&8&l ▶ &7Zabiti: &c%{kills::%arg-1%}%||&8&l ▶ &7Top Streak: &a%{leaderboard.streak::%arg-1%}%||&8&m------------------------||&8&l ▶ &7Odehrano: %{playtime::%arg-1%}%||&8&l ▶ &71st join: &f%{1stjoin::%arg-1%}%||&8&m------------------------%{gui::%uuid of arg-1%::*}%||||&eKlikni zde pro vypis seznamu &6logu&e."  to close then run [make player execute command "/logs %arg-1%"]
+			format slot 53 of player with ender chest named "&cTruhla &8┃ %coloured arg-1's offline prefix%%arg-1%" with lore "||&7Klikni zde pro otevreni &d&lMagické bedny&7.||&r" to close then run [make player execute command "/ec %arg-1%"]
+			wait 2 ticks
+			delete {view::%arg%::*}
+
+command /ec [<offlineplayer>]:
+	aliases: /enderchest
+	permission: pit.staff
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.	
+	trigger:
+		if arg-1 is not set:
+			send "&cZapomnel jsi uvest hrace." to player
+			send "&3 * &d/enderchest &8<&fhrac&8>" to player
+		else:
+			if arg-1 is offline:
+				send "&c%arg-1% je offline." to player
+				stop trigger
+			set {editorec::%player%} to arg-1
+			close player's inventory
+			if check [arg-1 has permission "pit.ec.1"]->[arg-1 has permission "pit.ec.2"]:
+				wait 2 ticks
+				open chest with 6 rows named "%arg-1%" to player
+				set {_num} to 0			
+				loop 45 times:
+					if {enderchest::%{_num}%::%arg-1%} is set:
+						if player has permission "pit.admin":
+							set slot {_num} of player's current inventory to {enderchest::%{_num}%::%arg-1%}
+						else:
+							format a gui slot {_num} of player with {enderchest::%{_num}%::%arg-1%}
+					add 1 to {_num}
+
+			if check [arg-1 has permission "pit.ec.1"]->[arg-1 doesn't have permission "pit.ec.2"]:
+				wait 2 ticks
+				open chest with 6 rows named "%arg-1%" to player
+				set {_num} to 0			
+				loop 36 times:
+					if {enderchest::%{_num}%::%arg-1%} is set:
+						if player has permission "pit.admin":
+							set slot {_num} of player's current inventory to {enderchest::%{_num}%::%arg-1%}
+						else:
+							format a gui slot {_num} of player with {enderchest::%{_num}%::%arg-1%}
+					add 1 to {_num}
+				wait 1 tick
+				set {_num} to 36
+				loop 9 times:
+					format a gui slot {_num} of player with Orange Stained Glass Pane named "&aBonus radek ##2" with lore "||&8&l⚔ &7Dostupne pouze pro rank &a+&6Legendary&7. &8&l⚔||||&7Zakoupit si ho muzes &ezde&7!||&f ➥ &9&nobchod.pvpcraft.cz||&r" 
+					add 1 to {_num}	
+			if check [arg-1 doesn't have permission "pit.ec.1"]->[arg-1 doesn't have permission "pit.ec.2"]:
+				wait 2 ticks
+				open chest with 6 rows named "%arg-1%" to player
+				set {_num} to 0	
+				loop 27 times:
+					if {enderchest::%{_num}%::%arg-1%} is set:
+						if player has permission "pit.admin":
+							set slot {_num} of player's current inventory to {enderchest::%{_num}%::%arg-1%}
+						else:
+							format a gui slot {_num} of player with {enderchest::%{_num}%::%arg-1%}
+					add 1 to {_num}	
+				wait 1 tick
+				set {_num} to 27
+				loop 9 times:
+					format a gui slot {_num} of player with Cyan Stained Glass Pane named "&aBonus radek ##1" with lore "||&8&l⚔ &7Dostupne pouze pro rank &a+&bExalted&7. &8&l⚔||||&7Zakoupit si ho muzes &ezde&7!||&f ➥ &9&nobchod.pvpcraft.cz||&r" 
+					add 1 to {_num}
+				wait 1 tick
+				set {_num} to 36		
+				loop 9 times:
+					format a gui slot {_num} of player with Orange Stained Glass Pane named "&aBonus radek ##2" with lore "||&8&l⚔ &7Dostupne pouze pro rank &a+&6Legendary&7. &8&l⚔||||&7Zakoupit si ho muzes &ezde&7!||&f ➥ &9&nobchod.pvpcraft.cz||&r" 
+					add 1 to {_num}	
+
+
+			set {_slot} to 45
+			loop 9 times:
+				format a gui slot {_slot} of player with Black Stained Glass Pane named "&7:^)" 
+				add 1 to {_slot}
+			wait 2 ticks
+			format slot 49 of player with book named "&6Inventar &8┃ %coloured arg-1's offline prefix%%arg-1%" with lore "||&7Klikni zde pro otevreni &6Inventare&7.||&r"  to close then run [make player execute command "/invsee %arg-1%"]
+
+on first join:
+	set {1stjoin::%player%} to "%now%"
+
+
+
+command /playtime [<player>]:
+	trigger:
+		if arg-1 is not set:
+			send "&aCelkem mas nahrano&7: &b%{playtime::%player%}%&7."
+		else:
+			send "&2%arg-1% &ama celkem nahrano&7: %{playtime::%arg-1%}%&7."
+on join:
+	while player is online:
+		wait 1 second
+		add 1 to {leaderboard::playtime::%player%}
+		add 1 to {seconds::%player%}
+		if {seconds::%player%} is 60:
+			set {seconds::%player%} to 0
+			add 1 to {minutes::%player%}
+			if {minutes::%player%} is 60:
+				add 1 to {hours::%player%}
+				set {minutes::%player%} to 0
+		if {hours::%player%} is not set:
+			if {minutes::%player%} is not set:
+				set {playtime::%player%} to "&6%{seconds::%player%}% &7sekund"
+			else:
+				if {minutes::%player%} is higher or equal to 5:
+					set {minutes} to "minut"
+				if {minutes::%player%} is 2 or 3 or 4:
+					set {minutes} to "minuty"
+				if {minutes::%player%} is 1:
+					set {minutes} to "minutu"
+
+				set {playtime::%player%} to "&6%{minutes::%player%}% &7%{minutes}%"
+		else:
+			if {hours::%player%} is higher or equal to 5:
+				set {hours} to "hodin"
+			if {hours::%player%} is 2 or 3 or 4:
+				set {hours} to "hodiny"
+			if {hours::%player%} is 1:
+				set {hours} to "hodinu"
+			if {minutes::%player%} is higher or equal to 5:
+				set {minutes} to "minut"
+			if {minutes::%player%} is 2 or 3 or 4:
+				set {minutes} to "minuty"
+			if {minutes::%player%} is 1:
+				set {minutes} to "minutu"
+
+
+			set {playtime::%player%} to "&6%{hours::%player%}% &7%{hours}%&7, &6%{minutes::%player%}% &7%{minutes}%"		
+		if {f::%player%::%player%} is set:
+			if distance between {r::%player%::%player%} and {f::%player%::%player%} is higher than 100:
+				teleport {f::%player%::%player%} to {r::%player%::%player%}
+		if "%now%" contains "Mon":
+			Quest("monday3/3hod", 0, player)
+		if "%now%" contains "Wed":
+			Quest("wednesday4/2hod", 0, player)
+		if "%now%" contains "Sat":
+			Quest("saturday2/3hod", 0, player)
+
+
+
+command /follow [<offlineplayer>]:
+	aliases: /staff, /mod, /mode
+	permission: pit.staff
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.	
+	trigger:
+		if {r::%player%::%player%} is set:
+			message "&9[Follow] &7Uz sledujes hrace %coloured {r::%player%::%player%}'s offline suffix%%{r::%player%::%player%}%&7."
+			stop
+		else if {staffmode::%player%} is set:
+			message "&9[Follow] &7Uz mas zapnuty Staff Mode."
+			stop
+
+		if arg-1 is set:
+			if arg-1 is offline:
+				send "&c%arg-1% je offline." to player
+				stop trigger
+			if arg-1 is player:
+				send "&cNemuzes sledovat sam sebe." to player
+				stop
+			if arg-1 has permission "pit.staff":
+				message "&cTento hrac nemuze byt sledovan."
+				stop
+
+			delete {combat.second::%player%}
+			delete {combat.check::%player%}
+
+			if {vanish::%player%} is not set:
+				make player execute command "/vanish"
+
+			set {r::%player%::%player%} to arg-1
+			set {f::%player%::%player%} to player
+			set {r::%arg-1%::%player%} to arg-1
+			set {f::%arg-1%::%player%} to player
+			teleport player to arg-1
+			send "&9[Follow] &7Zacal jsi sledovat %coloured arg-1's offline suffix%%arg 1%&7."
+
+		else:
+			delete {combat.second::%player%}
+			delete {combat.check::%player%}
+
+			if {vanish::%player%} is not set:
+				make player execute command "/vanish"
+			send "&9[Staff] &7Zapnul jsi Staff Mode."
+		set {staffmode::%player%} to true
+
+		set gamemode of player to creative
+
+		set {_count} to 0
+		loop 36 times:
+			set {inv::%player%::%{_count}%} to slot {_count} of player's inventory
+			add 1 to {_count}
+		set {inv::%player%::helmet} to player's helmet
+		set {inv::%player%::chest} to player's chestplate
+		set {inv::%player%::legs} to player's leggings
+		set {inv::%player%::feet} to player's boots
+		clear player's inventory
+			
+		if arg-1 is set:
+			set slot 0 of player's inventory to 1 of Nether Star named "&eTeleportovat k %{r::%player%::%player%}%"
+		else:
+			set slot 0 of player's inventory to 1 of Nether Star named "&eNahodny teleport"
+		set slot 1 of player's inventory to 1 Book named "&6Otevrit inventar"
+		set slot 2 of player's inventory to 1 Light Green Dye named "&aHidden"
+		set slot 8 of player's inventory to 1 Lever named "&cOpustit sledovani"
+
+
+
+
+
+
+
+on right click on air with a book:
+	if {r::%player%::%player%} is set:
+		if tool's name is "&6Otevrit inventar":
+			make player execute command "/invsee %{r::%player%::%player%}%"
+
+on right click on entity with a book:
+	wait 1 tick
+	if clicked player is offline:
+		stop
+	if {f::%player%::%player%} or {staffmode::%player%} is set:
+		if tool's name is "&6Otevrit inventar":
+			make player execute command "/invsee %clicked player%"
+
+on skript start:
+	delete {r::*}
+	delete {f::*}
+
+command /unfollow [<offlineplayer>]:
+	permission: pit.staff
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.	
+	trigger:
+		if arg-1 is set:
+			if {r::%player%::%player%} is not set:
+				send "&9[Follow] &7Nikoho nesledujes."
+				stop
+
+		set gamemode of player to survival
+		set {_count} to 0
+		loop 36 times:
+			set slot {_count} of player's inventory to {inv::%player%::%{_count}%}
+			add 1 to {_count}
+		set the helmet of player to {inv::%player%::helmet}
+		set the chestplate of player to {inv::%player%::chest}
+		set the leggings of player to {inv::%player%::legs}
+		set the boots of player to {inv::%player%::feet}
+
+		if arg-1 is set:
+			if {playerleft} is not set:
+				send "&9[Follow] &7Prestal jsi sledovat %coloured {r::%player%::%player%}'s offline suffix%%{r::%player%::%player%}%&7."
+			else:
+				send "&9[Follow] %coloured {r::%player%::%player%}'s offline suffix%%{r::%player%::%player%}% &7se odpojil, kdyz jsi ho sledoval."
+			delete {r::%player%::%player%}
+			delete {f::%player%::%player%}
+			delete {r::%arg-1%::%player%}
+			delete {f::%arg-1%::%player%}
+			set {_spawn} to random integer between 1 and 3
+			teleport player to {spawn.loc::%{_spawn}%}
+
+		else:
+			send "&9[Follow] &7Vypnul jsi Staff Mode."
+		delete {staffmode::%player%}
+		delete {vanish::%player%}
+		if {floor} or {ragepit} or {picker} or {raffle} or {robbery} is set:
+			set {status::%player%} to " &8▪ &7Status: &6Event"
+		else:
+			set {status::%player%} to " &8▪ &7Status: &fNecinny"
+		if {robbery} is not set:
+			set {%player%.bounty} to ""
+		else:
+			set {%player%.bounty} to " &e%{robbery::%player%}% Ⓩ"
+		reveal player from all players
+
+		delete {inv::%player%::*}
+
+
+		if {staffmode.items::%player%} is set:
+			if {picker} is not set:
+				if {renown::%player%::nadhernahelma} is set:
+					set player's helmet to unbreakable leather helmet dyed light blue named "&7Nadherná helma"
+			else:
+				if {tdm::%player%} contains "&c":
+					set player's helmet to red wool block named "&cCerveny tym!"
+				else if {tdm::%player%} contains "&9":
+					set player's helmet to blue wool block named "&9Modry tym!"
+		
+			wait 1 tick
+
+			set {_armor} to random integer between 1 and 3
+			if {_armor} is 1:
+				set player's chestplate to unbreakable chain chestplate named "&7Krouzkovaná zbroj"
+				set player's leggings to unbreakable chain leggings named "&7Krouzkované kalhoty"
+				set player's boots to unbreakable iron boots named "&7Zelezné boty"
+			if {_armor} is 2:
+				set player's chestplate to unbreakable chain chestplate named "&7Krouzkovaná zbroj"
+				set player's leggings to unbreakable iron leggings named "&7Zelezné kalhoty"
+				set player's boots to unbreakable chain boots named "&7Krouzkované boty"
+			if {_armor} is 3:
+				set player's chestplate to unbreakable iron chestplate named "&7Zelezná zbroj"
+				set player's leggings to unbreakable chain leggings named "&7Krouzkované kalhoty"
+				set player's boots to unbreakable chain boots named "&7Krouzkované boty" #'
+
+			if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "barbarian":
+				set slot {inventoryslot::%player%::sword} of player to unbreakable iron axe with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:6,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "&7Zelezny mec"
+			else:
+				set slot {inventoryslot::%player%::sword} of player to unbreakable iron sword named "&7Zelezny mec"
+
+
+			if {floor::%player%} is not set:
+				if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "lava":
+					set slot {inventoryslot::%player%::lava} of player to lava bucket named "&cLava"
+
+
+				if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "fishingrod":
+					set slot {inventoryslot::%player%::fishingrod} of player to unbreakable fishing rod named "&bRybarsky Prut"
+
+
+				if {%player%.bow} is set:
+					if {%player%.bow} is 1:
+						set slot {inventoryslot::%player%::bow} of player to unbreakable bow named "&aObycejny luk" with lore "||&5Vlastnosti &lluku&5!||&d&l ▶ &dBez vylepseni.||||&eKvalita zbrane &8[&6&l✩&7✩✩✩✩&8]||||&e&o,,Horsi luk nemel ani &a&oRobin Hood&e&o."""
+
+					if {%player%.bow} is 2:
+						set slot {inventoryslot::%player%::bow} of player to unbreakable bow named "&dVzácny luk" with lore "||&5Vlastnosti &lluku&5!||&d&l ▶ &dPower I&a||||&eKvalita zbrane &8[&6&l✩&7✩✩✩✩&8]||||&e&o,,Tak jo, tohle uz je luk &a&oRobina Hooda&e&o."""
+
+					if {%player%.bow} is 3:
+						set slot {inventoryslot::%player%::bow} of player to unbreakable bow named "&dVzácny lehky luk" with lore "||&5Vlastnosti &lluku&5!||&d&l ▶ &dPower II&b||||&eKvalita zbrane &8[&6&l✩✩&7✩✩✩&8]||||&e&o,,Davej si bacha, at s nim nekomu nevypichnes oko."""
+
+					if {%player%.bow} is 4:
+						set slot {inventoryslot::%player%::bow} of player to unbreakable glowing bow named "&cLegendarní lovecky luk" with lore "||&5Vlastnosti &lluku&5!||&d&l ▶ &dPower III&c||||&eKvalita zbrane &8[&6&l✩✩✩&7✩✩&8]||||&e&o,,Jeste chvili a budes o sobe moct rikat,||&e&o ze s nim umis."""
+
+					if {%player%.bow} is 5:
+						set slot {inventoryslot::%player%::bow} of player to unbreakable glowing bow named "&cLegendarní elfí luk" with lore "||&5Vlastnosti &lluku&5!||&d&l ▶ &dPower IV&d||&d&l ▶ &dExploze I||||&eKvalita zbrane &8[&6&l✩✩✩✩✩&8]||||&e&o,,Ted uz je z tebe doslova &b&oLegolas&e&o."""
+
+
+					set slot {inventoryslot::%player%::arrow} of player to glowing ("%{%player%.arrow}% arrow" parsed as item) named "&7Síp"
+
+
+				if {%player%.pickaxe} is 1:
+					set slot {inventoryslot::%player%::pickaxe} of player to unbreakable iron pickaxe named "&aObycejny krumpac" with lore "||&5Vlastnosti &lkrumpace&5!||&8&l ▶ &7Pri kazdem vykopani &eGold Ore||    &7dostanes &6+&e1 Ⓩ&7.||||&eKvalita zbrane &8[&6&l✩&7✩✩&8]||||&e&o,,Darek trpasliku &a&oSnehurce&e&o,||&e&oproto je tak spatny."""
+
+				if {%player%.pickaxe} is 2:
+					set slot {inventoryslot::%player%::pickaxe} of player to unbreakable diamond pickaxe of efficiency 2 with no nbt named "&dVzácny krumpac" with lore "||&5Vlastnosti &lkrumpace&5!||&8&l ▶ &7Pri kazdem vykopani &eGold Ore||    &7dostanes &6+&e2 Ⓩ&7.||||&d&l ▶ &dUcinnost II||||&eKvalita zbrane &8[&6&l✩✩&7✩&8]||||&e&o,,Idealni krumpac pro &a&ozlatokopku&e&o."""
+
+				if {%player%.pickaxe} is 3:
+					set slot {inventoryslot::%player%::pickaxe} of player to unbreakable diamond pickaxe of efficiency 5 with no nbt named "&dVelmi vzácny krumpac" with lore "||&5Vlastnosti &lkrumpace&5!||&8&l ▶ &7Pri kazdem vykopani &eGold Ore||    &7dostanes &6+&e2 Ⓩ&7.||||&d&l ▶ &dUcinnost V||||&eKvalita zbrane &8[&6&l✩✩✩&8]||||&e&o,,Davny krumpac &d&oThorina Paveze&e&o."""
+
+				add {drops::%player%::*} to player's inventory
+				delete {drops::%player%::*}
+
+
+
+on right click with Light Green Dye:
+	if name of tool is "&aHidden":
+		make player execute command "/vanish"
+		stop
+		
+
+on right click with Gray Dye:
+	if name of tool is "&7Shown":
+		make player execute command "/vanish"
+		stop
+
+
+on right click with nether star:
+	if name of tool is "&eTeleportovat k %{r::%player%::%player%}%":
+		teleport {f::%player%::%player%} to {r::%player%::%player%}
+	if name of tool is "&eNahodny teleport":
+		loop all players:
+			if loop-player is not player:
+				add loop-player to {_random::*}
+		if {_random::*} is set:
+			set {_p} to random element out of {_random::*}
+			teleport player to {_p}
+		else:
+			send "&cNeni online zadny hrac, pouze ty."
+		delete {_random::*}
+		delete {_p}
+
+
+
+on right click with lever:
+	if name of tool is "&cOpustit sledovani":
+		if {r::%player%::%player%} is set:
+			make player execute command "/unfollow %{r::%player%::%player%}%"
+		else:
+			make player execute command "/unfollow"
+
+on Place:
+	if {f::%player%::%player%} or {staffmode::%player%} is set:
+		cancel event
+		message "&cMas zapnuty staff! &7Nelze stavet."
+	else if {vanish::%player%} is set:
+		cancel event
+		message "&cMas zapnuty vanish! &7Nelze stavet."
+
+on Break:
+	if {f::%player%::%player%} or {staffmode::%player%} is set:
+		cancel event
+		message "&cMas zapnuty staff! &7Nelze nicit."
+	else if {vanish::%player%} is set:
+		cancel event
+		message "&cMas zapnuty vanish! &7Nelze nicit."
+
+On Drop:
+	if {f::%player%::%player%} or {staffmode::%player%} is set:
+		cancel event
+		message "&cMas zapnuty staff! &7Nelze vyhodit predmet."
+	else if {vanish::%player%} is set:
+		cancel event
+		message "&cMas zapnuty vanish! &7Nelze vyhodit predmet."
+	
+
+On Pick Up:
+	if {vanish::%player%} or {f::%player%::%player%} or {staffmode::%player%} is set:
+		cancel event
+
+on inventory click:  
+	if {f::%player%::%player%} or {staffmode::%player%} is set:
+		cancel event
+
+
+
+on quit:
+	if {f::%player%::%player%} or {r::%player%::*} is set:
+		if player is {f::%{f::%player%}%::%{f::%player%}%}:
+			make {f::%{f::%player%}%::*} execute command "/unfollow %{r::%{r::%player%}%::%player%}%"
+		else:
+			set {playerleft} to true
+			make {f::%player%::*} execute command "/unfollow %player%"
+			delete {playerleft}
+
+
+
+on damage:
+	if {vanish::%attacker%} is set:
+		send "&cMas zapnuty vanish! &7Nelze zranit ostatni." to attacker
+		cancel event	
+	if {vanish::%victim%} is set:
+		send "&cTento hrac ma vanish! &7Nelze ho zranit." to attacker
+		cancel event	
+
+	if {f::%attacker%::%attacker%} is set:
+		if attacker has permission "pit.staff":
+			if attacker is a player:
+				send "&cNemuzes hitovat ostatni." to attacker
+				cancel event
+	
+	if {r::%victim%::*} or {staffmode::%victim%} is set:
+		if victim has permission "pit.staff":
+			send "&cTento hrac nemuze byt zranen." to attacker
+			cancel event
+
+command /hidestaff:
+	permission: pit.staff
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.	
+	trigger:
+		if {hidestaff::%player%} is not set:
+			loop all players:
+				{vanish::%loop-player%} is set
+				hide loop-player from player
+			set {hidestaff::%player%} to 1
+			message "&8[&2&l!&8] &7Ostatni s vanishem byli &cschovani&7."
+
+		else:
+			reveal all players from player
+			delete {hidestaff::%player%}
+			message "&8[&2&l!&8] &7Ostatni s vanishem byli &aukazani&7."
+
+on quit:
+	if {hidestaff::%player%} is set:
+		delete {hidestaff::%player%}
+
+on skript start:
+	delete {hidestaff::*}
+
+command /vanish:
+	aliases: /v
+	permission: pit.staff
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.	
+	trigger:
+		if {combat.check::%player%} is set:
+			message "&8[&4&l!&8] &7Nelze si aktivovat vanish, pokud mas aktivni &ccombat&7."
+			stop
+		if {vanish::%player%} is not set:
+			set {vanish::%player%} to true
+			set {%player%.bounty} to " &8┃ &aVanish"
+			set {status::%player%} to " &8▪ &7Status: &aVanished"
+			set {%player%.streak} to 0	
+			delete {strknumb::%player%}
+			loop all players:
+				if loop-player doesn't have permission "pit.tym":
+					hide player from loop-player
+				else if {hidestaff::%loop-player%} is set:
+					hide player from loop-player
+			message "&7Vanish byl &azapnut&7."
+			if {f::%player%::%player%} or {staffmode::%player%} is set:
+				remove 1 Gray Dye named "&7Shown" from player
+				wait 1 tick
+				give 1 Light Green Dye named "&aHidden" to player
+			stop
+		else:
+			delete {vanish::%player%}
+			if {floor} or {ragepit} or {picker} or {raffle} or {robbery} is set:
+				set {status::%player%} to " &8▪ &7Status: &6Event"
+			else:
+				set {status::%player%} to " &8▪ &7Status: &fNecinny"
+			if {robbery} is not set:
+				set {%player%.bounty} to ""
+			else:
+				set {%player%.bounty} to " &e%{robbery::%player%}% Ⓩ"
+			reveal player from all players
+			message "&7Vanish byl &cvypnut&7."
+			if {f::%player%::%player%} or {staffmode::%player%} is set:
+				remove 1 Light Green Dye named "&aHidden" from player
+				wait 1 tick
+				give 1 Gray Dye named "&7Shown" to player
+			stop
+
+
+
+
+on join:
+	if player doesn't have permission "pit.tym":
+		loop all players:
+			{vanish::%loop-player%} is set
+			hide loop-player from player
+	if {vanish::%player%} is set:
+		loop all players:
+			if loop-player doesn't have permission "pit.tym":
+				hide player from loop-player
+			else if {hidestaff::%loop-player%} is set:
+				hide player from loop-player
+
+command /freeze [<offlineplayer>]:
+	permission: pit.staff
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.	
+	aliases: /screenshare, /ss
+	trigger:
+		if arg-1 is not set:
+			send "&cZapomnel jsi uvest hrace." to player
+			send "&3 * &d/freeze &8<&fhrac&8>" to player
+			stop trigger
+		if arg-1 is offline:
+			send "&c%arg-1% je offline." to player
+			stop trigger
+		if arg-1 is player:
+			send "&cNemuzes freeznout sam sebe." to player
+			stop trigger
+		if arg-1 has permission "pit.staff":
+			send "&cTento hrac nemuze dostat freeze." to player
+			stop trigger
+		if arg-1 is set:
+			if {frozen.%arg 1%} is not set:
+				loop all players:
+					if loop-player has permission "pit.staff":
+						send "&9[Screenshare] %coloured arg-1's offline suffix%%arg 1% &7dostal freeze od %coloured player's offline suffix%%player%&7." to loop-player
+				send "&3 * &7Napis znovu &d/freeze %arg 1% &7pro zruseni GUI."
+				wait 1 tick
+
+				set {frozen.%arg 1%} to 1
+				set {frozen.lock.%arg 1%} to 1
+				Set arg-1's walk speed to 0
+				Set arg-1's fly speed to 0
+
+				apply slowness of tier 9999 to arg-1 for 9999 seconds
+				apply jump boost of tier 200 to arg-1 for 9999 seconds
+
+				wait 1 tick
+				open chest with 6 rows named "" to arg-1
+				wait 2 ticks
+
+				FreezeMenu(arg-1)
+
+			else if {frozen.lock.%arg 1%} is set:
+				delete {frozen.lock.%arg 1%}
+				close arg-1's inventory
+				send "&9[Screenshare] %coloured arg-1's offline suffix%%arg 1% &7byl odebran z GUI." to player
+				send "&3 * &7Pokud znovu napises &d/freeze %arg 1%&7, tak dostane unfreeze."
+				send "&7GUI bylo uspesne &cvypnuto&7." to arg 1
+				stop
+			else if {frozen.%arg 1%} is set:
+				if {frozen.lock.%arg 1%} is not set:
+					delete {frozen.%arg 1%}
+					loop all players:
+						if loop-player has permission "pit.staff":
+							send "&9[Screenshare] %coloured arg-1's offline suffix%%arg 1% &7dostal unfreeze od %coloured player's offline suffix%%player%&7."  to loop-player
+					send "&aKontrola v poradku. &7Dostal jsi unfreeze." to arg 1
+					wait 1 tick
+					Set arg 1's walk speed to 0.2
+					Set arg 1's fly speed to 0.1
+					wait 1 tick
+					set {_screenshare} to arg-1
+					remove slowness from {_screenshare}
+					remove jump boost from {_screenshare}	
+
+function FreezeMenu(p: player):
+	set {_x} to 0
+	loop 54 times:
+		format a gui slot {_x} of {_p} with air
+		add 1 to {_x}
+
+	set {_slot} to 0
+	loop 9 times:
+		format a gui slot {_slot} of {_p} with Black Stained Glass Pane named "&7:^)" 
+		add 1 to {_slot}
+	set {_slot} to 45
+	loop 9 times:
+		format a gui slot {_slot} of {_p} with Black Stained Glass Pane named "&7:^)" 
+		add 1 to {_slot}
+								
+	format a gui slot 22 of {_p} with sunflower named "             &6&lPvPCraft &f&lNetwork" with lore "||&7  Dostal jsi freeze od clena staff tymu.||&7  Pokud se odpojis, budes &4&lZABANOVAN&7.||&7        Dostav se na screenshare!||       &8&m<--&f Teamspeak &8┃ &9Discord &8&m-->||||&7Pravidla najdes na nasem &9Discordu&7.||&3 ● &7Pokud neco najdeme &f➜ &d30 dní ban||&3 ● &7Pokud se priznás &f➜ &d7 dní ban||&7&r"  
+	format a gui slot 19 of {_p} with book named "           &6&lPvPCraft &f&lNetwork" with lore "||     &7Musís se dostavit na &fTeamspeak&7.||    &7Más &c5 minut &7na to, aby ses pripojil.||||&3 ● &7IP&8: &fplay.pvpcraft.cz||&r"  
+	format a gui slot 25 of {_p} with book named "           &6&lPvPCraft &f&lNetwork" with lore "||     &7Musís se dostavit na &9Discord&7.||    &7Más &c5 minut &7na to, aby ses pripojil.||||&3 ● &7Odkaz&8: &9&ndiscord.gg/27ujKAe||&r"  
+	
+	create a gui slot 28 of {_p} with paper named "          &6&lPvPCraft &f&lNetwork" with lore "||    &7Pokud ses pripojil na &fTeamspeak&7,||    &7klikni zde pro &apotvrzeni &7pripojeni.||&r"  to run:
+		play "VILLAGER_YES" to {_p}
+		loop all players:
+			loop-player has permission "pit.staff"
+			send "&9[Screenshare] %coloured {_p}'s offline suffix%%{_p}% &7se pripojil na &fTeamspeak&7." to loop-player			
+	create a gui slot 34 of {_p} with paper named "          &6&lPvPCraft &f&lNetwork" with lore "||      &7Pokud ses pripojil na &9Discord&7,||    &7klikni zde pro &apotvrzeni &7pripojeni.||&r"  to run:
+		play "VILLAGER_YES" to {_p}
+		loop all players:
+			loop-player has permission "pit.staff"
+			send "&9[Screenshare] %coloured player's offline suffix%%{_p}% &7se pripojil na &9Discord&7." to loop-player
+	create a gui slot 40 of {_p} with red dye named "          &6&lPvPCraft &f&lNetwork" with lore "||        &7Pokud se chces &cpriznat&7,||        &7klikni zde pro &apotvrzeni&7.||||&3 ● &7Lze si zazadat o &funban&7.||&3 ● &7Délka banu &f➜ &d7 dní ban||&r" to run function FreezeAccept({_p})
+	stop
+
+
+function FreezeAccept(p: player):
+	set {_x} to 0
+	loop 54 times:
+		format a gui slot {_x} of {_p} with air
+		add 1 to {_x}
+
+	set {_blackSlots::*} to 0,1,2,3,4,5,6,7,8,13,22,31,40,45,46,47,48,49,50,51,52 and 53
+	format a gui slot {_blackSlots::*} of {_p} with Black Stained Glass Pane named "&7:^)" 
+
+	set {_goldslot::*} to 9, 10, 11, 12, 18, 19, 20, 21, 27, 28, 29, 30, 36, 37, 38 and 39
+	create a gui slot {_goldslot::*} of {_p} with Light Green Stained Glass Pane named "&aPriznat se" with lore "||&3 ● &7Délka banu &f➜ &d7 dní ban||&r" to run:
+		make console execute command "/ban %{_p}% 7d cheating /priznal se/"
+
+	set {_pvpcslot::*} to 14, 15, 16, 17, 23, 24, 25, 26, 32, 33, 34, 35, 41, 42, 43  and 44
+	create a gui slot {_pvpcslot::*} of {_p} with Red Stained Glass Pane named "&cVratit se" with lore "||&3 ● &7Vratit se zpatky do &fmenu&7.||&r" to run function FreezeMenu({_p})
+	stop
+		
+on inventory close:
+	if {frozen.lock.%player%} is set:
+		wait 1 tick
+		open chest with 6 rows named "" to player
+		wait 2 ticks
+
+		FreezeMenu(player)
+		stop
+
+on damage:
+	if {frozen.%victim%} is set:
+		if victim is a player:
+			send "%coloured victim's offline suffix%%victim% &7je momentalne kontrolovan." to attacker
+			cancel event
+	if {frozen.%attacker%} is set:
+		if attacker is a player:
+			send "&cNemuzes hitovat ostatni." to attacker
+			cancel event
+		
+on command:
+	if {frozen.%player%} is set:
+		cancel event
+		send "&cMomentalne probiha screenshare." to player
+		
+on quit:
+	if {frozen.%player%} is set:
+		loop all players:
+			loop-player has permission "pit.staff"
+			send "&9[Screenshare] %coloured player's offline suffix%%player% &7byl kontrolovan a &codpojil se&7." to loop-player
+
+		delete {frozen.%player%}
+		delete {frozen.lock.%player%}
+		Set player's walk speed to 0.2
+		Set player's fly speed to 0.1
+		remove slowness from player
+		remove jump boost from player

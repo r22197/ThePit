@@ -1,0 +1,244 @@
+function QuestMenu(n: number, b: item, q: text, r: text, z: text, a: text, i: item, name: text, l: text, p: player):
+	if {progress::%{_q}%::%{_p}%} is not set:
+		set {progress::%{_q}%::%{_p}%} to "&8[&7╏╏╏╏╏╏╏╏╏╏╏╏╏╏╏╏╏╏╏╏&8]"
+	if {percent::%{_q}%::%{_p}%} is not set:
+		set {percent::%{_q}%::%{_p}%} to 0
+	if {done::%{_q}%::%{_p}%} is not set:
+		set {done::%{_q}%::%{_p}%} to 0
+
+	if "%{_b}%" is "book":
+		set {_vip} to "&7Pouze pro rank &a+&eMighty"
+	else:
+		set {_vip} to "&7Ukol pro &fvsechny"
+
+	if "%{_q}%" contains "2hod":
+		set {_progress} to "%{_a}%&7/&f2 hod."
+	else if "%{_q}%" contains "3hod":
+		set {_progress} to "%{_a}%&7/&f3 hod."
+	else if "%{_a}%" doesn't contain "hod":
+		set {_progress} to "%{done::%{_q}%::%{_p}%}%&7/&f%{_a}%"
+
+	if {ukol::%{_q}%::%{_p}%} is not set:
+		if {percent::%{_q}%::%{_p}%} is 100:
+			create a gui slot 28 + {_n} of {_p} with {_b} named "&dUkol &7[&f##%{_n}%&7]" with lore "||&8&l ▶ &bUkol&7: %{_z}%&7.||&8&l ▶ &bProgres&7: %{progress::%{_q}%::%{_p}%}% &8- &e%{percent::%{_q}%::%{_p}%}%%% &7(&f%{_progress}%&7)||||&6Odmena za &lukol&6!||&8&l ▶ &e%{_r}%||||&8&l⚔ %{_vip}%&7. &8&l⚔||&7    ➥ &aKlikni zde pro vybrani odmeny." to run:
+				if "%{_b}%" is "book":
+					if {_p} doesn't have permission "pit.bonusquest":
+						stop
+				close {_p}'s inventory
+				play "ORB_PICKUP" to {_p}
+				if "%{_r}%" contains "Booster Zlataku":
+					add 60 to {%{_p}%.xpbooster}
+				else if "%{_r}%" contains "XP Booster":
+					add 60 to {%{_p}%.xpbooster}
+				else if "%{_r}%" contains "Sípu":
+					make {_p} run command "%{_l}%" as op
+				else if "%{_r}%" doesn't contain "Sípu" or "XP Booster" or "Booster Zlataku":
+					give {_p} {_i} named "%{_name}%" with lore "%{_l}%"
+				message ""
+				message "&aUspesne jsi splnil ukol."
+				message "&f ➥ &7Obdrzel jsi &6%{_name}%&7."
+				message ""
+
+				if "%now%" contains "Mon":
+					if {done::monday5::%{_p}%} is less than 4:
+						add 1 to {done::monday5::%{_p}%}
+				if "%now%" contains "Fri":
+					if {done::friday5::%{_p}%} is less than 4:
+						add 1 to {done::friday5::%{_p}%}
+
+				add 1 to {ukoly::%{_p}%}
+				set {ukol::%{_q}%::%{_p}%} to true
+				make {_p} execute command "/quests"
+		else:	
+			create a gui slot 28 + {_n} of {_p} with {_b} named "&dUkol &7[&f##%{_n}%&7]" with lore "||&8&l ▶ &bUkol&7: %{_z}%&7.||&8&l ▶ &bProgres&7: %{progress::%{_q}%::%{_p}%}% &8- &e%{percent::%{_q}%::%{_p}%}%%% &7(&f%{_progress}%&7)||||&6Odmena za &lukol&6!||&8&l ▶ &e%{_r}%||||&8&l⚔ %{_vip}%&7. &8&l⚔||&7    ➥ &cTento ukol si zatim nesplnil."
+	else:
+		create a gui slot 28 + {_n} of {_p} with glowing {_b} named "&dUkol &7[&f##%{_n}%&7]" with lore "||&8&l ▶ &bUkol&7: %{_z}%&7.||&8&l ▶ &bProgres&7: %{progress::%{_q}%::%{_p}%}% &8- &e%{percent::%{_q}%::%{_p}%}%%% &7(&f%{_progress}%&7)||||&6Odmena za &lukol&6!||&8&l ▶ &e%{_r}%||||&8&l⚔ %{_vip}%&7. &8&l⚔||&7    ➥ &5Odmenu pro ukol sis jiz vybral."
+
+function Quest(a: text, b: number, p: player):
+	if "%{_a}%" contains "hod":
+		if {percent::%{_q}%::%{_p}%} is not set:
+			set {percent::%{_q}%::%{_p}%} to 0
+	if {percent::%{_a}%::%{_p}%} is less than 100:
+		if {ukol::%{_a}%::%{_p}%} is not set:
+			if "%{_a}%" contains "2hod":
+				set {percent::%{_a}%::%{_p}%} to round down (100 * ({done::%{_a}%::%{_p}%}/7200))
+			else if "%{_a}%" contains "3hod":
+				set {percent::%{_a}%::%{_p}%} to round down (100 * ({done::%{_a}%::%{_p}%}/10800))
+			else if "%{_a}%" doesn't contain "hod":
+				add {_b} to {percent::%{_a}%::%{_p}%}
+
+			add 1 to {done::%{_a}%::%{_p}%}
+			set {_num} to rounded down ({percent::%{_a}%::%{_p}%}/5)
+			set {_text} to ""
+			if {_num} is not 0:
+				loop {_num} times:
+					set {_text} to "%{_text}%&a╏"
+			if {_num} is not 20:
+				loop 20 - {_num} times:
+					set {_text} to "%{_text}%&7╏"
+			set {progress::%{_a}%::%{_p}%} to "&8[%{_text}%&8]"
+
+function QuestDeleter(a: text):
+	loop 5 times:
+		delete {progress::%{_a}%%loop-number%::*}
+		delete {percent::%{_a}%%loop-number%::*}
+		delete {done::%{_a}%%loop-number%::*}
+		delete {ukol::%{_a}%%loop-number%::*}
+
+		delete {progress::%{_a}%%loop-number%/3hod::*}
+		delete {percent::%{_a}%%loop-number%/3hod::*}
+		delete {done::%{_a}%%loop-number%/3hod::*}
+		delete {ukol::%{_a}%%loop-number%/3hod::*}
+
+		delete {progress::%{_a}%%loop-number%/2hod::*}
+		delete {percent::%{_a}%%loop-number%/2hod::*}
+		delete {done::%{_a}%%loop-number%/2hod::*}
+		delete {ukol::%{_a}%%loop-number%/2hod::*}
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+on script load:
+	if "%now%" contains "Mon":
+		QuestDeleter("sunday")
+	if "%now%" contains "Tue":
+		QuestDeleter("monday")
+	if "%now%" contains "Wed":
+		QuestDeleter("tuesday")
+	if "%now%" contains "Thu":
+		QuestDeleter("wednesday")
+	if "%now%" contains "Fri":
+		QuestDeleter("thursday")
+	if "%now%" contains "Sat":
+		QuestDeleter("friday")
+	if "%now%" contains "Sun":
+		QuestDeleter("saturday")
+#------------------------------------------
+on death of a skeleton:
+	if "%now%" contains "Mon":
+		attacker is a player
+		Quest("monday4", 2, attacker)
+	if "%now%" contains "Sat":
+		attacker is a player
+		Quest("saturday1", 2, attacker)
+
+on break:
+	if "%now%" contains "Mon":	
+		event-block is gold ore
+		player's tool is iron pickaxe or diamond pickaxe
+		Quest("monday2", 1.25, player)
+	if "%now%" contains "Thu":	
+		event-block is gold ore
+		player's tool is iron pickaxe or diamond pickaxe
+		Quest("thursday5", 1.25, player)
+		
+on death of a wither skeleton:
+	if "%now%" contains "Mon":
+		attacker is a player
+		Quest("tuesday2", 100, attacker)
+	if "%now%" contains "Sat":
+		attacker is a player
+		Quest("saturday3", 100, attacker)
+
+on death of a zombie:
+	if "%now%" contains "Wed":
+		attacker is a player
+		Quest("wednesday1", 2, attacker)
+
+	if "%now%" contains "Sun":
+		attacker is a player
+		Quest("sunday2", 2, attacker)
+
+on death of a player:
+	attacker is a player
+	if "%now%" contains "Wed":	
+		attacker's tool is iron pickaxe or diamond pickaxe
+		Quest("wednesday2", 10, attacker)
+	if "%now%" contains "Fri":	
+		attacker's tool is air
+		Quest("friday1", 5, attacker)
+	if "%now%" contains "Thu":	
+		projectile is set
+		Quest("thursday1", 10, attacker)
+	if "%now%" contains "Tue":
+		if {%attacker%.streak} is 30:
+			Quest("tuesday1", 25, attacker)
+	if "%now%" contains "Thu":
+		if {%attacker%.streak} is 100:
+			Quest("thursday3", 100, attacker)
+	if "%now%" contains "Mon":
+		Quest("monday1", 1, attacker)
+	if "%now%" contains "Fri":
+		Quest("friday4", 2, attacker)
+
+on consume of golden apple:
+	if "%now%" contains "Sun":
+		Quest("sunday4", 10, player)
+
+on consume of potion:8233:
+	if "%now%" contains "Wed":
+		Quest("wednesday3", 100, player)
+	if "%now%" contains "Sun":
+		Quest("sunday5", 100, player)
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+command /quests:
+	trigger:
+		open chest with 6 rows named "&eKoukás na ukoly.." to player
+		wait 2 ticks
+
+		set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52 and 53
+		format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+		if {ukoly::%player%} is not set:
+			set {ukoly::%player%} to 0
+			set {ukoly} to "ukolu"
+		create a gui slot 0 of player with rose red named "&cOpustit menu" with lore "||&eKlikni zde opusteni menu!||&r" to close
+		if {ukoly::%player%} is 1:
+			set {ukoly} to "ukol"
+		if {ukoly::%player%} is 2 or 3 or 4:
+			set {ukoly} to "ukoly"
+		if {ukoly::%player%} is higher or equal to 5:
+			set {ukoly} to "ukolu"
+		create a gui slot 4 of player with skull of ("%player%" parsed as an offline player) named "&6Postava" with lore "||&7Dohromady jsi splnil &b%{ukoly::%player%}% %{ukoly}%&7.||&r"
+		create a gui slot 8 of player with book and quill named "&bUkoly" with lore "||&3» &7Kazdy den muzes splnit &b4 ukoly&7,||&7   za ktere ziskas ruzne &aodmeny&7.||||&3» &7Zakup si &eMighty &7rank a kazdy den||&7   mas navic &f1 ukol &7jako bonus&7.||||&dKlikni zde pro otevreni VIP Menu." to run:
+			make player execute command "/vip"
+		if "%now%" contains "Mon":
+			QuestMenu(1, paper, "monday1", "6 Pavucin", "Zabij &4100 &chracu", "100", 6 cobweb, "", "", player)
+			QuestMenu(2, paper, "monday2", "12 Vybusnych TNT", "Vytez &680x &eGold Ore", "80", 12 tnt, "&6Vybusne TNT", "||&7Vyhodi do vzduchu vsechny||&7v okruhu &f7 bloku&7.||&r", player)
+			QuestMenu(3, paper, "monday3/3hod", "8 Zdi", "Odehraj &63 &ehodiny", "%{done::monday3/3hod::%player%} / 3600%", 8 clay bricks block, "&6Zed", "||&5Info o &lzdi&5!||&8&l ▶ &7Postav zed o rozmerech &f3x3&7.||||&7Zed zmizi za &e20 sekund&7.", player)
+			QuestMenu(4, paper, "monday4", "48 Obsidianu", "Zabij &450 &cSkeletonu", "50", 48 obsidian, "&8Obsidian", "||&7Obsidian vydrzi &f60 sekund&7.||&r", player)
+			QuestMenu(5, book, "monday5", "5 Prohazovacich snehovych kouli", "Spln vsechny ostatni &3ukoly", "4", 5 snowball, "&6Prohazovaci snehove koule", "||&7Prohod svoji lokaci s &fostatnimi&7.||&r", player)
+		if "%now%" contains "Tue":
+			QuestMenu(1, paper, "tuesday1", "10 Sípu Hromu", "Ziskej &c4x &7Killstreak &8""&f30&8""", "4", stone, "&f10 &8Sípu Hromu", "/ca give thundergod 10", player)
+			QuestMenu(2, paper, "tuesday2", "8 Schodu", "Zabij &d&lViking Bosse", "1", 8 clay_bricks stairs, "&6Schody", "||&5Info o &lschodech&5!||&8&l ▶ &7Postav schody o vysce &f3 bloku&7.||||&7Schody zmizi za &e20 sekund&7.", player)
+			QuestMenu(3, book, "tuesday3", "Nuzky omraceni", "Ziskej &c20x &7Assist", "20", 1 shears, "&bNuzky omraceni", "||&5Info o &lnuzkach&5!||&d&l ▶ &dSlowness III||&d&l ▶ &dBlindness X||&d&l ▶ &dOtoceni o &f180°||||&eMoznych pouziti &8[&f5&8]||||&7Omraceni hrace trva &e10 sekund&7.", player)
+			QuestMenu(4, paper, "tuesday4", "XP Booster &8[&f60 minut&8]", "Postav &f50x &7Obsidian", "50", stone, "&bXP Booster &8[&f60 minut&8]", "", player)
+			QuestMenu(5, paper, "tuesday5", "Ochranny stit", "Nasbirej &e40 &6Goldu", "40", 1 ink sack, "&bOchranny stit", "||&5Info o &lstitu&5!||&8&l ▶ &7Postav okolo sebe &fstit||    &7a schovej se pred ostatnimi.||||&eMoznych pouziti &8[&f3&8]||||&7Stit zmizi za &e15 sekund&7.", player)
+		if "%now%" contains "Wed":
+			QuestMenu(1, paper, "wednesday1", "XP Booster &8[&f60 minut&8]", "Zabij &450 &cZombie", "50", stone, "&bXP Booster &8[&f60 minut&8]", "", player)
+			QuestMenu(2, book, "wednesday2", "Upiri lektvar", "Zabij &410 &chracu &7s &fKrumpacem", "10", 1 water_bottle, "&cUpiri lektvar", "||&5Info o &llektvaru&5!||&8&l ▶ &9Rychlost III (3:00)||&8&l ▶ &9Sila II (3:00)||&8&l ▶ &9Jump Boost III (3:00)||&7&o(Stan se upirem a zabij vsechy!)", player)
+			QuestMenu(3, paper, "wednesday3", "5 Prohazovacich snehovych kouli", "Vypij &5Elixír síly", "1", 5 snowball, "&6Prohazovaci snehove koule", "||&7Prohod svoji lokaci s &fostatnimi&7.||&r", player)
+			QuestMenu(4, paper, "wednesday4/2hod", "Nuzky omraceni", "Odehraj &62 &ehodiny", "%{done::wednesday4/2hod::%player%} / 3600%", 1 shears, "&bNuzky omraceni", "||&5Info o &lnuzkach&5!||&d&l ▶ &dSlowness III||&d&l ▶ &dBlindness X||&d&l ▶ &dOtoceni o &f180°||||&eMoznych pouziti &8[&f5&8]||||&7Omraceni hrace trva &e10 sekund&7.", player)
+			QuestMenu(5, paper, "wednesday5", "8 Zdi", "Vyber &f2x &7odmenu z &b&lBattle Passu", "2", 8 clay bricks block, "&6Zed", "||&5Info o &lzdi&5!||&8&l ▶ &7Postav zed o rozmerech &f3x3&7.||||&7Zed zmizi za &e20 sekund&7.", player)
+		if "%now%" contains "Thu":
+			QuestMenu(1, paper, "thursday1", "8 Schodu", "Zabij &420 &chracu &7s &fLukem", "20", 8 clay_bricks stairs, "&6Schody", "||&5Info o &lschodech&5!||&8&l ▶ &7Postav schody o vysce &f3 bloku&7.||||&7Schody zmizi za &e20 sekund&7.", player)
+			QuestMenu(2, paper, "thursday2", "5 Prohazovacich snehovych kouli", "Kup si &f5x &8Sip Hromu", "5", 5 snowball, "&6Prohazovaci snehove koule", "||&7Prohod svoji lokaci s &fostatnimi&7.||&r", player)
+			QuestMenu(3, paper, "thursday3", "Booster Zlataku &8[&f60 minut&8]", "Ziskej Killstreak &8""&f100&8""", "1", stone, "&eBooster Zlataku &8[&f60 minut&8]", "", player)
+			QuestMenu(4, paper, "thursday4", "6 Pavucin", "Pouzij &cRandom Box", "1", 6 cobweb, "", "", player)
+			QuestMenu(5, book, "thursday5", "Random Box", "Vytez &680x &eGold Ore", "80", 1 player head with custom nbt "{SkullOwner:{Id:""2c43fd70-4e96-4d1c-bb85-f44d2eb3f563"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWJhMDlkZDRiMTU2ZjRjZTJlODk3ZjRjMzZhYmRiZDQ2YTk1OTNhNjE4NDU4NjE2ZThkYTM5YTEwYTg1M2Y2In19fQ==""}]}}}", "&8[&cRandom Box&8]", "||&5Obsah &lboxu&5!||&d&l ▶ &dNahodna maska||&d&l ▶ &dLevel UP||&d&l ▶ &dBooster Zlataku||&d&l ▶ &dXP Booster||||&eKvalita boxu &8[&6&l✩✩✩✩✩&8]||&eZakoupeno uzivatelem &f%player%&e.||||&eHodne stesti ti preje tym PvPCraftu. &4❤", player)
+		if "%now%" contains "Fri":
+			QuestMenu(1, paper, "friday1", "8 Zdi", "Zabij &45 &chracu &7s &frukou", "5", 8 clay bricks block, "&6Zed", "||&5Info o &lzdi&5!||&8&l ▶ &7Postav zed o rozmerech &f3x3&7.||||&7Zed zmizi za &e20 sekund&7.", player)
+			QuestMenu(2, paper, "friday2", "48 Obsidianu", "Nasbirej &e40 &6Goldu", "40", 48 obsidian, "&8Obsidian", "||&7Obsidian vydrzi &f60 sekund&7.||&r", player)
+			QuestMenu(3, paper, "friday3", "Ochranny stit", "Ziskej &c20x &7Assist", "20", 1 ink sack, "&bOchranny stit", "||&5Info o &lstitu&5!||&8&l ▶ &7Postav okolo sebe &fstit||    &7a schovej se pred ostatnimi.||||&eMoznych pouziti &8[&f3&8]||||&7Stit zmizi za &e15 sekund&7.", player)
+			QuestMenu(4, paper, "friday4", "Nuzky omraceni", "Zabij &450 &chracu", "50", 1 shears, "&bNuzky omraceni", "||&5Info o &lnuzkach&5!||&d&l ▶ &dSlowness III||&d&l ▶ &dBlindness X||&d&l ▶ &dOtoceni o &f180°||||&eMoznych pouziti &8[&f5&8]||||&7Omraceni hrace trva &e10 sekund&7.", player)
+			QuestMenu(5, book, "friday5", "12 Vybusnych TNT", "Spln vsechny ostatni &3ukoly", "4", 12 tnt, "&6Vybusne TNT", "||&7Vyhodi do vzduchu vsechny||&7v okruhu &f7 bloku&7.||&r", player)
+		if "%now%" contains "Sat":
+			QuestMenu(1, book, "saturday1", "12 Vybusnych TNT", "Zabij &450 &cSkeletonu", "50", 12 tnt, "&6Vybusne TNT", "||&7Vyhodi do vzduchu vsechny||&7v okruhu &f7 bloku&7.||&r", player)
+			QuestMenu(2, paper, "saturday2/3hod", "Upiri lektvar", "Odehraj &63 &ehodiny", "%{done::saturday2/3hod::%player%} / 3600%", 1 water_bottle, "&cUpiri lektvar", "||&5Info o &llektvaru&5!||&8&l ▶ &9Rychlost III (3:00)||&8&l ▶ &9Sila II (3:00)||&8&l ▶ &9Jump Boost III (3:00)||&7&o(Stan se upirem a zabij vsechy!)", player)
+			QuestMenu(3, paper, "saturday3", "8 Schodu", "Zabij &d&lViking Bosse", "1", 8 clay_bricks stairs, "&6Schody", "||&5Info o &lschodech&5!||&8&l ▶ &7Postav schody o vysce &f3 bloku&7.||||&7Schody zmizi za &e20 sekund&7.", player)
+			QuestMenu(4, paper, "saturday4", "15 Sípu Vybuchu", "Zabij &45x &chrace &7s Killstreak &8""&f10&8""", "5", stone, "&f15 &6Sípu Vybuchu", "/ca give explosive 15", player)
+			QuestMenu(5, paper, "saturday5", "6 Pavucin", "Postav &f50x &7Obsidian", "50", 6 cobweb, "", "", player)
+		if "%now%" contains "Sun":
+			QuestMenu(1, paper, "sunday1", "Ochranny stit", "Ziskej Killstreak &8""&f100&8""", "1", 1 ink sack, "&bOchranny stit", "||&5Info o &lstitu&5!||&8&l ▶ &7Postav okolo sebe &fstit||    &7a schovej se pred ostatnimi.||||&eMoznych pouziti &8[&f3&8]||||&7Stit zmizi za &e15 sekund&7.", player)
+			QuestMenu(2, paper, "sunday2", "48 Obsidianu", "Zabij &450 &cZombie", "50", 48 obsidian, "&8Obsidian", "||&7Obsidian vydrzi &f60 sekund&7.||&r", player)
+			QuestMenu(3, paper, "sunday3", "Nuzky omraceni", "Kup si &f2x &7predmet v &bPremium Obchode", "2", 1 shears, "&bNuzky omraceni", "||&5Info o &lnuzkach&5!||&d&l ▶ &dSlowness III||&d&l ▶ &dBlindness X||&d&l ▶ &dOtoceni o &f180°||||&eMoznych pouziti &8[&f5&8]||||&7Omraceni hrace trva &e10 sekund&7.", player)
+			QuestMenu(4, book, "sunday4", "12 Vybusnych TNT", "Snez &e10x &6Golden Apple", "10", 12 tnt, "&6Vybusne TNT", "||&7Vyhodi do vzduchu vsechny||&7v okruhu &f7 bloku&7.||&r", player)
+			QuestMenu(5, paper, "sunday5", "5 Prohazovacich snehovych kouli", "Vypij &5Elixír síly", "1", 5 snowball, "&6Prohazovaci snehove koule", "||&7Prohod svoji lokaci s &fostatnimi&7.||&r", player)

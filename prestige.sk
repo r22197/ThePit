@@ -1,0 +1,685 @@
+on join:
+	if {scoreboard::renown::%player%} is not set:
+		set {scoreboard::renown::%player%} to ""
+
+command /prestige:
+	trigger:
+		if {prestige::%player%} is not set:
+			if {level::%player%} is not 120:
+				message "&c&lNemas dostatecny level! &7Potrebujes level [&b&l120&7]."
+				stop				
+
+		open chest with 6 rows named "&eKoukás na Prestige.." to player
+		wait 1 tick
+		create a gui slot 0 of player with rose red named "&cOpustit menu" with lore "||&eKlikni zde pro opusteni menu!||&r" to close
+
+		set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52 and 53
+		format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+		if {renown::%player%} is set:
+			create a gui slot 4 of player with skull of ("%player%" parsed as an offline player) named "&6Postava" with lore "||&7Momentalne mas &e%{gold::%player%}% Ⓩ&7.||||&7Momentalne mas &e%{renown::%player%}% Renown&7.||&r"
+		else:
+			create a gui slot 4 of player with skull of ("%player%" parsed as an offline player) named "&6Postava" with lore "||&7Momentalne mas &e%{gold::%player%}% Ⓩ&7.||||&7Momentalne mas &e0 Renown&7.||&r"
+		set {_shop} to {gold::%player%}
+		replace all "." in {_shop} with ""
+		set {_shop} to {_shop} parsed as number
+
+		if {prestige::%player%} is not set:
+			if {level::%player%} is 120:
+				if {_shop} is higher or equal to 10000:
+					format a gui slot 29 of player with diamond named "&bVylepsení Prestige" with lore "||&5Pozadavky pro &lvylepseni&5!||&8&l ▶ &7Level %{prestigebrackets::%player%}%[&b&l120%{prestigebrackets::%player%}%]||&8&l ▶ &7Minimalne &e10.000 Ⓩ&7.||||&5Co se stane po &lvylepseni&5!||&8&l ▶ &7Resetovani levelu.||&8&l ▶ &7Resetovani zlataku.||&8&l ▶ &7Resetovani inventare.||&8&l ▶ &7Resetovani upgradu & perku.||&a ✔ &e&oRenown vylepseni zustanou!||&a ✔ &e&oEnder chest zustane!||&a ✔ &e&oLze ziskat Zlaty Mec!||&a ✔ &e&oZabiti zustanou!||||&eAktualni prestige &8[&c✕&8] &7➜ &8[&6##&eI&8]||&8&l ▶ &7Potrebne XP se zvysi o &a+&b10%%&7,||    &7nez puvodni XP.||||&7Za aktivaci ziskas &e10 Renown&7!||&8 ➥ &aKlikni zde pro aktivaci!" to run:
+						close player's inventory
+						broadcast "&e&lPrestige! %coloured player's offline suffix%%player% &7odemknul prestige &6##&eI&7, gg!"
+						set {scoreboard::renown::%player%} to " &8▪ &7Prestige: &6##&eI"
+						send player title "&e&lPRESTIGE!" with subtitle "&7Uspesne jsi odemknul prestige &6##&eI&7!" for 4 seconds
+						set {prestigebrackets::%player%} to "&9"
+						set {bonusxpprestige::%player%} to 0.1
+						play "LEVEL_UP" to player
+						clear effects from player
+						apply night vision 1  without any particles to player for 999 days
+						clear player's inventory
+						set slot 0 of player to unbreakable iron sword named "&7Zelezny mec"
+						set {_armor} to random integer between 1 and 3
+						if {_armor} is 1:
+							set player's chestplate to unbreakable chain chestplate named "&7Krouzkovaná zbroj"
+							set player's leggings to unbreakable chain leggings named "&7Krouzkované kalhoty"
+							set player's boots to unbreakable iron boots named "&7Zelezné boty"
+						if {_armor} is 2:
+							set player's chestplate to unbreakable chain chestplate named "&7Krouzkovaná zbroj"
+							set player's leggings to unbreakable iron leggings named "&7Zelezné boty"
+							set player's boots to unbreakable chain boots named "&7Krouzkované boty"
+						if {_armor} is 3:
+							set player's chestplate to unbreakable iron chestplate named "&7Zelezná zbroj"
+							set player's leggings to unbreakable chain leggings named "&7Krouzkované kalhoty"
+							set player's boots to unbreakable chain boots named "&7Krouzkované boty" #'
+	
+						delete {perk::%player%::*}
+						delete {tier.perk::%player%::*}
+
+						delete {activatedperk1::%player%}
+						delete {activatedperk2::%player%}
+						delete {activatedperk3::%player%}
+						delete {activatedperk4::%player%}
+
+						set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+						wait 1 tick
+						heal player
+
+						set {inventoryslot::%player%::sword} to 0
+						delete {inventoryslot::%player%::bow}
+						delete {inventoryslot::%player%::fishingrod}
+						delete {inventoryslot::%player%::lava}
+						delete {inventoryslot::%player%::pickaxe}
+						delete {inventoryslot::%player%::arrow}
+						set {%player%.level.color} to "&7"
+						set {%player%.streak} to 0
+						set {gold::%player%} to 0
+						set {level::%player%} to 1
+						XP("set", 15 + 15 * {bonusxpprestige::%player%}, player)
+
+						set player's xp to 0
+						set player's level to 1
+
+						delete {%player%.arrow}
+						delete {%player%.sword}
+						delete {%player%.bow}
+						delete {%player%.armor}
+						delete {%player%.pickaxe}
+						delete {battlepass::%player%::*}
+						delete {%player%.gbooster}
+						delete {%player%.xpbooster}
+
+						set {_num} to 0
+						loop 36 times:
+							if {enderchest::%{_num}%::%player%} is diamond sword or diamond axe:
+								set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "&bDiamantovy mec" with lore "&7&o(Predmet pri smrti zmizi.)||||&5Vlastnosti &lzbrane&5!||&d&l ▶ &dBez vylepseni.||||&eKvalita zbrane &8[&6&l✩&7✩✩✩✩&8]||||&e&o,,Pozor, at se ti nerozpadne v ruce."""
+							if {enderchest::%{_num}%::%player%} is iron sword or iron axe:
+								set {enderchest::%{_num}%::%player%} to unbreakable stone sword named "&8Obycejny kamenny mec" with lore "||&5Vlastnosti &lzbrane&5!||&d&l ▶ &dBez vylepseni.||||&eKvalita zbrane &8[&6&l✩&7✩✩✩✩&8]||||&e&o,,Pozor, at se ti nerozpadne v ruce."""
+							add 1 to {_num}
+
+						set {prestige::%player%} to "I"
+						add 10 to {renown::%player%}
+						set {renown::%player%} to round({renown::%player%})
+				else:
+					format a gui slot 29 of player with diamond named "&bVylepsení Prestige" with lore "||&5Pozadavky pro &lvylepseni&5!||&8&l ▶ &7Level %{prestigebrackets::%player%}%[&b&l120%{prestigebrackets::%player%}%]||&8&l ▶ &7Minimalne &e10.000 Ⓩ&7.||||&5Co se stane po &lvylepseni&5!||&8&l ▶ &7Resetovani levelu.||&8&l ▶ &7Resetovani zlataku.||&8&l ▶ &7Resetovani inventare.||&8&l ▶ &7Resetovani upgradu & perku.||&a ✔ &e&oRenown vylepseni zustanou!||&a ✔ &e&oEnder chest zustane!||&a ✔ &e&oLze ziskat Zlaty Mec!||&a ✔ &e&oZabiti zustanou!||||&eAktualni prestige &8[&c✕&8] &7➜ &8[&6##&eI&8]||&8&l ▶ &7Potrebne XP se zvysi o &a+&b10%%&7,||    &7nez puvodni XP.||||&7Za aktivaci ziskas &e10 Renown&7!||&8 ➥ &cNemas dostatek zlataku!"
+
+		else:
+			if {prestige::%player%} is "I":
+				set {_next.prestige} to "II"
+				set {_needed.gold} to 22000
+				set {_needed.gold.text} to "22.000"
+				set {_receive.renown} to 10
+				set {_neededxp} to 20
+			if {prestige::%player%} is "II":
+				set {_next.prestige} to "III"
+				set {_needed.gold} to 24000
+				set {_needed.gold.text} to "24.000"
+				set {_receive.renown} to 10
+				set {_neededxp} to 30
+			if {prestige::%player%} is "III":
+				set {_next.prestige} to "IV"
+				set {_needed.gold} to 26000
+				set {_needed.gold.text} to "26.000"
+				set {_receive.renown} to 10
+				set {_neededxp} to 40
+			if {prestige::%player%} is "IV":
+				set {_next.prestige} to "V"
+				set {_needed.gold} to 28000
+				set {_needed.gold.text} to "28.000"
+				set {_receive.renown} to 20
+				set {_neededxp} to 50
+			if {prestige::%player%} is "V":
+				set {_next.prestige} to "VI"
+				set {_needed.gold} to 30000
+				set {_needed.gold.text} to "30.000"
+				set {_receive.renown} to 20
+				set {_neededxp} to 75
+			if {prestige::%player%} is "VI":
+				set {_next.prestige} to "VII"
+				set {_needed.gold} to 70000
+				set {_needed.gold.text} to "70.000"
+				set {_receive.renown} to 20
+				set {_neededxp} to 100
+			if {prestige::%player%} is "VII":
+				set {_next.prestige} to "VIII"
+				set {_needed.gold} to 80000
+				set {_needed.gold.text} to "80.000"
+				set {_receive.renown} to 20
+				set {_neededxp} to 150
+			if {prestige::%player%} is "VIII":
+				set {_next.prestige} to "IX"
+				set {_needed.gold} to 100000
+				set {_needed.gold.text} to "100.000"
+				set {_receive.renown} to 20
+				set {_neededxp} to 200
+			if {prestige::%player%} is "IX":
+				set {_next.prestige} to "X"
+				set {_needed.gold} to 120000
+				set {_needed.gold.text} to "120.000"
+				set {_receive.renown} to 20
+				set {_neededxpmessage} to "&8&l ▶ &7Timto dosahnes &amaximalni &7prestige."
+			else:
+				set {_neededxpmessage} to "&8&l ▶ &7Potrebne XP se zvysi o &a+&b%{_neededxp}%%%&7,||    &7nez puvodni XP."
+
+			if {level::%player%} is 120:
+				if {_shop} is higher or equal to {_needed.gold}:
+					format a gui slot 29 of player with diamond named "&bVylepsení Prestige" with lore "||&5Pozadavky pro &lvylepseni&5!||&8&l ▶ &7Level %{prestigebrackets::%player%}%[&b&l120%{prestigebrackets::%player%}%]||&8&l ▶ &7Minimalne &e%{_needed.gold.text}% Ⓩ&7.||||&5Co se stane po &lvylepseni&5!||&8&l ▶ &7Resetovani levelu.||&8&l ▶ &7Resetovani zlataku.||&8&l ▶ &7Resetovani inventare.||&8&l ▶ &7Resetovani upgradu & perku.||&a ✔ &e&oRenown vylepseni zustanou!||&a ✔ &e&oZabiti zustanou!||&a ✔ &e&oEnder chest zustane!||||&eAktualni prestige &8[&6##&e%{prestige::%player%}%&8] &7➜ &8[&6##&e%{_next.prestige}%&8]||%{_neededxpmessage}%||||&7Za aktivaci ziskas &e%{_receive.renown}% Renown&7!||&8 ➥ &aKlikni zde pro aktivaci!" to run:
+						if {prestige::%player%} is "IX":
+							set {prestige::%player%} to "X"
+							add 20 to {renown::%player%}
+							set {prestigebrackets::%player%} to "&6"
+						if {prestige::%player%} is "VIII":
+							set {prestige::%player%} to "IX"
+							add 20 to {renown::%player%}
+							set {bonusxpprestige::%player%} to 2
+						if {prestige::%player%} is "VII":
+							set {prestige::%player%} to "VIII"
+							add 20 to {renown::%player%}
+							set {bonusxpprestige::%player%} to 1.5
+						if {prestige::%player%} is "VI":
+							set {prestige::%player%} to "VII"
+							add 20 to {renown::%player%}
+							set {bonusxpprestige::%player%} to 1
+						if {prestige::%player%} is "V":
+							set {prestige::%player%} to "VI"
+							add 20 to {renown::%player%}
+							set {bonusxpprestige::%player%} to 0.75
+						if {prestige::%player%} is "IV":
+							set {prestige::%player%} to "V"
+							add 20 to {renown::%player%}
+							set {prestigebrackets::%player%} to "&e"
+							set {bonusxpprestige::%player%} to 0.5
+						if {prestige::%player%} is "III":
+							set {prestige::%player%} to "IV"
+							add 10 to {renown::%player%}
+							set {bonusxpprestige::%player%} to 0.4
+						if {prestige::%player%} is "II":
+							set {prestige::%player%} to "III"
+							add 10 to {renown::%player%}
+							set {bonusxpprestige::%player%} to 0.3
+						if {prestige::%player%} is "I":
+							set {prestige::%player%} to "II"
+							add 10 to {renown::%player%}
+							set {bonusxpprestige::%player%} to 0.2
+						
+						close player's inventory
+						broadcast "&e&lPrestige! %coloured player's offline suffix%%player% &7odemknul prestige &6##&e%{prestige::%player%}%&7, gg!"
+						set {scoreboard::renown::%player%} to " &8▪ &7Prestige: &6##&e%{prestige::%player%}%"
+						send player title "&e&lPRESTIGE!" with subtitle "&7Uspesne jsi odemknul prestige &6##&e%{prestige::%player%}%&7!" for 4 seconds
+						play "LEVEL_UP" to player
+						clear effects from player
+						apply night vision 1  without any particles to player for 999 days
+						clear player's inventory
+						set slot 0 of player to unbreakable iron sword named "&7Zelezny mec"
+						set {_armor} to random integer between 1 and 3
+						if {_armor} is 1:
+							set player's chestplate to unbreakable chain chestplate named "&7Krouzkovaná zbroj"
+							set player's leggings to unbreakable chain leggings named "&7Krouzkované kalhoty"
+							set player's boots to unbreakable iron boots named "&7Zelezné boty"
+						if {_armor} is 2:
+							set player's chestplate to unbreakable chain chestplate named "&7Krouzkovaná zbroj"
+							set player's leggings to unbreakable iron leggings named "&7Zelezné boty"
+							set player's boots to unbreakable chain boots named "&7Krouzkované boty"
+						if {_armor} is 3:
+							set player's chestplate to unbreakable iron chestplate named "&7Zelezná zbroj"
+							set player's leggings to unbreakable chain leggings named "&7Krouzkované kalhoty"
+							set player's boots to unbreakable chain boots named "&7Krouzkované boty" #'
+	
+						delete {perk::%player%::*}
+						delete {tier.perk::%player%::*}
+
+						delete {activatedperk1::%player%}
+						delete {activatedperk2::%player%}
+						delete {activatedperk3::%player%}
+						delete {activatedperk4::%player%}
+
+						set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+						wait 1 tick
+						heal player
+
+						set {inventoryslot::%player%::sword} to 0
+						delete {inventoryslot::%player%::bow}
+						delete {inventoryslot::%player%::fishingrod}
+						delete {inventoryslot::%player%::lava}
+						delete {inventoryslot::%player%::pickaxe}
+						delete {inventoryslot::%player%::arrow}
+						set {%player%.level.color} to "&7"
+						set {%player%.streak} to 0
+						set {gold::%player%} to 0
+						if {renown::%player%::fastpass} is set:
+							set {level::%player%} to 40
+							XP("set", 125 + 125 * {bonusxpprestige::%player%}, player)
+						else:
+							set {level::%player%} to 1
+							XP("set", 15 + 15 * {bonusxpprestige::%player%}, player)
+						set player's xp to 0
+						set player's level to {level::%player%}
+
+						delete {%player%.arrow}
+						delete {%player%.sword}
+						delete {%player%.bow}
+						delete {%player%.armor}
+						delete {%player%.pickaxe}
+						delete {battlepass::%player%::*}
+						set {%player%.gbooster} to 0
+						set {%player%.xpbooster} to 0
+
+						set {_num} to 0
+						loop 36 times:
+							if {enderchest::%{_num}%::%player%} is diamond sword or diamond axe:
+								set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "&bDiamantovy mec" with lore "&7&o(Predmet pri smrti zmizi.)||||&5Vlastnosti &lzbrane&5!||&d&l ▶ &dBez vylepseni.||||&eKvalita zbrane &8[&6&l✩&7✩✩✩✩&8]||||&e&o,,Pozor, at se ti nerozpadne v ruce."""
+							if {enderchest::%{_num}%::%player%} is iron sword or iron axe:
+								set {enderchest::%{_num}%::%player%} to unbreakable stone sword named "&8Obycejny kamenny mec" with lore "||&5Vlastnosti &lzbrane&5!||&d&l ▶ &dBez vylepseni.||||&eKvalita zbrane &8[&6&l✩&7✩✩✩✩&8]||||&e&o,,Pozor, at se ti nerozpadne v ruce."""
+							add 1 to {_num}
+
+						set {renown::%player%} to round({renown::%player%})
+				else:
+					format a gui slot 29 of player with diamond named "&bVylepsení Prestige" with lore "||&5Pozadavky pro &lvylepseni&5!||&8&l ▶ &7Level %{prestigebrackets::%player%}%[&b&l120%{prestigebrackets::%player%}%]||&8&l ▶ &7Minimalne &e%{_needed.gold.text}% Ⓩ&7.||||&5Co se stane po &lvylepseni&5!||&8&l ▶ &7Resetovani levelu.||&8&l ▶ &7Resetovani zlataku.||&8&l ▶ &7Resetovani inventare.||&8&l ▶ &7Resetovani upgradu & perku.||&a ✔ &e&oRenown vylepseni zustanou!||&a ✔ &e&oZabiti zustanou!||&a ✔ &e&oEnder chest zustane!||||&eAktualni prestige &8[&6##&e%{prestige::%player%}%&8] &7➜ &8[&6##&e%{_next.prestige}%&8]||%{_neededxpmessage}%||||&7Za aktivaci ziskas &e%{_receive.renown}% Renown&7!||&8 ➥ &cNemas dostatek zlataku!"
+			else:
+				format a gui slot 29 of player with diamond named "&bVylepsení Prestige" with lore "||&5Pozadavky pro &lvylepseni&5!||&8&l ▶ &7Level %{prestigebrackets::%player%}%[&b&l120%{prestigebrackets::%player%}%]||&8&l ▶ &7Minimalne &e%{_needed.gold.text}% Ⓩ&7.||||&5Co se stane po &lvylepseni&5!||&8&l ▶ &7Resetovani levelu.||&8&l ▶ &7Resetovani zlataku.||&8&l ▶ &7Resetovani inventare.||&8&l ▶ &7Resetovani upgradu & perku.||&a ✔ &e&oRenown vylepseni zustanou!||&a ✔ &e&oZabiti zustanou!||&a ✔ &e&oEnder chest zustane!||||&eAktualni prestige &8[&6##&e%{prestige::%player%}%&8] &7➜ &8[&6##&e%{_next.prestige}%&8]||%{_neededxpmessage}%||||&7Za aktivaci ziskas &e%{_receive.renown}% Renown&7!||&8 ➥ &cNemas dostatecny level!"
+
+			if {prestige::%player%} is "X":
+				format a gui slot 29 of player with diamond named "&bVylepsení Prestige" with lore "||&5Pozadavky pro &lvylepseni&5!||&8&l ▶ &7Dokonceno!||||&5Co se stane po &lvylepseni&5!||&8&l ▶ &7Dokonceno!||||&eAktualni prestige &8[&6##&e%{prestige::%player%}%&8]||||&eDosahl jsi maximalniho vylepseni||&epro &6prestige&e."
+
+
+
+
+		format a gui slot 33 of player with item frame named "&3Renown Vylepsení" with lore "||&8&l ▶ &7Obchod, kde si lze zakoupit||&7   permanentni perky za &eRenown&7.||||&dKlikni zde pro otevrení renown vylepsení." to run:
+			open chest with 6 rows named "&eKoukás na Prestige.." to player
+			wait 1 tick
+			create a gui slot 0 of player with rose red named "&cJit zpatky" with lore "||&eKlikni zde pro hlavni menu!||&r" to run:
+				make player execute "prestige"
+
+			set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52 and 53
+			format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+			if {renown::%player%} is set:
+				create a gui slot 4 of player with skull of ("%player%" parsed as an offline player) named "&6Postava" with lore "||&7Momentalne mas &e%{gold::%player%}% Ⓩ&7.||||&7Momentalne mas &e%{renown::%player%}% Renown&7.||&r"
+			else:
+				create a gui slot 4 of player with skull of ("%player%" parsed as an offline player) named "&6Postava" with lore "||&7Momentalne mas &e%{gold::%player%}% Ⓩ&7.||||&7Momentalne mas &e0 Renown&7.||&r"
+
+			if {prestige::%player%} is set:
+				if {renown::%player%} is higher or equal to 10:
+					format a gui slot 19 of player with magma cream named "&cTenacity" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Za kazde zabiti dostanes &c0.5&4❤&7.||||&eAktualni level &8[&7✩✩&8] &7➜ &8[&6&l✩&7✩&8]||||&7Zakoupeni perku stoji &e10 Renown&7!||&8 ➥ &aKlikni zde pro zakoupeni!" to run:
+						close player's inventory
+						play "ORB_PICKUP" to player
+						add 1 to {renown::%player%::tenacity}
+						message ""
+						message "&aUspesne jsi zakoupil vylepseni perku &8""&cTenacity&8""&a."
+						message "&f ➥ &7Z uctu ti bylo odebrano &e10 Renown&7."
+						message ""
+						remove 10 from {renown::%player%}
+						set {renown::%player%} to round({renown::%player%})
+				else:
+					format a gui slot 19 of player with magma cream named "&cTenacity" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Za kazde zabiti dostanes &c0.5&4❤&7.||||&eAktualni level &8[&7✩✩&8] &7➜ &8[&6&l✩&7✩&8]||||&7Zakoupeni perku stoji &e10 Renown&7!||&8 ➥ &cNemas dostatek renown pro zakoupeni!"
+				if {renown::%player%::tenacity} is 1:
+					if {renown::%player%} is higher or equal to 30:
+						format a gui slot 19 of player with magma cream named "&cTenacity" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Za kazde zabiti dostanes &c1&4❤&7.||    &7&o(Aktualne ziskas &c&o0.5&4&o❤&7&o.)||||&eAktualni level &8[&6&l✩&7✩&8] &7➜ &8[&6&l✩✩&8]||||&7Zakoupeni perku stoji &e30 Renown&7!||&8 ➥ &aKlikni zde pro zakoupeni!" to run:
+							close player's inventory
+							play "ORB_PICKUP" to player
+							add 1 to {renown::%player%::tenacity}
+							message ""
+							message "&aUspesne jsi zakoupil vylepseni perku &8""&cTenacity&8""&a."
+							message "&f ➥ &7Z uctu ti bylo odebrano &e30 Renown&7."
+							message ""
+							remove 30 from {renown::%player%}
+							set {renown::%player%} to round({renown::%player%})
+					else:
+						format a gui slot 19 of player with magma cream named "&cTenacity" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Za kazde zabiti dostanes &c1&4❤&7.||    &7&o(Aktualne ziskas &c&o0.5&4&o❤&7&o.)||||&eAktualni level &8[&6&l✩&7✩&8] &7➜ &8[&6&l✩✩&8]||||&7Zakoupeni perku stoji &e30 Renown&7!||&8 ➥ &cNemas dostatek renown pro zakoupeni!"
+				else if {renown::%player%::tenacity} is 2:
+					format a gui slot 19 of player with magma cream named "&cTenacity" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Za kazde zabiti dostanes &c1&4❤&7.||||&eAktualni level &8[&6&l✩✩&8]||||&eDosahl jsi maximalniho vylepseni||&epro perk &6tenacity&e."
+
+
+				if {renown::%player%} is higher or equal to 5:
+					format a gui slot 20 of player with bottle o' enchanting named "&bXP Bump" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Za kazde zabiti ziskas &3+&b1xp&7.||||&eAktualni level &8[&7✩✩✩✩✩&8] &7➜ &8[&6&l✩&7✩✩✩✩&8]||||&7Zakoupeni perku stoji &e5 Renown&7!||&8 ➥ &aKlikni zde pro zakoupeni!" to run:
+						close player's inventory
+						play "ORB_PICKUP" to player
+						add 1 to {renown::%player%::xpbump}
+						message ""
+						message "&aUspesne jsi zakoupil vylepseni perku &8""&bXP Bump&8""&a."
+						message "&f ➥ &7Z uctu ti bylo odebrano &e5 Renown&7."
+						message ""
+						remove 5 from {renown::%player%}
+						set {renown::%player%} to round({renown::%player%})
+				else:
+					format a gui slot 20 of player with bottle o' enchanting named "&bXP Bump" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Za kazde zabiti ziskas &3+&b1xp&7.||||&eAktualni level &8[&7✩✩✩✩✩&8] &7➜ &8[&6&l✩&7✩✩✩✩&8]||||&7Zakoupeni perku stoji &e5 Renown&7!||&8 ➥ &cNemas dostatek renown pro zakoupeni!"
+
+				if {renown::%player%::xpbump} is between 1 and 4:
+					if {renown::%player%::xpbump} is 1:
+						set {_level} to "&8[&6&l✩&7✩✩✩✩&8] &7➜ &8[&6&l✩✩&7✩✩✩&8]"
+					else if {renown::%player%::xpbump} is 2:
+						set {_level} to "&8[&6&l✩✩&7✩✩✩&8] &7➜ &8[&6&l✩✩✩&7✩✩&8]"
+					else if {renown::%player%::xpbump} is 3:
+						set {_level} to "&8[&6&l✩✩✩&7✩✩&8] &7➜ &8[&6&l✩✩✩✩&7✩&8]"
+					else if {renown::%player%::xpbump} is 4:
+						set {_level} to "&8[&6&l✩✩✩✩&7✩&8] &7➜ &8[&6&l✩✩✩✩✩&8]"
+
+					if {renown::%player%} is higher or equal to 10:
+						format a gui slot 20 of player with bottle o' enchanting named "&bXP Bump" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Za kazde zabiti ziskas &3+&b%{renown::%player%::xpbump} + 1%xp&7.||    &7&o(Aktualne ziskas &3+&b%{renown::%player%::xpbump}%xp&7&o.)||||&eAktualni level %{_level}%||||&7Zakoupeni perku stoji &e10 Renown&7!||&8 ➥ &aKlikni zde pro zakoupeni!" to run:
+							close player's inventory
+							play "ORB_PICKUP" to player
+							add 1 to {renown::%player%::xpbump}
+							message ""
+							message "&aUspesne jsi zakoupil vylepseni perku &8""&bXP Bump&8""&a."
+							message "&f ➥ &7Z uctu ti bylo odebrano &e10 Renown&7."
+							message ""
+							remove 10 from {renown::%player%}
+							set {renown::%player%} to round({renown::%player%})
+					else:
+						format a gui slot 20 of player with bottle o' enchanting named "&bXP Bump" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Za kazde zabiti ziskas &3+&b%{renown::%player%::xpbump} + 1%xp&7.||    &7&o(Aktualne ziskas &3+&b%{renown::%player%::xpbump}%xp&7&o.)||||&eAktualni level %{_level}%||||&7Zakoupeni perku stoji &e10 Renown&7!||&8 ➥ &cNemas dostatek renown pro zakoupeni!"
+
+				else if {renown::%player%::xpbump} is 5:
+					format a gui slot 20 of player with bottle o' enchanting named "&bXP Bump" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Za kazde zabiti ziskas &3+&b5xp&7.||||&eAktualni level &8[&6&l✩✩✩✩✩&8]||||&eDosahl jsi maximalniho vylepseni||&epro perk &6xp bump&e."
+
+				
+				if {renown::%player%} is higher or equal to 10:
+					format a gui slot 21 of player with mushroom stew named "&6Perk Unlock&7: &eOverheal" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Moznost mit u sebe &fdvojnasobek||    &7uzdravovacich predmetu (&f2&d×2 &7➠ &f4&7,||    &f1&d×2 &7➠ &f2&7).||||&6TIP&7: Plati pro &eZlate Jablka&7, &6Zlate Hlavy&7,||    &7a pro &bOlympus Potiony&7.||||&5Info o &lperku&5!||&8&l ▶ &7Lze zakoupit od levelu &a+&330&7.||&8&l ▶ &7Perk stoji &e4.150 Ⓩ&7.||||&4⚠ &cJedna se pouze o perk unlock.||&7&oStale nutno zakoupit jako perk.||||&7Zakoupeni perku stoji &e10 Renown&7!||&8 ➥ &aKlikni zde pro zakoupeni!" to run:
+						close player's inventory
+						play "ORB_PICKUP" to player
+						add 1 to {renown::%player%::overheal}
+						message ""
+						message "&aUspesne jsi zakoupil vylepseni perku &8""&eOverheal&8""&a."
+						message "&f ➥ &7Z uctu ti bylo odebrano &e10 Renown&7."
+						message ""
+						remove 10 from {renown::%player%}
+						set {renown::%player%} to round({renown::%player%})
+				else:
+					format a gui slot 21 of player with mushroom stew named "&6Perk Unlock&7: &eOverheal" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Moznost mit u sebe &fdvojnasobek||    &7uzdravovacich predmetu (&f2&d×2 &7➠ &f4&7,||    &f1&d×2 &7➠ &f2&7).||||&6TIP&7: Plati pro &eZlate Jablka&7, &6Zlate Hlavy&7,||    &7a pro &bOlympus Potiony&7.||||&5Info o &lperku&5!||&8&l ▶ &7Lze zakoupit od levelu &a+&330&7.||&8&l ▶ &7Perk stoji &e4.150 Ⓩ&7.||||&4⚠ &cJedna se pouze o perk unlock.||&7&oStale nutno zakoupit jako perk.||||&7Zakoupeni perku stoji &e10 Renown&7!||&8 ➥ &cNemas dostatek renown pro zakoupeni!"
+				if {renown::%player%::overheal} is set:
+					format a gui slot 21 of player with mushroom stew named "&6Perk Unlock&7: &eOverheal" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Moznost mit u sebe &fdvojnasobek||    &7uzdravovacich predmetu (&f2&d×2 &7➠ &f4&7,||    &f1&d×2 &7➠ &f2&7).||||&6TIP&7: Plati pro &eZlate Jablka&7, &6Zlate Hlavy&7,||    &7a pro &bOlympus Potiony&7.||||&5Info o &lperku&5!||&8&l ▶ &7Lze zakoupit od levelu &a+&330&7.||&8&l ▶ &7Perk stoji &e4.150 Ⓩ&7.||||&4⚠ &cJedna se pouze o perk unlock.||&7&oStale nutno zakoupit jako perk.||||&eDosahl jsi maximalniho vylepseni||&epro perk &6overheal&e."
+			else:
+				format a gui slot 19 of player with bedrock named "&cTenacity" with lore "||&7Pro tento perk potrebujes prestige &a+&6##&eI&7.||&r"
+				format a gui slot 20 of player with bedrock named "&bXP Bump" with lore "||&7Pro tento perk potrebujes prestige &a+&6##&eI&7.||&r"
+				format a gui slot 21 of player with bedrock named "&6Perk Unlock&7: &eOverheal" with lore "||&7Pro tento perk potrebujes prestige &a+&6##&eI&7.||&r"
+			if {prestige::%player%} is "II" or "III" or "IV" or "V" or "VI" or "VII" or "VIII" or "IX" or "X":
+				if {renown::%player%} is higher or equal to 10:
+					format a gui slot 22 of player with iron axe with no nbt named "&6Perk Unlock&7: &eBarbarian" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Nahrazeni mece za silnejsi &fsekeru&7.||    &7&o(Zvyseni poskozeni o &a&o+15%%&7&o.)||||&5Info o &lperku&5!||&8&l ▶ &7Lze zakoupit od levelu &a+&225&7.||&8&l ▶ &7Perk stoji &e3.200 Ⓩ&7.||||&4⚠ &cJedna se pouze o perk unlock.||&7&oStale nutno zakoupit jako perk.||||&7Zakoupeni perku stoji &e10 Renown&7!||&8 ➥ &aKlikni zde pro zakoupeni!" to run:
+						close player's inventory
+						play "ORB_PICKUP" to player
+						add 1 to {renown::%player%::barbarian}
+						message ""
+						message "&aUspesne jsi zakoupil vylepseni perku &8""&eBarbarian&8""&a."
+						message "&f ➥ &7Z uctu ti bylo odebrano &e10 Renown&7."
+						message ""
+						remove 10 from {renown::%player%}
+						set {renown::%player%} to round({renown::%player%})
+					format a gui slot 23 of player with podzol named "&6Perk Unlock&7: &eDirty" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri zabiti ziskas &dResistance II &7(&f5s&7).||||&5Info o &lperku&5!||&8&l ▶ &7Lze zakoupit od levelu &a+&220&7.||&8&l ▶ &7Perk stoji &e3.200 Ⓩ&7.||||&4⚠ &cJedna se pouze o perk unlock.||&7&oStale nutno zakoupit jako perk.||||&7Zakoupeni perku stoji &e10 Renown&7!||&8 ➥ &aKlikni zde pro zakoupeni!" to run:
+						close player's inventory
+						play "ORB_PICKUP" to player
+						add 1 to {renown::%player%::dirty}
+						message ""
+						message "&aUspesne jsi zakoupil vylepseni perku &8""&eDirty&8""&a."
+						message "&f ➥ &7Z uctu ti bylo odebrano &e10 Renown&7."
+						message ""
+						remove 10 from {renown::%player%}
+						set {renown::%player%} to round({renown::%player%})
+				else:
+					format a gui slot 22 of player with iron axe with no nbt named "&6Perk Unlock&7: &eBarbarian" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Nahrazeni mece za silnejsi &fsekeru&7.||    &7&o(Zvyseni poskozeni o &a&o+15%%&7&o.)||||&5Info o &lperku&5!||&8&l ▶ &7Lze zakoupit od levelu &a+&225&7.||&8&l ▶ &7Perk stoji &e3.200 Ⓩ&7.||||&4⚠ &cJedna se pouze o perk unlock.||&7&oStale nutno zakoupit jako perk.||||&7Zakoupeni perku stoji &e10 Renown&7!||&8 ➥ &cNemas dostatek renown pro zakoupeni!"
+					format a gui slot 23 of player with podzol named "&6Perk Unlock&7: &eDirty" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri zabiti ziskas &dResistance II &7(&f5s&7).||||&5Info o &lperku&5!||&8&l ▶ &7Lze zakoupit od levelu &a+&220&7.||&8&l ▶ &7Perk stoji &e2.400 Ⓩ&7.||||&4⚠ &cJedna se pouze o perk unlock.||&7&oStale nutno zakoupit jako perk.||||&7Zakoupeni perku stoji &e10 Renown&7!||&8 ➥ &cNemas dostatek renown pro zakoupeni!"
+				if {renown::%player%::barbarian} is set:
+					format a gui slot 22 of player with iron axe with no nbt named "&6Perk Unlock&7: &eBarbarian" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Nahrazeni mece za silnejsi &fsekeru&7.||    &7&o(Zvyseni poskozeni o &a&o+15%%&7&o.)||||&5Info o &lperku&5!||&8&l ▶ &7Lze zakoupit od levelu &a+&225&7.||&8&l ▶ &7Perk stoji &e3.200 Ⓩ&7.||||&4⚠ &cJedna se pouze o perk unlock.||&7&oStale nutno zakoupit jako perk.||||&eDosahl jsi maximalniho vylepseni||&epro perk &6barbarian&e."
+				if {renown::%player%::dirty} is set:
+					format a gui slot 23 of player with podzol named "&6Perk Unlock&7: &eDirty" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri zabiti ziskas &dResistance II &7(&f5s&7).||||&5Info o &lperku&5!||&8&l ▶ &7Lze zakoupit od levelu &a+&220&7.||&8&l ▶ &7Perk stoji &e2.400 Ⓩ&7.||||&4⚠ &cJedna se pouze o perk unlock.||&7&oStale nutno zakoupit jako perk.||||&eDosahl jsi maximalniho vylepseni||&epro perk &6dirty&e."
+
+
+
+				if {renown::%player%} is higher or equal to 5:
+					format a gui slot 24 of player with golden sword with no nbt named "&6Vyssi sance" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Vyssi sance o &d50%% &7ziskat &eZlaty Mec&7.||||&eAktualni level &8[&7✩✩✩✩✩&8] &7➜ &8[&6&l✩&7✩✩✩✩&8]||||&7Zakoupeni perku stoji &e5 Renown&7!||&8 ➥ &aKlikni zde pro zakoupeni!" to run:
+						close player's inventory
+						play "ORB_PICKUP" to player
+						add 1 to {renown::%player%::mysticwell}
+						message ""
+						message "&aUspesne jsi zakoupil vylepseni perku &8""&6Vyssi sance&8""&a."
+						message "&f ➥ &7Z uctu ti bylo odebrano &e5 Renown&7."
+						message ""
+						remove 5 from {renown::%player%}
+						set {renown::%player%} to round({renown::%player%})
+				else:
+					format a gui slot 24 of player with golden sword with no nbt named "&6Vyssi sance" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Vyssi sance o &d50%% &7ziskat &eZlaty Mec&7.||||&eAktualni level &8[&7✩✩✩✩✩&8] &7➜ &8[&6&l✩&7✩✩✩✩&8]||||&7Zakoupeni perku stoji &e5 Renown&7!||&8 ➥ &cNemas dostatek renown pro zakoupeni!"
+
+				if {renown::%player%::mysticwell} is between 1 and 4:
+					if {renown::%player%::mysticwell} is 1:
+						set {_level} to "&8[&6&l✩&7✩✩✩✩&8] &7➜ &8[&6&l✩✩&7✩✩✩&8]"
+					else if {renown::%player%::mysticwell} is 2:
+						set {_level} to "&8[&6&l✩✩&7✩✩✩&8] &7➜ &8[&6&l✩✩✩&7✩✩&8]"
+					else if {renown::%player%::mysticwell} is 3:
+						set {_level} to "&8[&6&l✩✩✩&7✩✩&8] &7➜ &8[&6&l✩✩✩✩&7✩&8]"
+					else if {renown::%player%::mysticwell} is 4:
+						set {_level} to "&8[&6&l✩✩✩✩&7✩&8] &7➜ &8[&6&l✩✩✩✩✩&8]"
+
+					if {renown::%player%} is higher or equal to 10:
+						format a gui slot 24 of player with golden sword with no nbt named "&6Vyssi sance" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Vyssi sance o &d100%% &7ziskat &eZlaty Mec&7.||    &7&o(Aktualni sance ziskani &d%{renown::%player%::mysticwell} * 50%%%&7&o.)||||&eAktualni level %{_level}%||||&7Zakoupeni perku stoji &e10 Renown&7!||&8 ➥ &aKlikni zde pro zakoupeni!" to run:
+							close player's inventory
+							play "ORB_PICKUP" to player
+							add 1 to {renown::%player%::mysticwell}
+							message ""
+							message "&aUspesne jsi zakoupil vylepseni perku &8""&6Vyssi sance&8""&a."
+							message "&f ➥ &7Z uctu ti bylo odebrano &e10 Renown&7."
+							message ""
+							remove 10 from {renown::%player%}
+							set {renown::%player%} to round({renown::%player%})
+					else:
+						format a gui slot 24 of player with golden sword with no nbt named "&6Vyssi sance" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Vyssi sance o &d100%% &7ziskat &eZlaty Mec&7.||    &7&o(Aktualni sance ziskani &d%{renown::%player%::mysticwell} * 50%%%&7&o.)||||&eAktualni level %{_level}%||||&7Zakoupeni perku stoji &e10 Renown&7!||&8 ➥ &cNemas dostatek renown pro zakoupeni!"
+
+				else if {renown::%player%::mysticwell} is 5:
+					format a gui slot 24 of player with golden sword with no nbt named "&6Vyssi sance" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Vyssi sance o &d250%% &7ziskat &eZlaty Mec&7.||||&eAktualni level &8[&6&l✩✩✩✩✩&8]||||&eDosahl jsi maximalniho vylepseni||&epro perk &6xp bump&e."
+
+			else:
+				format a gui slot 22 of player with bedrock named "&6Perk Unlock&7: &eBarbarian" with lore "||&7Pro tento perk potrebujes prestige &a+&6##&eII&7.||&r"
+				format a gui slot 23 of player with bedrock named "&6Perk Unlock&7: &eDirty" with lore "||&7Pro tento perk potrebujes prestige &a+&6##&eII&7.||&r"
+				format a gui slot 24 of player with bedrock named "&6Vyssi sance" with lore "||&7Pro tento perk potrebujes prestige &a+&6##&eII&7.||&r"
+
+			if {prestige::%player%} is "III" or "IV" or "V" or "VI" or "VII" or "VIII" or "IX" or "X":
+				if {renown::%player%} is higher or equal to 40:
+					format a gui slot 25 of player with light green stained glass pane named "&aPerk Slot ##4" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Bonusovy &fPerk Slot&7, pro dalsi perk.||||&7Zakoupeni perku stoji &e40 Renown&7!||&8 ➥ &aKlikni zde pro zakoupeni!" to run:
+						close player's inventory
+						play "ORB_PICKUP" to player
+						add 1 to {renown::%player%::perkslot4}
+						message ""
+						message "&aUspesne jsi zakoupil vylepseni perku &8""&aPerk Slot ##4&8""&a."
+						message "&f ➥ &7Z uctu ti bylo odebrano &e40 Renown&7."
+						message ""
+						remove 40 from {renown::%player%}
+						set {renown::%player%} to round({renown::%player%})
+				else:
+					format a gui slot 25 of player with light green stained glass pane named "&aPerk Slot ##4" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Bonusovy &fPerk Slot&7, pro dalsi perk.||||&7Zakoupeni perku stoji &e40 Renown&7!||&8 ➥ &cNemas dostatek renown pro zakoupeni!"
+				if {renown::%player%::perkslot4} is set:
+					format a gui slot 25 of player with light green stained glass pane named "&aPerk Slot ##4" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Bonusovy &fPerk Slot&7, pro dalsi perk.||||&eDosahl jsi maximalniho vylepseni||&epro perk &6perk slot ##4&e."
+
+				if {renown::%player%} is higher or equal to 10:
+					format a gui slot 28 of player with stick named "&6Perk Unlock&7: &eRambo" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Jiz neziskas uzdravovaci predmety,||    &7pocet srdicek budes mit omezen na &c5&4❤&7.||&8&l ▶ &7&7Kazde zabiti te &duzdravi &7do maxima.||||&5Info o &lperku&5!||&8&l ▶ &7Lze zakoupit od levelu &a+&e50&7.||&8&l ▶ &7Perk stoji &e6.000 Ⓩ&7.||||&4⚠ &cJedna se pouze o perk unlock.||&7&oStale nutno zakoupit jako perk.||||&7Zakoupeni perku stoji &e10 Renown&7!||&8 ➥ &aKlikni zde pro zakoupeni!" to run:
+						close player's inventory
+						play "ORB_PICKUP" to player
+						add 1 to {renown::%player%::rambo}
+						message ""
+						message "&aUspesne jsi zakoupil vylepseni perku &8""&eRambo&8""&a."
+						message "&f ➥ &7Z uctu ti bylo odebrano &e10 Renown&7."
+						message ""
+						remove 10 from {renown::%player%}
+						set {renown::%player%} to round({renown::%player%})
+				else:
+					format a gui slot 28 of player with stick named "&6Perk Unlock&7: &eRambo" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Jiz neziskas uzdravovaci predmety,||    &7pocet srdicek budes mit omezen na &c5&4❤&7.||&8&l ▶ &7&7Kazde zabiti te &duzdravi &7do maxima.||||&5Info o &lperku&5!||&8&l ▶ &7Lze zakoupit od levelu &a+&e50&7.||&8&l ▶ &7Perk stoji &e6.000 Ⓩ&7.||||&4⚠ &cJedna se pouze o perk unlock.||&7&oStale nutno zakoupit jako perk.||||&7Zakoupeni perku stoji &e10 Renown&7!||&8 ➥ &cNemas dostatek renown pro zakoupeni!"
+				if {renown::%player%::rambo} is set:
+					format a gui slot 28 of player with stick named "&6Perk Unlock&7: &eRambo" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Jiz neziskas uzdravovaci predmety,||    &7pocet srdicek budes mit omezen na &c5&4❤&7.||&8&l ▶ &7&7Kazde zabiti te &duzdravi &7do maxima.||||&5Info o &lperku&5!||&8&l ▶ &7Lze zakoupit od levelu &a+&e50&7.||&8&l ▶ &7Perk stoji &e6.000 Ⓩ&7.||||&4⚠ &cJedna se pouze o perk unlock.||&7&oStale nutno zakoupit jako perk.||||&eDosahl jsi maximalniho vylepseni||&epro perk &6rambo&e."
+			else:
+				format a gui slot 25 of player with bedrock named "&aPerk Slot ##4" with lore "||&7Pro tento perk potrebujes prestige &a+&6##&eIII&7.||&r"
+				format a gui slot 28 of player with bedrock named "&6Perk Unlock&7: &eRambo" with lore "||&7Pro tento perk potrebujes prestige &a+&6##&eIII&7.||&r"
+
+			if {prestige::%player%} is "IV" or "V" or "VI" or "VII" or "VIII" or "IX" or "X":
+				if {renown::%player%} is higher or equal to 30:
+					format a gui slot 29 of player with apple:0 named "&cBonusove srdicko" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Dostanes bonusove srdicko &a+&c1&4❤&7.||||&eAktualni level &8[&7✩✩&8] &7➜ &8[&6&l✩&7✩&8]||||&7Zakoupeni perku stoji &e30 Renown&7!||&8 ➥ &aKlikni zde pro zakoupeni!" to run:
+						close player's inventory
+						play "ORB_PICKUP" to player
+						add 1 to {renown::%player%::bonusovesrdicko}
+						message ""
+						message "&aUspesne jsi zakoupil vylepseni perku &8""&cBonusove srdicko&8""&a."
+						message "&f ➥ &7Z uctu ti bylo odebrano &e30 Renown&7."
+						message ""
+						remove 30 from {renown::%player%}
+						set {renown::%player%} to round({renown::%player%})
+				else:
+					format a gui slot 29 of player with apple:0 named "&cBonusove srdicko" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Dostanes bonusove srdicko &a+&c1&4❤&7.||||&eAktualni level &8[&7✩✩&8] &7➜ &8[&6&l✩&7✩&8]||||&7Zakoupeni perku stoji &e30 Renown&7!||&8 ➥ &cNemas dostatek renown pro zakoupeni!"
+				if {renown::%player%::bonusovesrdicko} is 1:
+					if {renown::%player%} is higher or equal to 50:
+						format a gui slot 29 of player with apple:0 named "&cBonusove srdicko" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Dostanes bonusove srdicka &a+&c2&4❤&7.||    &7&o(Aktualne mas navic &c&o1&4&o❤&7&o.)||||&eAktualni level &8[&6&l✩&7✩&8] &7➜ &8[&6&l✩✩&8]||||&7Zakoupeni perku stoji &e50 Renown&7!||&8 ➥ &aKlikni zde pro zakoupeni!" to run:
+							close player's inventory
+							play "ORB_PICKUP" to player
+							add 1 to {renown::%player%::bonusovesrdicko}
+							message ""
+							message "&aUspesne jsi zakoupil vylepseni perku &8""&cBonusove srdicko&8""&a."
+							message "&f ➥ &7Z uctu ti bylo odebrano &e50 Renown&7."
+							message ""
+							remove 50 from {renown::%player%}
+							set {renown::%player%} to round({renown::%player%})
+							
+							if {ragepit} is set:
+								if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "rambo":
+									set the maximum health of the player to 15 + {renown::%player%::bonusovesrdicko}
+								else:
+									set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+							else:
+								if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "rambo":
+									set the maximum health of the player to 5 + {renown::%player%::bonusovesrdicko}
+								else:
+									set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+							wait 1 tick
+							heal player
+					else:
+						format a gui slot 29 of player with apple:0 named "&cBonusove srdicko" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Dostanes bonusove srdicka &a+&c2&4❤&7.||    &7&o(Aktualne mas navic &c&o1&4&o❤&7&o.)||||&eAktualni level &8[&6&l✩&7✩&8] &7➜ &8[&6&l✩✩&8]||||&7Zakoupeni perku stoji &e50 Renown&7!||&8 ➥ &cNemas dostatek renown pro zakoupeni!"
+				else if {renown::%player%::bonusovesrdicko} is 2:
+					format a gui slot 29 of player with apple:0 named "&cBonusove srdicko" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Dostanes bonusove srdicka &a+&c2&4❤&7.||||&eAktualni level &8[&6&l✩✩&8]||||&eDosahl jsi maximalniho vylepseni||&epro perk &6bonusove srdicko&e."
+
+				if {renown::%player%} is higher or equal to 10:
+					format a gui slot 30 of player with water_bottle:8203 with no nbt named "&6Perk Unlock&7: &eOlympus" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri zabiti dostanes &bOlympus Potion&7.||||&5Info o &lperku&5!||&8&l ▶ &7Lze zakoupit od levelu &a+&6&l60&7.||&8&l ▶ &7Perk stoji &e6.300 Ⓩ&7.||&8&l ▶ &9Rychlost II (0:15)||&8&l ▶ &9Regenerace III (0:10)||&8&l ▶ &7Pri vypiti ziskas &3+&b20xp&7.||&7&o(Lze mit u sebe pouze jeden!)||||&4⚠ &cJedna se pouze o perk unlock.||&7&oStale nutno zakoupit jako perk.||||&7Zakoupeni perku stoji &e10 Renown&7!||&8 ➥ &aKlikni zde pro zakoupeni!" to run:
+						close player's inventory
+						play "ORB_PICKUP" to player
+						add 1 to {renown::%player%::olympus}
+						message ""
+						message "&aUspesne jsi zakoupil vylepseni perku &8""&eOlympus&8""&a."
+						message "&f ➥ &7Z uctu ti bylo odebrano &e10 Renown&7."
+						message ""
+						remove 10 from {renown::%player%}
+						set {renown::%player%} to round({renown::%player%})
+				else:
+					format a gui slot 30 of player with water_bottle:8203 with no nbt named "&6Perk Unlock&7: &eOlympus" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri zabiti dostanes &bOlympus Potion&7.||||&5Info o &lperku&5!||&8&l ▶ &7Lze zakoupit od levelu &a+&6&l60&7.||&8&l ▶ &7Perk stoji &e6.300 Ⓩ&7.||&8&l ▶ &9Rychlost II (0:15)||&8&l ▶ &9Regenerace III (0:10)||&8&l ▶ &7Pri vypiti ziskas &3+&b20xp&7.||&7&o(Lze mit u sebe pouze jeden!)||||&4⚠ &cJedna se pouze o perk unlock.||&7&oStale nutno zakoupit jako perk.||||&7Zakoupeni perku stoji &e10 Renown&7!||&8 ➥ &cNemas dostatek renown pro zakoupeni!"
+				if {renown::%player%::olympus} is set:
+					format a gui slot 30 of player with water_bottle:8203 with no nbt named "&6Perk Unlock&7: &eOlympus" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri zabiti dostanes &bOlympus Potion&7.||||&5Info o &lperku&5!||&8&l ▶ &7Lze zakoupit od levelu &a+&6&l60&7.||&8&l ▶ &7Perk stoji &e6.300 Ⓩ&7.||&8&l ▶ &9Rychlost II (0:15)||&8&l ▶ &9Regenerace III (0:10)||&8&l ▶ &7Pri vypiti ziskas &3+&b20xp&7.||&7&o(Lze mit u sebe pouze jeden!)||||&4⚠ &cJedna se pouze o perk unlock.||&7&oStale nutno zakoupit jako perk.||||&eDosahl jsi maximalniho vylepseni||&epro perk &6olympus&e."
+			else:
+				format a gui slot 29 of player with bedrock named "&cBonusove srdicko" with lore "||&7Pro tento perk potrebujes prestige &a+&6##&eIV&7.||&r"
+				format a gui slot 30 of player with bedrock named "&6Perk Unlock&7: &eOlympus" with lore "||&7Pro tento perk potrebujes prestige &a+&6##&eIV&7.||&r"
+
+			if {prestige::%player%} is "V" or "VI" or "VII" or "VIII" or "IX" or "X":
+				if {renown::%player%} is higher or equal to 10:
+					format a gui slot 31 of player with leather helmet dyed light blue named "&bNadherna Helma" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Permanentni &fkozena prilba&7.||||&7Zakoupeni perku stoji &e10 Renown&7!||&8 ➥ &aKlikni zde pro zakoupeni!" to run:
+						close player's inventory
+						play "ORB_PICKUP" to player
+						add 1 to {renown::%player%::nadhernahelma}
+						message ""
+						message "&aUspesne jsi zakoupil vylepseni perku &8""&bNadherna Helma&8""&a."
+						message "&f ➥ &7Z uctu ti bylo odebrano &e10 Renown&7."
+						message ""
+						remove 10 from {renown::%player%}
+						set {renown::%player%} to round({renown::%player%})
+						if {picker} is not set:
+							set player's helmet to unbreakable leather helmet dyed light blue named "&7Nadherná helma"
+
+				else:
+					format a gui slot 31 of player with leather helmet dyed light blue named "&bNadherna Helma" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Permanentni &fkozena prilba&7.||||&7Zakoupeni perku stoji &e10 Renown&7!||&8 ➥ &cNemas dostatek renown pro zakoupeni!"
+				if {renown::%player%::nadhernahelma} is set:
+					format a gui slot 31 of player with leather helmet dyed light blue named "&bNadherna Helma" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Permanentni &fkozena prilba&7.||||&eDosahl jsi maximalniho vylepseni||&epro perk &6nadherna helma&e."
+
+				if {renown::%player%} is higher or equal to 25:
+					format a gui slot 32 of player with cooked chicken named "&6Perk Unlock&7: &e1st Strike" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Prvni zasah hrace prida &a+35%% &7poskozeni.||&7&o(K resetovani dojde pri objeveni se na spawnu.)||||&5Info o &lperku&5!||&8&l ▶ &7Lze zakoupit od levelu &a+&c&l70&7.||&8&l ▶ &7Perk stoji &e8.000 Ⓩ&7.||||&4⚠ &cJedna se pouze o perk unlock.||&7&oStale nutno zakoupit jako perk.||||&7Zakoupeni perku stoji &e25 Renown&7!||&8 ➥ &aKlikni zde pro zakoupeni!" to run:
+						close player's inventory
+						play "ORB_PICKUP" to player
+						add 1 to {renown::%player%::1ststrike}
+						message ""
+						message "&aUspesne jsi zakoupil vylepseni perku &8""&e1st Strike&8""&a."
+						message "&f ➥ &7Z uctu ti bylo odebrano &e25 Renown&7."
+						message ""
+						remove 25 from {renown::%player%}
+						set {renown::%player%} to round({renown::%player%})
+				else:
+					format a gui slot 32 of player with cooked chicken named "&6Perk Unlock&7: &e1st Strike" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Prvni zasah hrace prida &a+35%% &7poskozeni.||&7&o(K resetovani dojde pri objeveni se na spawnu.)||||&5Info o &lperku&5!||&8&l ▶ &7Lze zakoupit od levelu &a+&c&l70&7.||&8&l ▶ &7Perk stoji &e8.000 Ⓩ&7.||||&4⚠ &cJedna se pouze o perk unlock.||&7&oStale nutno zakoupit jako perk.||||&7Zakoupeni perku stoji &e25 Renown&7!||&8 ➥ &cNemas dostatek renown pro zakoupeni!"
+				if {renown::%player%::1ststrike} is set:
+					format a gui slot 32 of player with cooked chicken named "&6Perk Unlock&7: &e1st Strike" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Prvni zasah hrace prida &a+35%% &7poskozeni.||&7&o(K resetovani dojde pri objeveni se na spawnu.)||||&5Info o &lperku&5!||&8&l ▶ &7Lze zakoupit od levelu &a+&c&l70&7.||&8&l ▶ &7Perk stoji &e8.000 Ⓩ&7.||||&4⚠ &cJedna se pouze o perk unlock.||&7&oStale nutno zakoupit jako perk.||||&eDosahl jsi maximalniho vylepseni||&epro perk &61st strike&e."
+			else:
+				format a gui slot 31 of player with bedrock named "&bNadherna Helma" with lore "||&7Pro tento perk potrebujes prestige &a+&6##&eV&7.||&r"
+				format a gui slot 32 of player with bedrock named "&6Perk Unlock&7: &e1st Strike" with lore "||&7Pro tento perk potrebujes prestige &a+&6##&eV&7.||&r"
+
+			if {prestige::%player%} is "VI" or "VII" or "VIII" or "IX" or "X":
+				if {renown::%player%} is higher or equal to 15:
+					format a gui slot 33 of player with golden apple:0 named "&dYummy" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Dostanes &e+&62g &7za kazde snezene||    &7zlate jablko nebo zlatou hlavu.||||&7Zakoupeni perku stoji &e15 Renown&7!||&8 ➥ &aKlikni zde pro zakoupeni!" to run:
+						close player's inventory
+						play "ORB_PICKUP" to player
+						add 1 to {renown::%player%::yummy}
+						message ""
+						message "&aUspesne jsi zakoupil vylepseni perku &8""&dYummy&8""&a."
+						message "&f ➥ &7Z uctu ti bylo odebrano &e15 Renown&7."
+						message ""
+						remove 15 from {renown::%player%}
+						set {renown::%player%} to round({renown::%player%})
+				else:
+					format a gui slot 33 of player with golden apple:0 named "&dYummy" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Dostanes &e+&62g &7za kazde snezene||    &7zlate jablko nebo zlatou hlavu.||||&7Zakoupeni perku stoji &e15 Renown&7!||&8 ➥ &cNemas dostatek renown pro zakoupeni!"
+				if {renown::%player%::yummy} is set:
+					format a gui slot 33 of player with golden apple:0 named "&dYummy" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Dostanes &e+&62g &7za kazde snezene||    &7zlate jablko nebo zlatou hlavu.||||&eDosahl jsi maximalniho vylepseni||&epro perk &6yummy&e."
+
+			else:
+				format a gui slot 33 of player with bedrock named "&dYummy" with lore "||&7Pro tento perk potrebujes prestige &a+&6##&eVI&7.||&r"
+
+			if {prestige::%player%} is "VII" or "VIII" or "IX" or "X":
+				if {renown::%player%} is higher or equal to 50:
+					format a gui slot 34 of player with activator rail named "&7Fast Pass" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Kazdou dalsi novou &eprestige||    &7zacnes od levelu &640&7.||||&7Zakoupeni perku stoji &e50 Renown&7!||&8 ➥ &aKlikni zde pro zakoupeni!" to run:
+						close player's inventory
+						play "ORB_PICKUP" to player
+						add 1 to {renown::%player%::fastpass}
+						message ""
+						message "&aUspesne jsi zakoupil vylepseni perku &8""&7Fast Pass&8""&a."
+						message "&f ➥ &7Z uctu ti bylo odebrano &e50 Renown&7."
+						message ""
+						remove 50 from {renown::%player%}
+						set {renown::%player%} to round({renown::%player%})
+				else:
+					format a gui slot 34 of player with activator rail named "&7Fast Pass" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Kazdou dalsi novou &eprestige||    &7zacnes od levelu &640&7.||||&7Zakoupeni perku stoji &e50 Renown&7!||&8 ➥ &cNemas dostatek renown pro zakoupeni!"
+				if {renown::%player%::fastpass} is set:
+					format a gui slot 34 of player with activator rail named "&7Fast Pass" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Kazdou dalsi novou &eprestige||    &7zacnes od levelu &640&7.||||&eDosahl jsi maximalniho vylepseni||&epro perk &6fast pass&e."
+
+			else:
+				format a gui slot 34 of player with bedrock named "&7Fast Pass" with lore "||&7Pro tento perk potrebujes prestige &a+&6##&eVII&7.||&r"
+
+
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	victim is a player
+	attacker is a player
+	if {activatedperk1::%attacker%} or {activatedperk2::%attacker%} or {activatedperk3::%attacker%} or {activatedperk4::%attacker%} is "1ststrike":
+		if {1ststrike::%attacker%::%victim%} is not set:
+			set {1ststrike::%attacker%::%victim%} to true
+			set damage to damage / 100 * (100 + 35)
+
+on death of a player:
+	if {activatedperk1::%victim%} or {activatedperk2::%victim%} or {activatedperk3::%victim%} or {activatedperk4::%victim%} is "1ststrike":
+		delete {1ststrike::%victim%::*}
+
+on quit:
+	if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "1ststrike":
+		delete {1ststrike::%player%::*}
+
+
+on death of a player:
+	attacker is a player
+	if {renown::%attacker%::tenacity} is 1:
+		heal attacker by 0.5 heart
+	if {renown::%attacker%::tenacity} is 2:
+		heal attacker by 1 heart
+
+on death of player:
+	attacker is a player
+	if {activatedperk1::%attacker%} or {activatedperk2::%attacker%} or {activatedperk3::%attacker%} or {activatedperk4::%attacker%} is "dirty":
+		if attacker has resistance:
+			set {_tier} to tier of potion effect resistance of attacker
+			if {_tier} is less or equal to 2:
+				remove resistance from attacker
+				apply potion of resistance of tier 2 to attacker for 5 seconds
+		else:
+			apply potion of resistance of tier 2 to attacker for 5 seconds

@@ -1,0 +1,2808 @@
+every 61 seconds:
+	if "%now%" contains "0:00":
+		delete {daily.limit::*}
+
+	if "%now%" contains "4:29 am":
+		loop 7 times:
+			if loop-number is 1:
+				set {_t} to "&7Za &f1 minutu &7probehne"
+			else if loop-number is not 1 or 7:
+				if loop-number is 2:
+					set {_x} to 50
+				if loop-number is 3:
+					set {_x} to 40
+				if loop-number is 4:
+					set {_x} to 30
+				if loop-number is 5:
+					set {_x} to 20
+				if loop-number is 6:
+					set {_x} to 10
+				set {_t} to "&7Za &f%{_x}% sekund &7probehne"
+			else if loop-number is 7:
+				set {_t} to "&7Server se restartuje..."
+			broadcast ""
+			broadcast "&4 ▊▊▊▊▊▌"
+			broadcast "&4   ▊     ▊▌"
+			broadcast "&4   ▊     ▊▌"
+			broadcast "&4   ▊     ▊▌        &c&lServer se restartuje!"
+			broadcast "&4 ▊▊▊▊▊▌              &8&lＰｖＰＣｒａｆｔ &f&lＮｅｔｗｏｒｋ"
+			broadcast "&4   ▊"
+			broadcast "&4   ▊            &4| %{_t}%"
+			if loop-number is 7:
+				broadcast "&4   ▊"
+			else:
+				broadcast "&4   ▊            &4| &7   restart serveru!"
+			broadcast "&4 ▐▊▌"
+			broadcast ""
+			if loop-number is 7:
+				make console execute command "/save-all"
+				wait 1 second		
+				make console execute command "/restart"
+			else:
+				wait 10 seconds
+
+	set {_p} to number of all players
+	{_p} is less than 5:
+		stop
+
+	if "%now%" contains ":00" or ":40":
+		set {_r::*} to "goldraid", "vikingboss", "2xrewards", "kotl", "dragonegg" and "cake"
+		set {_x} to random element out of {_r::*}
+		if {_x} is "goldraid":
+			if {goldraid} is set:
+				make console execute command "/2xrewards start"
+			else:
+				make console execute command "/%{_x}% start"
+		else:
+			make console execute command "/%{_x}% start"
+
+	if "%now%" contains ":20":
+		set {_r::*} to "ragepit", "floor", "raffle", "tdm" and "robbery"
+		make console execute command "/%random element out of {_r::*}% start"
+
+on skript load:
+	if {stred.holo} is set:				
+		create holo object "&6&lTHE PIT;&7Skoc do pitu;&7a zabij ostatni!" with id "stred" at {stred.holo}
+
+on skript start:
+	set {bonussb} to ""
+	set {spawnedboss1} to ""
+	set {spawnedboss2} to ""
+	set {spawnedboss3} to ""
+	delete {event::*}
+	loop {roh.sklo::*}:
+		set block at location at loop-value to air
+	loop 7 times:
+		loop {roh.sklo::*}:
+			block at location loop-number above loop-value-2 is plain glass block
+			set block at location loop-number above loop-value-2 to air
+	loop blocks in radius 21 + 1 around block at location 0, 83, 0 in world "world":
+		round(distance between loop-block and block at location 0, 83, 0 in world "world") is equal to 21
+		y-coordinate of loop-block is y-coordinate of block at location 0, 83, 0 in world "world"
+		set {_cyl::%loop-block%} to location at loop-block
+		loop-block is plain glass block
+		set loop-block to air
+	loop 29 times:
+		loop {_cyl::*}:
+			block at location loop-number above loop-value-2 is plain glass block
+			set block at location loop-number above loop-value-2 to air
+	loop blocks in radius 6 + 1 around block at location 0, 102, 0 in world "world":
+		y-coordinate of loop-block is y-coordinate of block at location 0, 102, 0 in world "world"
+		loop-block is end portal
+		set loop-block to air
+	loop blocks in radius 6 + 1 around block at location 0, 113, 0 in world "world":
+		y-coordinate of loop-block is y-coordinate of block at location 0, 113, 0 in world "world"
+		loop-block is plain glass block
+		set loop-block to air
+
+
+on join:
+	if {helmet.tdm::%player%} is set:
+		set player's helmet to {helmet.tdm::%player%}
+		if lore of player's helmet contains "Rychlost":
+			if player has speed:
+				set {_tier} to tier of potion effect speed of player
+				if {_tier} is 1:
+					apply potion of speed of tier 1 to the player for 999 days
+			else:
+				apply potion of speed of tier 1 to the player for 999 days
+		if lore of player's helmet contains "Fire Resistence":
+			apply potion of fire resistance of tier 1 to the player for 999 days
+		delete {helmet.tdm::%player%}
+	set {sbaddon::%player%} to ""
+	set {nametag::%player%} to ""
+	if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "rambo":
+		set the maximum health of the player to 5 + {renown::%player%::bonusovesrdicko}
+	else:
+		set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+	wait 1 tick
+	heal player
+
+
+command /program:
+	aliases: /events, /eventy, /rozpis
+	trigger:
+		message "&7&m------------------------------------------"
+		message " &6Zakladni informace o Eventech&7:"
+		message ""
+		message "&3 * &7Tento &dprogram &7pro &feventy &7plati kazdy den, kazdou hodinu."
+		message "    &7Na serveru musi byt alespon &a+&f5 &7hracu &aonline&7."
+		message ""
+		message "    &5&lProgram eventu &7&o(Eventy se vybiraji nahodne!)"
+		message "       &d--:00 &7➜ Klasicky event"
+		message "       &d--:20 &7➜ Hlavni event"
+		message "       &d--:40 &7➜ Klasicky event"
+		message ""
+		message "Hlavni eventy &7(&f5&7) - &4&lRage Pit&7, &5&lFloor&7, &6&lRaffle&7, &5&lTDM&7, &6&lRobbery&7."
+		message "Klasicke eventy &7(&f6&7) - &dGold Raid&7, &dViking Boss&7, &d2x Rewards&7, &dKotL&7, &dDragon egg&7, &dCake&7."
+		message ""
+		message "&6TIP: &7Prikazem &d/nazev-eventu &7zjistis info o eventu."
+		message "&7&m------------------------------------------"
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+command /goldraid [<text>]:
+	trigger:
+		if arg-1 is not set:
+			message "&7&m------------------------------------------"
+			message " &6Zakladni informace o Gold Raidu&7:"
+			message ""
+			message "&3 * &6Gold Raid &7zvysi objevovani &6Gold Ingotu&7,"
+			message "    &7a to o &ddvojnasobek&7. Pri zniceni &eGold ore"
+			message "    &7ziskas jako bonus &6+&e3 Ⓩ&7, ktere se taktez."
+			message "    &7objevuji dvakrat rychleji."
+			message ""
+			message " &e&o,,Kdy se zase bude event poradat?"""
+			message "&3    &7Více info &f➜ &d/program"
+			message "&7&m------------------------------------------"
+		if arg-1 is set:
+			if player doesn't have permission "pit.staff":
+				message "&8[&c&l!&8] &7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera."
+				stop
+			if arg-1 is not "start":
+				message "&cSpatne pouzity prikaz. &7arg-1 &8 = ""&fstart&8""&7, zacatek eventu."
+				stop
+		if arg-1 is "start":
+			if {event::goldraid} is set:
+				message "&8[&4&l!&8] &7Nelze spustit event &6&lGold Raid&7, jiz je spusten."
+				stop
+			set {event::goldraid} to 1
+			set {goldraid} to true
+			broadcast ""
+			broadcast "&8█&7███████&8█"
+			broadcast "&7██&b█████&7██                    &6&lGOLD RAID"
+			broadcast "&7█&b█&7██&6█&7██&b█&7█"
+			broadcast "&7████&6█&7████     &7Dvakrat rychlejsi spawn &6gold ingotu&7,"
+			broadcast "&7████&6█&7████       &7a take &egold ore &7(s bonusem &6+&e3 Ⓩ&7)."
+			broadcast "&7████&6█&7████          &7Tento event trva &f1 hodinu&7."
+			broadcast "&7████&6█&7████"
+			broadcast "&7████&6█&7████      &7Více info &f➜ &d/goldraid &8┃ &d/program"
+			broadcast "&8█&7███████&8█"
+			broadcast ""
+			send all players title "" with subtitle "&6&lGold Raid &7v celem pitu, dvojnasobek &6ingotu &7a &egold ore&7!" for 3 seconds
+
+
+			set {__time::konec::min} to 60
+			set {_time::konec::sec} to 0
+
+			if {stred.holo} is set:
+				delete holo object "stred"			
+				create holo object "&6&lGOLD RAID!;&72x &eOre &7/ &6Ingot&7!;&7v celem Pitu;&a%{__time::konec::min}%:0%{_time::konec::sec}%" with id "stred" at {stred.holo}
+
+			while {_time::konec::sec} is set:
+				if {__time::konec::min} is higher or equal to 10:
+					set {_h} to ""
+				else:
+					set {_h} to "0"
+				if {_time::konec::sec} is higher or equal to 10:
+					edit holo object "stred" with line 4 to "&a%{_h}%%{__time::konec::min}%:%{_time::konec::sec}%"
+				else:
+					edit holo object "stred" with line 4 to "&a%{_h}%%{__time::konec::min}%:0%{_time::konec::sec}%"
+				if {_time::konec::sec} is 0:
+					if {__time::konec::min} is 0:
+						delete {_time::konec::sec}
+						delete {__time::konec::min}
+					else:
+						set {_time::konec::sec} to 59
+						if {__time::konec::min} is 1:
+							set {__time::konec::min} to 0
+						else:
+							remove 1 from {__time::konec::min}
+				else:
+					remove 1 from {_time::konec::sec}
+				wait 1 second
+
+			set {_top::*} to sorted {goldraid::*} from highest to lowest with output "@index"
+
+			loop 3 times:
+				set {_top::%loop-value%} to {_top::%loop-value%} parsed as offline player
+
+			broadcast ""
+			broadcast "&8█&7███████&8█"
+			broadcast "&7██&b█████&7██                      &6&lGOLD RAID"
+			broadcast "&7█&b█&7██&6█&7██&b█&7█"
+			if {_top::1} is set:
+				broadcast "&7████&6█&7████  &e&l##1 %{prestigebrackets::%{_top::1}%}%[%{%{_top::1}%.level.color}%%{level::%{_top::1}%}%%{prestigebrackets::%{_top::1}%}%] %coloured {_top::1}'s offline suffix%%{_top::1}% &7- &f%{goldraid::%{_top::1}%}% &eGold Ore &7+ &6Gold Ingot"
+			else:
+				broadcast "&7████&6█&7████  &e&l##1 &f??? &7- &f✖ &eGold Ore &7+ &6Gold Ingot"
+			if {_top::2} is set:
+				broadcast "&7████&6█&7████  &7&l##2 %{prestigebrackets::%{_top::2}%}%[%{%{_top::2}%.level.color}%%{level::%{_top::2}%}%%{prestigebrackets::%{_top::2}%}%] %coloured {_top::2}'s offline suffix%%{_top::2}% &7- &f%{goldraid::%{_top::2}%}% &eGold Ore &7+ &6Gold Ingot"
+			else:
+				broadcast "&7████&6█&7████  &7&l##2 &f??? &7- &f✖ &eGold Ore &7+ &6Gold Ingot"
+			if {_top::3} is set:
+				broadcast "&7████&6█&7████  &6&l##3 %{prestigebrackets::%{_top::3}%}%[%{%{_top::3}%.level.color}%%{level::%{_top::3}%}%%{prestigebrackets::%{_top::3}%}%] %coloured {_top::3}'s offline suffix%%{_top::3}% &7- &f%{goldraid::%{_top::3}%}% &eGold Ore &7+ &6Gold Ingot"
+			else:
+				broadcast "&7████&6█&7████  &6&l##3 &f??? &7- &f✖ &eGold Ore &7+ &6Gold Ingot"
+			broadcast "&7████&6█&7████"
+			broadcast "&7████&6█&7████  &7(Vytezeno &eGold Ore&7, Sebrano &6Gold Ingot&7)"
+			broadcast "&8█&7███████&8█      &7Více info &f➜ &d/goldraid &8┃ &d/program"
+			broadcast ""
+			loop all players:
+				if {rating::%loop-player%::goldraid} is not set:
+					json("%loop-player%", "&8[&6&l!&r&8] &eAnketa! &7Ohodnot event Gold Raid! ||&2[5✯]||cmd:/nazor goldraid 5||ttp:&7Klikni zde pro &25✯&7.|| ||&a[4✯]||cmd:/nazor goldraid 4||ttp:&7Klikni zde pro &a4✯&7.|| ||&e[3✯]||cmd:/nazor goldraid 3||ttp:&7Klikni zde pro &e3✯&7.|| ||&c[2✯]||cmd:/nazor goldraid 2||ttp:&7Klikni zde pro &e&c2✯&7.|| ||&4[1✯]||cmd:/nazor goldraid 1||ttp:&7Klikni zde pro &41✯&7.")
+					if loop-player has permission "pit.admin":
+						send "&8[&c&l!&8] &4Admin! &7Podivej se na vysledky prikazem &d/vysledky&7." to loop-player
+			delete {goldraid::*}
+			delete {goldraid}
+			delete {event::goldraid}
+			delete holo object "stred"
+			create holo object "&6&lTHE PIT;&7Skoc do pitu;&7a zabij ostatni!" with id "stred" at {stred.holo}
+
+on skript start:
+	delete {goldraid::*}
+	delete {goldraid}
+
+on break:
+	player's tool is pickaxe
+	event-block is gold ore
+	cancel event
+	set {_p} to number of all players
+	{_p} is less than 5:
+		message "&8[&4&l!&8] &7Na serveru musi byt alespon &a+&f5 &7hracu &aonline&7."
+		stop
+	set block to stone
+	set {_goldbump.random} to a random integer between 1 and 5
+	if lore of player's helmet contains "Gold Boost":
+		add {_goldbump.random} to {_gold.random}
+	if {goldraid} is not set:
+		if player's tool is iron pickaxe:
+			add 1 to {_gold.random}
+			set {_gold.random} to TierGBoost({_gold.random}, player)
+			set {_gold.random} to GBooster({_gold.random}, player)
+			Zlataky("add", {_gold.random}, player)
+			message "&7Znicil jsi &eGold Ore&7! &6+&e%{_gold.random}% Ⓩ"
+		if player's tool is diamond pickaxe:
+			add 2 to {_gold.random}	
+			set {_gold.random} to TierGBoost({_gold.random}, player)
+			set {_gold.random} to GBooster({_gold.random}, player)	
+			Zlataky("add", {_gold.random}, player)
+			message "&7Znicil jsi &eGold Ore&7! &6+&e%{_gold.random}% Ⓩ"
+		wait 8 minutes
+		set block to gold ore
+	else:
+		if player's tool is iron pickaxe:
+			add 4 to {_gold.random}
+			set {_gold.random} to TierGBoost({_gold.random}, player)
+			set {_gold.random} to GBooster({_gold.random}, player)
+			Zlataky("add", {_gold.random}, player)
+			message "&7Znicil jsi &eGold Ore&7! &6+&e1 Ⓩ &8[&6+&e3 Ⓩ &7➜ &6&lGold Raid&8]"
+
+		if player's tool is diamond pickaxe:	
+			add 5 to {_gold.random}	
+			set {_gold.random} to TierGBoost({_gold.random}, player)
+			set {_gold.random} to GBooster({_gold.random}, player)
+			Zlataky("add", {_gold.random}, player)
+			message "&7Znicil jsi &eGold Ore&7! &6+&e2 Ⓩ &8[&6+&e3 Ⓩ &7➜ &6&lGold Raid&8]"
+		set {_gold.random} to 0
+		wait 4 minutes
+		set block to gold ore
+	if {goldraid} is set:
+		add 1 to {goldraid::%player%}
+
+on pickup gold ingot:
+	{vanish::%player%} is not set
+	player's gamemode is not creative or spectator
+	cancel event
+	delete event-entity
+	set {_gold} to random integer between 1 and 8
+	if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "gold":
+		add 10 to {_gold}
+	if {robbery} is set:
+		add 16 to {_gold}
+		add {_gold} to {robbery::%player%}
+		add {_gold} to {robbery}
+		set {_stolen} to splitCoins("%{robbery}%")
+		set {bonussb} to " &8▪ &7Ukradeno: &e%{_stolen}% Ⓩ"
+		send "&6&lUKRADEN GOLD! &7na zemi bylo &a+&e%{_gold}% Ⓩ&7." to player
+		set {%player%.bounty} to " &e%{robbery::%player%}% Ⓩ"
+		set {_toplist::*} to sorted {robbery::*} from highest to lowest with output "@index"
+		loop {_toplist::*}:
+			add 1 to {_x}
+			set {_num} to splitCoins("%{robbery::%loop-value%}%")
+			set {sbaddon::%loop-value%} to " &8▪ &7Ucet: &e%{_num}% Ⓩ &7(##%{_x}%)"
+	else:
+		set {_gold} to TierGBoost({_gold}, player)
+		Zlataky("add", {_gold}, player)
+		send "&6&lNALEZEN GOLD! &7na zemi bylo &e%{_gold}% Ⓩ&7." to player
+	play "ORB_PICKUP" to player
+
+	if "%now%" contains "Tue":
+		Quest("tuesday5", 2.5, player)		
+	if "%now%" contains "Fri":
+		Quest("friday2", 2.5, player)		
+	if {goldraid} is set:
+		add 1 to {goldraid::%player%}
+
+every 1 minute:
+	{raffle} is not set
+
+	set {_p} to number of all players
+	{_p} is less than 5:
+		stop
+
+	loop {loc::*}:
+		loop dropped items in radius 4 of location at {loc::%loop-index%}:
+			add item of loop-value-2 to {_c::*}
+		if {_c::*} is not set:
+			if {goldraid} is set:
+				chance of 25%:
+					drop 1 gold ingot with nbt "{antistack:%{counter.g}%}" at {loc::%loop-index%}
+			else:
+				chance of 12%:
+					drop 1 gold ingot with nbt "{antistack:%{counter.g}%}" at {loc::%loop-index%}
+		if {_c::*} doesn't contain golden_ingot:
+			if {goldraid} is set:
+				chance of 25%:
+					drop 1 gold ingot with nbt "{antistack:%{counter.g}%}" at {loc::%loop-index%}
+			else:
+				chance of 12%:
+					drop 1 gold ingot with nbt "{antistack:%{counter.g}%}" at {loc::%loop-index%}
+		add 1 to {counter.g}
+		delete {_c::*}
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+command /floor [<text>]:
+	trigger:
+		if arg-1 is not set:
+			message "&7&m------------------------------------------"
+			message " &6Zakladni informace o eventu Floor&7:"
+			message ""
+			message "&3 * &5&lFloor &7je event, kdy budes &dteleportovan &7do"
+			message "    &eKouzelne Veze &7a za kazde zabiti &apostoupis"
+			message "    &7do dalsiho patra a pri smrti &cspadnes &7do nizsiho."
+			message "&f     ➥ &7Nejvyse se lze dostat do podlazi &f##&l10&7."
+			message ""
+			message " &e&o,,Kdy se zase bude event poradat?"""
+			message "&3    &7Více info &f➜ &d/program"
+			message "&7&m------------------------------------------"
+		else:
+			if player doesn't have permission "pit.staff":
+				message "&8[&c&l!&8] &7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera."
+				stop
+			if arg-1 is not "start":
+				message "&cSpatne pouzity prikaz. &7arg-1 &8 = ""&fstart&8""&7, zacatek eventu."
+				stop
+		if arg-1 is "start":
+			if {event::main} is set:
+				message "&8[&4&l!&8] &7Event nelze spustit, jiz je zapnuty %{event::main}%&7."
+				stop
+			set {event::main} to "&5&lFloor"
+			broadcast "&5&lFLOOR! &7Za &f30 sekund &7zacne odpocet eventu."
+			set {spawnedboss1} to "&5&lEVENT FLOOR"
+			set {spawnedboss3} to "&f"
+
+			set {_time::zacatek} to 30
+			while {_time::zacatek} is set:
+				if {_time::zacatek} is higher or equal to 10:
+					set {spawnedboss2} to " &8▪ &7Teleport: &f00:%{_time::zacatek}%"
+				else:
+					set {spawnedboss2} to " &8▪ &7Teleport: &f00:0%{_time::zacatek}%"
+				if {_time::zacatek} is 0:
+					delete {_time::zacatek}
+				else:
+					remove 1 from {_time::zacatek}
+				wait 1 second
+
+			set {floor} to true
+
+			loop all players:
+				if {%loop-player%.streak} is higher or equal to 5:
+					message "&8[&6&l!&8] &7Streak byl &dulozen &7a na konci eventu ti bude vracen. Nesmis se ale &codpojit&7!"
+					if {vanish::%loop-player%} is not set:
+						set {%loop-player%.bounty} to ""
+					set {_strk::%loop-player%} to {strknumb::%loop-player%}
+					delete {strknumb::%loop-player%}
+
+				if {vanish::%loop-player%} is not set:
+					set {status::%loop-player%} to " &8▪ &7Status: &6Event"
+				"%region at loop-player%" doesn't contain "nopvpzone"
+				if "%loop-player's vehicle%" is "pig":
+					set {vehicle::%loop-player%} to 1
+					make loop-player leave the vehicle
+					delete {vehicle::%loop-player%}
+
+				set {_spawn} to random integer between 1 and 3
+				teleport loop-player to {spawn.loc::%{_spawn}%}
+
+				remove all player head with custom nbt "{SkullOwner:{Id:""2dca1967-0d3e-4eb2-807b-daf8f735ad16"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGFiZDcwM2U1YjhjODhkNGIxZmNmYTk0YTkzNmEwZDZhNGY2YWJhNDQ1Njk2NjNkMzM5MWQ0ODgzMjIzYzUifX19""}]}}}" named "&6Zlata Hlava" with lore "||&5Bonusy &lzlate hlavy&5!||&8&l ▶ &9Regenerace II (0:10)||&8&l ▶ &9Absorpce I (0:10)||&r" from loop-player
+				remove all golden apple from loop-player
+				remove all water_bottle:8203 from loop-player
+				remove all baked potato from loop-player
+				delete {combat.second::%loop-player%}
+				delete {combat.check::%loop-player%}
+
+				if amount of lava bucket in loop-player's inventory is less than 1:
+					if {activatedperk1::%loop-player%} or {activatedperk2::%loop-player%} or {activatedperk3::%loop-player%} or {activatedperk4::%loop-player%} is "lava":
+						if slot 3 of loop-player is air:
+							set slot 3 of loop-player to lava bucket named "&cLava"
+						else:
+							give loop-player lava bucket named "&cLava"
+
+				{staffmode::%loop-player%} is not set
+				if {%loop-player%.bow} is set:
+					if amount of glowing arrow named "&7Síp" in loop-player's inventory is less than {%loop-player%.arrow}:
+						set {_arrows} to amount of glowing arrow named "&7Síp" in loop-player's inventory
+						set {_givearrows} to {%loop-player%.arrow} - {_arrows}
+						if {_givearrows} is 50:
+							if slot {inventoryslot::%loop-player%::arrow} of loop-player is air:
+								set slot {inventoryslot::%loop-player%::arrow} of loop-player to glowing 50 arrow named "&7Síp"
+							else:
+								give loop-player glowing 50 arrow named "&7Síp"
+						else:
+							if slot {inventoryslot::%loop-player%::arrow} of loop-player is air:
+								set slot {inventoryslot::%loop-player%::arrow} of loop-player to glowing ("%{_givearrows}% arrow" parsed as item) named "&7Síp"
+
+							else:
+								give loop-player glowing ("%{_givearrows}% arrow" parsed as item) named "&7Síp"
+
+			loop {roh.sklo::*}:
+				set block at location at loop-value to plain glass block
+			loop 7 times:
+				loop {roh.sklo::*}:
+					block at location loop-number above loop-value-2 is air
+					set block at location loop-number above loop-value-2 to plain glass block
+
+			loop blocks in radius 6 + 1 around block at location 0, 113, 0 in world "world":
+				y-coordinate of loop-block is y-coordinate of block at location 0, 113, 0 in world "world"
+				loop-block is air
+				set loop-block to plain glass block
+
+			loop blocks in radius 6 + 1 around block at location 0, 102, 0 in world "world":
+				y-coordinate of loop-block is y-coordinate of block at location 0, 102, 0 in world "world"
+				loop-block is air
+				set loop-block to end portal
+
+			broadcast "&5&lFLOOR! &7Za &f30 sekund &7zacne event."
+			set {_time::zacatek} to 30
+			while {_time::zacatek} is set:
+				if {_time::zacatek} is higher or equal to 10:
+					set {spawnedboss2} to " &8▪ &7Zacina za: &f00:%{_time::zacatek}%"
+				else:
+					set {spawnedboss2} to " &8▪ &7Zacina za: &f00:0%{_time::zacatek}%"
+				if {_time::zacatek} is 0:
+					delete {_time::zacatek}
+				else:
+					remove 1 from {_time::zacatek}
+				wait 1 second
+
+			loop blocks in radius 6 + 1 around block at location 0, 113, 0 in world "world":
+				y-coordinate of loop-block is y-coordinate of block at location 0, 113, 0 in world "world"
+				loop-block is plain glass block
+				set loop-block to air
+
+			broadcast ""
+			broadcast "&8█&7███████&8█"
+			broadcast "&7████&b█&7████                     &5&lFLOOR"
+			broadcast "&7███&a███&7███"
+			broadcast "&7███&a███&7███       &7Zabijej &fhrace &7a dostan se do"
+			broadcast "&7██&e█████&7██   &7nejvyssiho podlazi &f##&l10&7! Dokonci event" 
+			broadcast "&7██&e█████&7██     &7a ziskas jako bonus &eZlaty Mec&7."
+			broadcast "&7█&c███████&7█"
+			broadcast "&7█&c███████&7█      &7Více info &f➜ &d/floor &8┃ &d/program"
+			broadcast "&8█&7███████&8█"
+			broadcast ""
+			broadcast "&8[&4&l!&8] &7Perky jsou v tomto eventu &cvypnuty&7."
+			send all players title "&5&lFLOOR" with subtitle "&7Skoc do &5portalu &7a dostan se do nejvyssiho &fpatra&7!" for 4 seconds
+
+			set {__time::konec::min} to 5
+			set {_time::konec::sec} to 0
+			while {_time::konec::sec} is set:
+				if {_time::konec::sec} is higher or equal to 10:
+					set {spawnedboss2} to " &8▪ &7Zbyva: &f0%{__time::konec::min}%:%{_time::konec::sec}%"
+				else:
+					set {spawnedboss2} to " &8▪ &7Zbyva: &f0%{__time::konec::min}%:0%{_time::konec::sec}%"
+				if {_time::konec::sec} is 0:
+					if {__time::konec::min} is 0:
+						delete {_time::konec::sec}
+						delete {__time::konec::min}
+					else:
+						set {_time::konec::sec} to 59
+						if {__time::konec::min} is 1:
+							set {__time::konec::min} to 0
+						else:
+							remove 1 from {__time::konec::min}
+				else:
+					remove 1 from {_time::konec::sec}
+				wait 1 second
+
+			set {spawnedboss1} to ""
+			set {spawnedboss2} to ""
+			set {spawnedboss3} to ""
+		
+			loop {roh.sklo::*}:
+				set block at location at loop-value to air
+			loop 7 times:
+				loop {roh.sklo::*}:
+					block at location loop-number above loop-value-2 is plain glass block
+					set block at location loop-number above loop-value-2 to air
+			loop blocks in radius 6 + 1 around block at location 0, 102, 0 in world "world":
+				y-coordinate of loop-block is y-coordinate of block at location 0, 102, 0 in world "world"
+				loop-block is end portal
+				set loop-block to air
+
+			set {_top::*} to sorted {floor::*} from highest to lowest with output "@index"
+
+			loop 3 times:
+				set {_top::%loop-value%} to {_top::%loop-value%} parsed as offline player
+
+			loop 3 times:
+				if {floor::%{_top::%loop-number%}%} is 1:
+					set {_color%loop-number%} to "&4"
+				if {floor::%{_top::%loop-number%}%} is 2:
+					set {_color%loop-number%} to "&6"
+				if {floor::%{_top::%loop-number%}%} is 3:
+					set {_color%loop-number%} to "&e"
+				if {floor::%{_top::%loop-number%}%} is 4:
+					set {_color%loop-number%} to "&a"
+				if {floor::%{_top::%loop-number%}%} is 5:
+					set {_color%loop-number%} to "&2"
+				if {floor::%{_top::%loop-number%}%} is 6:
+					set {_color%loop-number%} to "&3"
+				if {floor::%{_top::%loop-number%}%} is 7:
+					set {_color%loop-number%} to "&9"
+				if {floor::%{_top::%loop-number%}%} is 8:
+					set {_color%loop-number%} to "&5"
+				if {floor::%{_top::%loop-number%}%} is 9:
+					set {_color%loop-number%} to "&d"
+				if {floor::%{_top::%loop-number%}%} is 10:
+					set {_color%loop-number%} to "&f"
+
+			broadcast ""
+			broadcast "&8█&7███████&8█"
+			broadcast "&7████&b█&7████                     &5&lFLOOR"
+			broadcast "&7███&a███&7███"
+			if {_top::1} is set:
+				broadcast "&7███&a███&7███  &e&l##1 %{prestigebrackets::%{_top::1}%}%[%{%{_top::1}%.level.color}%%{level::%{_top::1}%}%%{prestigebrackets::%{_top::1}%}%] %coloured {_top::1}'s offline suffix%%{_top::1}% &7- Podlazí %{_color1}%##&l%{floor::%{_top::1}%}%"
+			else:
+				broadcast "&7███&a███&7███  &e&l##1 &f??? &7- &7Podlazí &f✖"
+			if {_top::2} is set:
+				broadcast "&7██&e█████&7██  &7&l##2 %{prestigebrackets::%{_top::2}%}%[%{%{_top::2}%.level.color}%%{level::%{_top::2}%}%%{prestigebrackets::%{_top::2}%}%] %coloured {_top::2}'s offline suffix%%{_top::2}% &7- Podlazí %{_color2}%##&l%{floor::%{_top::2}%}%"
+			else:
+				broadcast "&7██&e█████&7██  &7&l##2 &f??? &7- &7Podlazí &f✖"
+			if {_top::3} is set:
+				broadcast "&7██&e█████&7██  &6&l##3 %{prestigebrackets::%{_top::3}%}%[%{%{_top::3}%.level.color}%%{level::%{_top::3}%}%%{prestigebrackets::%{_top::3}%}%] %coloured {_top::3}'s offline suffix%%{_top::3}% &7- Podlazí %{_color3}%##&l%{floor::%{_top::3}%}%"
+			else:
+				broadcast "&7██&e█████&7██  &6&l##3 &f??? &7- &7Podlazí &f✖"
+			broadcast "&7█&c███████&7█"
+			loop all players:
+				if {floor::%loop-player%} is not set:
+					add loop-player to {_not.set::*}
+				else if {floor::%loop-player%} is less or equal to 9:
+					add loop-player to {_not.reward::*}
+				else if {floor::%loop-player%} is 10:
+					add loop-player to {_reward::*}
+			send "&7█&c███████&7█   &c&lNeuspech! &7Nezucastnil ses eventu." to {_not.set::*}
+			send "&7█&c███████&7█    &c&lNeuspech! &7Nedokoncil jsi event." to {_not.reward::*}
+			send "&7█&c███████&7█ &a&lUspech! &7Dosahl jsi podlazi &f##&l10&7." to {_reward::*}
+
+			broadcast "&8█&7███████&8█      &7Více info &f➜ &d/floor &8┃ &d/program"
+			broadcast ""
+
+			loop all players:
+				if {%loop-player%.streak} is higher or equal to 5:
+					set {strknumb::%loop-player%} to {_strk::%loop-player%}
+					if {vanish::%loop-player%} is not set:
+						set {%loop-player%.bounty} to " &e%{strknumb::%loop-player%}% Ⓩ"
+					make loop-player run command "/streakaround" as op
+
+				if {vanish::%loop-player%} is not set:
+					if {strknumb::%loop-player%} is not set:
+						set {status::%loop-player%} to " &8▪ &7Status: &fNecinny"
+					else:
+						set {status::%loop-player%} to " &8▪ &f%{%loop-player%.streak}% Streak &8┃ &e%{strknumb::%loop-player%}% Ⓩ"
+				delete {combat.second::%loop-player%}
+				delete {combat.check::%loop-player%}
+				set {sbaddon::%loop-player%} to ""
+				if {floor::%loop-player%} is set:
+					heal loop-player
+
+					set {_spawn} to random integer between 1 and 3
+					teleport loop-player to {spawn.loc::%{_spawn}%}
+					set {_count} to 0
+					loop 36 times:
+						set slot {_count} of loop-player's inventory to {flooritems::%{_count}%::%loop-player%}
+						delete {flooritems::%{_count}%::%loop-player%}
+						add 1 to {_count}
+					set the helmet of loop-player to {floorhelmet::%loop-player%}
+					set the chestplate of loop-player to {floorchest::%loop-player%}
+					set the leggings of loop-player to {floorlegs::%loop-player%}
+					set the boots of loop-player to {floorboots::%loop-player%}
+
+					if {floor::%loop-player%} is 10:
+						set {_gold.floorrandom} to a random integer between 800 and 1600
+						set {_xp.floorrandom} to a random integer between 200 and 500
+
+						if {%loop-player%.gbooster} is more than 0:
+							add {_gold.floorrandom} * 0.2 to {_gold.floorrandom}
+
+						if {%loop-player%.xpbooster} is more than 0:
+							add {_xp.floorrandom} * 0.3 to {_xp.floorrandom}
+
+					if {floor::%loop-player%} is between 6 and 9:
+						set {_gold.floorrandom} to a random integer between 600 and 1000
+						set {_xp.floorrandom} to a random integer between 200 and 300
+
+						if {%loop-player%.gbooster} is more than 0:
+							add {_gold.floorrandom} * 0.2 to {_gold.floorrandom}
+
+						if {%loop-player%.xpbooster} is more than 0:
+							add {_xp.floorrandom} * 0.3 to {_xp.floorrandom}
+
+					if {floor::%loop-player%} is between 3 and 5:
+						set {_gold.floorrandom} to a random integer between 300 and 600
+						set {_xp.floorrandom} to a random integer between 100 and 200
+
+						if {%loop-player%.gbooster} is more than 0:
+							add {_gold.floorrandom} * 0.2 to {_gold.floorrandom}
+
+						if {%loop-player%.xpbooster} is more than 0:
+							add {_xp.floorrandom} * 0.3 to {_xp.floorrandom}
+
+					if {floor::%loop-player%} is between 1 and 2:
+						set {_gold.floorrandom} to a random integer between 40 and 100
+						set {_xp.floorrandom} to a random integer between 20 and 60
+
+						if {%loop-player%.gbooster} is more than 0:
+							add {_gold.floorrandom} * 0.2 to {_gold.floorrandom}
+
+						if {%loop-player%.xpbooster} is more than 0:
+							add {_xp.floorrandom} * 0.3 to {_xp.floorrandom}
+
+					set {_gold.floorrandom} to TierGBoost({_gold.floorrandom}, loop-player)
+					set {_xp.floorrandom} to TierXPBoost({_xp.floorrandom}, loop-player)
+
+					Zlataky("add", {_gold.floorrandom}, loop-player)
+					XP("remove", {_xp.floorrandom}, loop-player)
+
+					if {floor::%loop-player%} is 1:
+						set {_color} to "&4"
+					if {floor::%loop-player%} is 2:
+						set {_color} to "&6"
+					if {floor::%loop-player%} is 3:
+						set {_color} to "&e"
+					if {floor::%loop-player%} is 4:
+						set {_color} to "&a"
+					if {floor::%loop-player%} is 5:
+						set {_color} to "&2"
+					if {floor::%loop-player%} is 6:
+						set {_color} to "&3"
+					if {floor::%loop-player%} is 7:
+						set {_color} to "&9"
+					if {floor::%loop-player%} is 8:
+						set {_color} to "&5"
+					if {floor::%loop-player%} is 9:
+						set {_color} to "&d"
+					if {floor::%loop-player%} is 10:
+						set {_color} to "&f"
+
+					if {_top::1} is loop-player:
+						add 1 to {renown::%loop-player%}
+						send "&7Dostal ses do podlazi %{_color}%##&l%{floor::%loop-player%}%&7! &6+&e%{_gold.floorrandom}% Ⓩ &3+&b%{_xp.floorrandom}%xp &7(&a+&e1 Renown&7!)" to loop-player
+					else:
+						send "&7Dostal ses do podlazi %{_color}%##&l%{floor::%loop-player%}%&7! &6+&e%{_gold.floorrandom}% Ⓩ &3+&b%{_xp.floorrandom}%xp" to loop-player
+
+					LevelSystem(loop-player)
+
+					delete {floorhelmet::%loop-player%}
+					delete {floorchest::%loop-player%}
+					delete {floorlegs::%loop-player%}
+					delete {floorboots::%loop-player%}
+
+				delete {floor.logout::%loop-player%}
+				if {rating::%loop-player%::floor} is not set:
+					json("%loop-player%", "&8[&6&l!&r&8] &eAnketa! &7Ohodnot event Floor! ||&2[5✯]||cmd:/nazor floor 5||ttp:&7Klikni zde pro &25✯&7.|| ||&a[4✯]||cmd:/nazor floor 4||ttp:&7Klikni zde pro &a4✯&7.|| ||&e[3✯]||cmd:/nazor floor 3||ttp:&7Klikni zde pro &e3✯&7.|| ||&c[2✯]||cmd:/nazor floor 2||ttp:&7Klikni zde pro &e&c2✯&7.|| ||&4[1✯]||cmd:/nazor floor 1||ttp:&7Klikni zde pro &41✯&7.")
+					if loop-player has permission "pit.admin":
+						send "&8[&c&l!&8] &4Admin! &7Podivej se na vysledky prikazem &d/vysledky&7." to loop-player
+
+			delete {floor::*}
+			delete {floor}
+			delete {event::main}
+on skript start:
+	delete {floor::*}
+	delete {floor}
+
+on portal:
+	{floor} is set
+	if {vanish::%player%} or {staffmode::%player%} is set:
+		if {floor.time::%player%} is not set:
+			set {floor.time::%player%} to true
+
+			set {_spawn} to random integer between 1 and 3
+			teleport player to {spawn.loc::%{_spawn}%}
+
+			message "&c&lMas zapnuty Staff Mode/Vanish! &7Nelze se zucastnit."
+			wait 1 second
+			delete {floor.time::%player%}
+			stop
+
+	check [{vanish::%player%} is not set]->[{staffmode::%player%} is not set]
+	{floor::%player%} is not set
+	heal player
+	clear effects from player
+	apply night vision 1  without any particles to player for 999 days
+	set player's gamemode to survival
+	set {floor.logout::%player%} to true
+	set {floor::%player%} to 1
+	teleport player to {floor1}
+
+	set {_count} to 0
+	loop 36 times:
+		set {flooritems::%{_count}%::%player%} to slot {_count} of player's inventory
+		add 1 to {_count}
+	set {floorhelmet::%player%} to player's helmet
+	set {floorchest::%player%} to player's chestplate
+	set {floorlegs::%player%} to player's leggings
+	set {floorboots::%player%} to player's boots
+	clear player's inventory
+
+	if {renown::%player%::nadhernahelma} is set:
+		set player's helmet to unbreakable leather helmet dyed light blue named "&7Nadherná helma"
+
+	set player's chestplate to unbreakable iron chestplate named "&7Zelezná zbroj"
+	set player's leggings to unbreakable chain leggings named "&7Krouzkované kalhoty"
+	set player's boots to unbreakable chain boots named "&7Krouzkované boty"
+			
+	if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "barbarian":
+		set slot {inventoryslot::%player%::sword} of player to unbreakable iron axe with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:7,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "&7Zelezny mec"
+	else:
+		set slot {inventoryslot::%player%::sword} of player to unbreakable iron sword named "&7Zelezny mec"
+
+	set {sbaddon::%player%} to " &8▪ &7Podlazi: &4##&l%{floor::%player%}%"
+
+
+on command:
+	if {floor::%player%} is set:
+		if command is "spawn":
+			cancel event
+			message "&8[&4&l!&8] &cNa eventu nelze pouzit tento prikaz."
+
+on join:
+	if {floor.logout::%player%} is set:
+		heal player
+
+		set {_count} to 0
+		loop 36 times:
+			set slot {_count} of player's inventory to {flooritems::%{_count}%::%player%}
+			delete {flooritems::%{_count}%::%player%}
+			add 1 to {_count}
+		set the helmet of player to {floorhelmet::%player%}
+		set the chestplate of player to {floorchest::%player%}
+		set the leggings of player to {floorlegs::%player%}
+		set the boots of player to {floorboots::%player%}
+
+		delete {floorhelmet::%player%}
+		delete {floorchest::%player%}
+		delete {floorlegs::%player%}
+		delete {floorboots::%player%}
+		
+		delete {floor::%player%}
+
+on death of a player:
+	if {floor::%victim%} is set:
+		heal victim
+		if {floor::%victim%} is between 2 and 10:
+			remove 1 from {floor::%victim%}
+			if {floor::%victim%} is 1:
+				set {_color} to "&4"
+			if {floor::%victim%} is 2:
+				set {_color} to "&6"
+			if {floor::%victim%} is 3:
+				set {_color} to "&e"
+			if {floor::%victim%} is 4:
+				set {_color} to "&a"
+			if {floor::%victim%} is 5:
+				set {_color} to "&2"
+			if {floor::%victim%} is 6:
+				set {_color} to "&3"
+			if {floor::%victim%} is 7:
+				set {_color} to "&9"
+			if {floor::%victim%} is 8:
+				set {_color} to "&5"
+			if {floor::%victim%} is 9:
+				set {_color} to "&d"
+			if {floor::%victim%} is 10:
+				set {_color} to "&f"
+			teleport victim to {floor%{floor::%victim%}%}
+			set {sbaddon::%victim%} to " &8▪ &7Podlazi: %{_color}%##&l%{floor::%victim%}%"
+		else:
+			teleport victim to {floor%{floor::%victim%}%}
+		wait 2 ticks
+
+		if {renown::%victim%::nadhernahelma} is set:
+			set victim's helmet to unbreakable leather helmet dyed light blue named "&7Nadherná helma"
+
+		set victim's chestplate to unbreakable iron chestplate named "&7Zelezná zbroj"
+		set victim's leggings to unbreakable chain leggings named "&7Krouzkované kalhoty"
+		set victim's boots to unbreakable chain boots named "&7Krouzkované boty"
+
+		if {activatedperk1::%victim%} or {activatedperk2::%victim%} or {activatedperk3::%victim%} or {activatedperk4::%victim%} is "barbarian":
+			set slot {inventoryslot::%victim%::sword} of victim to unbreakable iron axe with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:7,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "&7Zelezny mec"
+		else:
+			set slot {inventoryslot::%victim%::sword} of victim to unbreakable iron sword named "&7Zelezny mec"
+		apply night vision 1 without any particles to victim for 999 days
+
+on death of a player:
+	if {floor::%attacker%} is set:
+		if {floor::%attacker%} is less or equal to 9:
+			add 1 to {floor::%attacker%}
+			if {floor::%attacker%} is 1:
+				set {_color} to "&4"
+			if {floor::%attacker%} is 2:
+				set {_color} to "&6"
+			if {floor::%attacker%} is 3:
+				set {_color} to "&e"
+			if {floor::%attacker%} is 4:
+				set {_color} to "&a"
+			if {floor::%attacker%} is 5:
+				set {_color} to "&2"
+			if {floor::%attacker%} is 6:
+				set {_color} to "&3"
+			if {floor::%attacker%} is 7:
+				set {_color} to "&9"
+			if {floor::%attacker%} is 8:
+				set {_color} to "&5"
+			if {floor::%attacker%} is 9:
+				set {_color} to "&d"
+			if {floor::%attacker%} is 10:
+				set {_color} to "&f"
+			teleport attacker to {floor%{floor::%attacker%}%}
+			set {sbaddon::%attacker%} to " &8▪ &7Podlazi: %{_color}%##&l%{floor::%attacker%}%"
+			heal attacker
+
+		
+on right click with magma cream:
+	if lore of event-item contains "&5Bonusy &lzlomene duse&5!":
+		heal player by 4 hearts
+		if player has absorption:
+			set {_tier} to tier of potion effect absorption of player
+			if {_tier} is 1:
+				remove absorption from player
+				apply potion of absorption of tier 1 to player for 30 seconds
+		else:
+			apply potion of absorption of tier 1 to player for 30 seconds
+		remove 1 magma cream from player's inventory
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+command /raffle [<text>]:
+	trigger:
+		if arg-1 is not set:
+			message "&7&m------------------------------------------"
+			message " &6Zakladni informace o eventu Raffle&7:"
+			message ""
+			message "&3 * &6Raffle &7je event, kdy musis sesbirat co nejvice"
+			message "    &7ticketu a vlozit je do &fboxu&7, uprosted mapy."
+			message "    &7Kazdy ticket pridava &6+&e100 Ⓩ &7do prize poolu,"
+			message "    &7taktez ti kazdy ticket prida bonus &6+&e10 Ⓩ."
+			message "&f     ➥ &7Cim vice nasbiras, tim vetsi sance vyhrat!"
+			message ""
+			message " &e&o,,Kdy se zase bude event poradat?"""
+			message "&3    &7Více info &f➜ &d/program"
+			message "&7&m------------------------------------------"
+		else:
+			if player doesn't have permission "pit.staff":
+				message "&8[&c&l!&8] &7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera."
+				stop
+			if arg-1 is not "setup" or "start":
+				message "&cSpatne pouzity prikaz. &7arg-1 &8= ""&fsetup&8""&7, nastaveni. &7arg-1 &8 = ""&fstart&8""&7, zacatek eventu."
+				stop
+		if arg-1 is "setup":
+			give player 1 stick named "&6&lRaffle Setup" with lore "||&7Klikni &flevym &7pro nastaveni bodu &f##&l1&7.||&7Klikni &fpravym &7pro nastaveni bodu &f##&l2&7.||||&7&o(Vyhozenim predmetu zrusis nastavovani.)"
+		if arg-1 is "start":
+			if {event::main} is set:
+				message "&8[&4&l!&8] &7Event nelze spustit, jiz je zapnuty %{event::main}%&7."
+				stop
+			set {event::main} to "&6&lRaffle"
+			broadcast "&6&lRAFFLE! &7Za &f30 sekund &7zacne event."
+			set {spawnedboss1} to "&6&lEVENT RAFFLE"
+			set {spawnedboss3} to "&f"
+
+			set {_time::zacatek} to 30
+			while {_time::zacatek} is set:
+				if {_time::zacatek} is higher or equal to 10:
+					set {spawnedboss2} to " &8▪ &7Zacina za: &f00:%{_time::zacatek}%"
+				else:
+					set {spawnedboss2} to " &8▪ &7Zacina za: &f00:0%{_time::zacatek}%"
+				if {_time::zacatek} is 0:
+					delete {_time::zacatek}
+				else:
+					remove 1 from {_time::zacatek}
+				wait 1 second
+
+			broadcast ""
+			broadcast "&8█&7███████&8█"
+			broadcast "&7████&2█&7█&7███                     &6&lRAFFLE"
+			broadcast "&7███&2████&7██"
+			broadcast "&7██&2█&7█&2█&7████     Hledej tickety a dones je do &fboxu&7."
+			broadcast "&7███&2███&7███       Cim vice, tim vetsi sance vyhrat!"
+			broadcast "&7███&7█&2█&7█&2█&7██  Kazdy ticket pridava &6+&e100 Ⓩ &7do prize poolu."
+			broadcast "&7██&2████&7███"
+			broadcast "&7████&2█&7████      &7Více info &f➜ &d/raffle &8┃ &d/program"
+			broadcast "&8█&7███████&8█"
+			broadcast ""
+
+			send all players title "&6&lRAFFLE" with subtitle "&7Sesbirej co nejvic &fticketu &7a dones je do boxu!" for 4 seconds
+
+			set {raffle} to true
+
+			set {raffle::prize} to 10000
+			set {tickets::all} to 0
+			set {_num} to splitCoins("%{raffle::prize}%")
+
+			loop all players:
+				if {vanish::%loop-player%} is not set:
+					set {status::%loop-player%} to " &8▪ &7Status: &6Event"
+				set {sbaddon::%loop-player%} to " &8▪ &7Ticketu: &f0 &7(0.0%%)"
+
+			set {bonussb} to " &8▪ &7Vyhra: &e%{_num}% Ⓩ"
+
+			loop all dropped items:
+				set {_c} to item of loop-value
+				if {_c} is golden_ingot:
+					delete loop-value
+			loop blocks within {raffle.loc::1} to {raffle.loc::2}:
+				set block at loop-block to note block
+
+			set {__time::konec::min} to 5
+			set {_time::konec::sec} to 0
+			while {_time::konec::sec} is set:
+				if {_time::konec::sec} is higher or equal to 10:
+					set {spawnedboss2} to " &8▪ &7Zbyva: &f0%{__time::konec::min}%:%{_time::konec::sec}%"
+				else:
+					set {spawnedboss2} to " &8▪ &7Zbyva: &f0%{__time::konec::min}%:0%{_time::konec::sec}%"
+				if {_time::konec::sec} is 0:
+					if {__time::konec::min} is 0:
+						delete {_time::konec::sec}
+						delete {__time::konec::min}
+					else:
+						set {_time::konec::sec} to 59
+						if {__time::konec::min} is 1:
+							set {__time::konec::min} to 0
+						else:
+							remove 1 from {__time::konec::min}
+				else:
+					remove 1 from {_time::konec::sec}
+
+					loop {loc::*}:
+						loop dropped items in radius 4 of location at {loc::%loop-index%}:
+							set {_c} to item of loop-value-2
+							add item of loop-value-2 to {_c::*}
+						if {_c::*} is not set:
+							chance of 5%:
+								drop 1 name tag named "&6Lottery Ticket" with lore "&7Klikni pravym na &fbox&7." at {loc::%loop-index%}
+						if {_c::*} doesn't contain name_tag:
+							chance of 5%:
+								drop 1 name tag named "&6Lottery Ticket" with lore "&7Klikni pravym na &fbox&7." at {loc::%loop-index%}
+						delete {_c::*}
+				wait 1 second
+
+			loop blocks within {raffle.loc::1} to {raffle.loc::2}:
+				set block at loop-block to air
+
+			set {spawnedboss2} to " &8▪ &7Zbyva: &6&lROLLIN'!"
+			delete {raffle}
+			loop all dropped items:
+				set {_c} to item of loop-value
+				if {_c} is name_tag:
+					delete loop-value
+			remove all name tag from all players
+			wait 1 second
+			if {lotteryin::*} is not set:
+				broadcast ""
+				broadcast "&8█&7███████&8█"
+				broadcast "&7████&2█&7█&7███                     &6&lRAFFLE"
+				broadcast "&7███&2████&7██"
+				set {_num} to splitCoins("%{raffle::prize} * 0.5%")
+				broadcast "&7██&2█&7█&2█&7████  &e&l##1 &f??? &7- &e%{_num}% Ⓩ &7(✖ Ticketu)"
+				set {_num} to splitCoins("%{raffle::prize} * 0.3%")
+				broadcast "&7███&2███&7███  &7&l##2 &f??? &7- &e%{_num}% Ⓩ &7(✖ Ticketu)"
+				set {_num} to splitCoins("%{raffle::prize} * 0.2%")
+				broadcast "&7███&7█&2█&7█&2█&7██  &6&l##3 &f??? &7- &e%{_num}% Ⓩ &7(✖ Ticketu)"
+				broadcast "&7██&2████&7███"
+				broadcast "&7████&2█&7████    Dohromady registrovano &f0 &7Ticketu."
+				broadcast "&8█&7███████&8█      &7Více info &f➜ &d/raffle &8┃ &d/program"
+				broadcast ""
+			else:
+				set {_num} to splitCoins("%{raffle::prize} * 0.2%")
+				loop 6 times:
+					set {drawnumber} to random integer between 1 and size of {lotteryin::*}
+					send all players title "%{prestigebrackets::%{lotteryin::%{drawnumber}%}%}%[%{%{lotteryin::%{drawnumber}%}%.level.color}%%{level::%{lotteryin::%{drawnumber}%}%}%%{prestigebrackets::%{lotteryin::%{drawnumber}%}%}%] %coloured {lotteryin::%{drawnumber}%}'s offline suffix%%{lotteryin::%{drawnumber}%}%" with subtitle "&7Vitez pro 3. odmenu &e%{_num}% Ⓩ" for 15 ticks
+					wait 10 ticks
+				wait 1 second
+				play "ENDERDRAGON_GROWL" to all players
+				set {drawnumber} to random integer between 1 and size of {lotteryin::*}
+				send all players title "%{prestigebrackets::%{lotteryin::%{drawnumber}%}%}%[%{%{lotteryin::%{drawnumber}%}%.level.color}%%{level::%{lotteryin::%{drawnumber}%}%}%%{prestigebrackets::%{lotteryin::%{drawnumber}%}%}%] %coloured {lotteryin::%{drawnumber}%}'s offline suffix%%{lotteryin::%{drawnumber}%}%" with subtitle "&7Vyhral 3. odmenu &e%{_num}% Ⓩ&7!" for 3 second
+				set {_3rd} to {lotteryin::%{drawnumber}%}
+
+				Zlataky("add", {raffle::prize} * 0.2, {_3rd})
+				wait 3 seconds
+
+				set {_num} to splitCoins("%{raffle::prize} * 0.3%")
+				loop 6 times:
+					set {drawnumber} to random integer between 1 and size of {lotteryin::*}
+					send all players title "%{prestigebrackets::%{lotteryin::%{drawnumber}%}%}%[%{%{lotteryin::%{drawnumber}%}%.level.color}%%{level::%{lotteryin::%{drawnumber}%}%}%%{prestigebrackets::%{lotteryin::%{drawnumber}%}%}%] %coloured {lotteryin::%{drawnumber}%}'s offline suffix%%{lotteryin::%{drawnumber}%}%" with subtitle "&7Vitez pro 2. odmenu &e%{_num}% Ⓩ" for 15 ticks
+					wait 10 ticks
+				wait 1 second
+				play "ENDERDRAGON_GROWL" to all players
+				set {drawnumber} to random integer between 1 and size of {lotteryin::*}
+				send all players title "%{prestigebrackets::%{lotteryin::%{drawnumber}%}%}%[%{%{lotteryin::%{drawnumber}%}%.level.color}%%{level::%{lotteryin::%{drawnumber}%}%}%%{prestigebrackets::%{lotteryin::%{drawnumber}%}%}%] %coloured {lotteryin::%{drawnumber}%}'s offline suffix%%{lotteryin::%{drawnumber}%}%" with subtitle "&7Vyhral 2. odmenu &e%{_num}% Ⓩ&7!" for 3 second
+				set {_2nd} to {lotteryin::%{drawnumber}%}
+
+				Zlataky("add", {raffle::prize} * 0.3, {_2nd})
+				wait 3 seconds
+
+
+
+				set {_num} to splitCoins("%{raffle::prize} * 0.5%")
+				loop 8 times:
+					set {drawnumber} to random integer between 1 and size of {lotteryin::*}
+					send all players title "%{prestigebrackets::%{lotteryin::%{drawnumber}%}%}%[%{%{lotteryin::%{drawnumber}%}%.level.color}%%{level::%{lotteryin::%{drawnumber}%}%}%%{prestigebrackets::%{lotteryin::%{drawnumber}%}%}%] %coloured {lotteryin::%{drawnumber}%}'s offline suffix%%{lotteryin::%{drawnumber}%}%" with subtitle "&7Vitez pro 1. odmenu &e%{_num}% Ⓩ" for 15 ticks
+					wait 10 ticks
+				wait 1 second
+
+				play "ENDERDRAGON_GROWL" to all players
+				set {drawnumber} to random integer between 1 and size of {lotteryin::*}
+				send all players title "%{prestigebrackets::%{lotteryin::%{drawnumber}%}%}%[%{%{lotteryin::%{drawnumber}%}%.level.color}%%{level::%{lotteryin::%{drawnumber}%}%}%%{prestigebrackets::%{lotteryin::%{drawnumber}%}%}%] %coloured {lotteryin::%{drawnumber}%}'s offline suffix%%{lotteryin::%{drawnumber}%}%" with subtitle "&7Vyhral 1. odmenu &e%{_num}% Ⓩ&7!" for 5 second
+				set {_1st} to {lotteryin::%{drawnumber}%}
+
+				Zlataky("add", {raffle::prize} * 0.5, {_1st})
+
+				broadcast ""
+				broadcast "&8█&7███████&8█"
+				broadcast "&7████&2█&7█&7███                     &6&lRAFFLE"
+				broadcast "&7███&2████&7██"
+				set {_num} to splitCoins("%{raffle::prize} * 0.5%")
+				broadcast "&7██&2█&7█&2█&7████  &e&l##1 %{prestigebrackets::%{_1st}%}%[%{%{_1st}%.level.color}%%{level::%{_1st}%}%%{prestigebrackets::%{_1st}%}%] %coloured {_1st}'s offline suffix%%{_1st}% &7- &e%{_num}% Ⓩ &7(%{tickets::%{_1st}%}% Ticketu)"
+				set {_num} to splitCoins("%{raffle::prize} * 0.3%")
+				broadcast "&7███&2███&7███  &7&l##2 %{prestigebrackets::%{_2nd}%}%[%{%{_2nd}%.level.color}%%{level::%{_2nd}%}%%{prestigebrackets::%{_2nd}%}%] %coloured {_2nd}'s offline suffix%%{_2nd}% &7- &e%{_num}% Ⓩ &7(%{tickets::%{_2nd}%}% Ticketu)"
+				set {_num} to splitCoins("%{raffle::prize} * 0.2%")
+				broadcast "&7███&7█&2█&7█&2█&7██  &6&l##3 %{prestigebrackets::%{_3rd}%}%[%{%{_3rd}%.level.color}%%{level::%{_3rd}%}%%{prestigebrackets::%{_3rd}%}%] %coloured {_3rd}'s offline suffix%%{_3rd}% &7- &e%{_num}% Ⓩ &7(%{tickets::%{_3rd}%}% Ticketu)"
+				broadcast "&7██&2████&7███"
+				broadcast "&7████&2█&7████    Dohromady registrovano &f%{tickets::all}% &7Ticketu."
+				broadcast "&8█&7███████&8█      &7Více info &f➜ &d/raffle &8┃ &d/program"
+				broadcast ""
+
+			set {spawnedboss2} to ""
+			set {spawnedboss1} to ""
+			set {spawnedboss3} to ""
+			set {bonussb} to ""
+			loop all players:
+				set {sbaddon::%loop-player%} to ""
+				if {vanish::%loop-player%} is not set:
+					if {strknumb::%loop-player%} is not set:
+						if {combat.second::%loop-player%} is set:
+							set {status::%loop-player%} to " &8▪ &7Combat: &c%{combat.second::%loop-player%}%&cs"
+						else:
+							set {status::%loop-player%} to " &8▪ &7Status: &fNecinny"
+					else:
+						set {status::%loop-player%} to " &8▪ &f%{%loop-player%.streak}% Streak &8┃ &e%{strknumb::%loop-player%}% Ⓩ"
+				if {rating::%loop-player%::raffle} is not set:
+					json("%loop-player%", "&8[&6&l!&r&8] &eAnketa! &7Ohodnot event Raffle! ||&2[5✯]||cmd:/nazor raffle 5||ttp:&7Klikni zde pro &25✯&7.|| ||&a[4✯]||cmd:/nazor raffle 4||ttp:&7Klikni zde pro &a4✯&7.|| ||&e[3✯]||cmd:/nazor raffle 3||ttp:&7Klikni zde pro &e3✯&7.|| ||&c[2✯]||cmd:/nazor raffle 2||ttp:&7Klikni zde pro &e&c2✯&7.|| ||&4[1✯]||cmd:/nazor raffle 1||ttp:&7Klikni zde pro &41✯&7.")
+					if loop-player has permission "pit.admin":
+						send "&8[&c&l!&8] &4Admin! &7Podivej se na vysledky prikazem &d/vysledky&7." to loop-player
+
+			delete {raffle::prize}
+			delete {tickets::*}
+			delete {lotteryin::*}
+			delete {numerio}
+			delete {event::main}
+on skript start:
+	delete {raffle}
+	delete {raffle::prize}
+	delete {tickets::*}
+	delete {lotteryin::*}
+	delete {numerio}
+
+on join:
+	remove all name tag from player
+	{raffle} is set
+
+	if {tickets::%player%} is not set:
+		set {sbaddon::%player%} to " &8▪ &7Ticketu: &f0 &7(0.0%%)"
+	else:
+		set {_num} to ({tickets::%player%} / {tickets::all}) * 100
+		set {sbaddon::%player%} to " &8▪ &7Ticketu: &f%{tickets::%player%}% &7(%{_num}%%%)"
+
+on pickup of name tag:
+	{raffle} is set
+	{vanish::%player%} or {staffmode::%player%} is not set
+	send "&6Ticket! &7Pro registrovani ho zanes do stredu, do &fboxu&7." to player
+
+on right click on note block with name tag:
+	{raffle} is set
+	play "ORB_PICKUP" to player
+
+	set {_amount} to amount of name tag in player's inventory
+	remove all name tag from player
+
+	loop {_amount} times:
+		add 1 to {numerio}
+		set {lotteryin::%{numerio}%} to player
+
+	add {_amount} * 100 to {raffle::prize}
+	set {_num} to splitCoins("%{raffle::prize}%")
+	set {bonussb} to " &8▪ &7Vyhra: &e%{_num}% Ⓩ"
+
+	add {_amount} to {tickets::%player%}
+	set {tickets::%player%} to round({tickets::%player%})
+	add {_amount} to {tickets::all}
+
+	set {_bonus} to {_amount} * 10
+	set {_bonus} to TierGBoost({_bonus}, player)
+	Zlataky("add", {_bonus}, player)
+	message "&6&lREGISTROVANO &a+&f%{_amount}% &7Ticketu&6&l! &7bonus &6+&e%{_bonus}% Ⓩ"
+
+	loop all players:
+		if {tickets::%loop-player%} is not set:
+			set {tickets::%loop-player%} to 0
+		set {_num} to ({tickets::%loop-player%} / {tickets::all}) * 100
+		set {sbaddon::%loop-player%} to " &8▪ &7Ticketu: &f%{tickets::%loop-player%}% &7(%{_num}%%%)"
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+command /ragepit [<text>]:
+	trigger:
+		if arg-1 is not set:
+			message "&7&m------------------------------------------"
+			message " &6Zakladni informace o eventu Rage Pit&7:"
+			message ""
+			message "&3 * &dRage Pit &7je event, kdy budes &dteleportovan &7do"
+			message "    &7dropu, pokud se nachazis v arene. Zaroven budes mit"
+			message "    &7dvojnasobek srdicek, aby jsi mel vetsi &asanci&7."
+			message "&f     ➥ &7Vyhrava ten, kteri udeli nejvetsi &cposkozeni&7."
+			message ""
+			message " &e&o,,Kdy se zase bude event poradat?"""
+			message "&3    &7Více info &f➜ &d/program"
+			message "&7&m------------------------------------------"
+		else:
+			if player doesn't have permission "pit.staff":
+				message "&8[&c&l!&8] &7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera."
+				stop
+			if arg-1 is not "start":
+				message "&cSpatne pouzity prikaz. &7arg-1 &8 = ""&fstart&8""&7, zacatek eventu."
+				stop
+		if arg-1 is "start":
+			if {event::main} is set:
+				message "&8[&4&l!&8] &7Event nelze spustit, jiz je zapnuty %{event::main}%&7."
+				stop
+			set {event::main} to "&4&lRage Pit"
+			broadcast "&4&lRAGE PIT! &7Za &f30 sekund &7zacne odpocet eventu."
+			set {spawnedboss1} to "&4&lEVENT RAGE PIT"
+			set {spawnedboss3} to "&f"
+
+			set {_time::zacatek} to 30
+			while {_time::zacatek} is set:
+				if {_time::zacatek} is higher or equal to 10:
+					set {spawnedboss2} to " &8▪ &7Teleport: &f00:%{_time::zacatek}%"
+				else:
+					set {spawnedboss2} to " &8▪ &7Teleport: &f00:0%{_time::zacatek}%"
+				if {_time::zacatek} is 0:
+					delete {_time::zacatek}
+				else:
+					remove 1 from {_time::zacatek}
+				wait 1 second
+
+			loop {roh.sklo::*}:
+				set block at location at loop-value to plain glass block
+			loop 7 times:
+				loop {roh.sklo::*}:
+					block at location loop-number above loop-value-2 is air
+					set block at location loop-number above loop-value-2 to plain glass block
+			loop blocks in radius 21 + 1 around block at location 0, 83, 0 in world "world":
+				round(distance between loop-block and block at location 0, 83, 0 in world "world") is equal to 21
+				y-coordinate of loop-block is y-coordinate of block at location 0, 83, 0 in world "world"
+				set {_cyl::%loop-block%} to location at loop-block
+				loop-block is air or obsidian or cobweb or lava or brick or clay_bricks stairs
+				set loop-block to plain glass block
+			loop 29 times:
+				loop {_cyl::*}:
+					block at location loop-number above loop-value-2 is air or obsidian or cobweb or lava or brick or clay_bricks stairs
+					set block at location loop-number above loop-value-2 to plain glass block
+			loop blocks in radius 6 + 1 around block at location 0, 113, 0 in world "world":
+				y-coordinate of loop-block is y-coordinate of block at location 0, 113, 0 in world "world"
+				loop-block is air
+				set loop-block to plain glass block
+
+			loop all players:
+				if {activatedperk1::%loop-player%} or {activatedperk2::%loop-player%} or {activatedperk3::%loop-player%} or {activatedperk4::%loop-player%} is "rambo":
+					set the maximum health of the loop-player to 15 + {renown::%loop-player%::bonusovesrdicko}
+				else:
+					set the maximum health of the loop-player to 20 + {renown::%loop-player%::bonusovesrdicko}
+				wait 1 tick
+				heal loop-player
+
+				if "%loop-player's vehicle%" is "pig":
+					set {vehicle::%loop-player%} to 1
+					make loop-player leave the vehicle
+					delete {vehicle::%loop-player%}
+
+				if "%region at loop-player%" doesn't contain "nopvpzone":
+					set {_spawn} to random integer between 1 and 3
+					teleport loop-player to {spawn.loc::%{_spawn}%}
+
+				remove all player head with custom nbt "{SkullOwner:{Id:""2dca1967-0d3e-4eb2-807b-daf8f735ad16"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGFiZDcwM2U1YjhjODhkNGIxZmNmYTk0YTkzNmEwZDZhNGY2YWJhNDQ1Njk2NjNkMzM5MWQ0ODgzMjIzYzUifX19""}]}}}" named "&6Zlata Hlava" with lore "||&5Bonusy &lzlate hlavy&5!||&8&l ▶ &9Regenerace II (0:10)||&8&l ▶ &9Absorpce I (0:10)||&r" from loop-player
+				remove all golden apple from loop-player
+				remove all water_bottle:8203 from loop-player
+				remove all baked potato from loop-player
+				delete {combat.second::%loop-player%}
+				delete {combat.check::%loop-player%}
+				if {vanish::%loop-player%} is not set:
+					set {status::%loop-player%} to " &8▪ &7Status: &6Event"
+
+				{staffmode::%loop-player%} is not set
+				if amount of lava bucket in loop-player's inventory is less than 1:
+					if {activatedperk1::%loop-player%} or {activatedperk2::%loop-player%} or {activatedperk3::%loop-player%} or {activatedperk4::%loop-player%} is "lava":
+						if slot 3 of loop-player is air:
+							set slot 3 of loop-player to lava bucket named "&cLava"
+						else:
+							give loop-player lava bucket named "&cLava"
+
+				if {%loop-player%.bow} is set:
+					if amount of glowing arrow named "&7Síp" in loop-player's inventory is less than {%loop-player%.arrow}:
+						set {_arrows} to amount of glowing arrow named "&7Síp" in loop-player's inventory
+						set {_givearrows} to {%loop-player%.arrow} - {_arrows}
+						if {_givearrows} is 50:
+							if slot {inventoryslot::%loop-player%::arrow} of loop-player is air:
+								set slot {inventoryslot::%loop-player%::arrow} of loop-player to glowing 50 arrow named "&7Síp"
+							else:
+								give loop-player glowing 50 arrow named "&7Síp"
+						else:
+							if slot {inventoryslot::%loop-player%::arrow} of loop-player is air:
+								set slot {inventoryslot::%loop-player%::arrow} of loop-player to glowing ("%{_givearrows}% arrow" parsed as item) named "&7Síp"
+
+							else:
+								give loop-player glowing ("%{_givearrows}% arrow" parsed as item) named "&7Síp"
+
+			set {ragepit} to true
+
+			broadcast "&4&lRAGE PIT! &7Za &f30 sekund &7zacne event."
+			set {_time::zacatek} to 30
+			while {_time::zacatek} is set:
+				if {_time::zacatek} is higher or equal to 10:
+					set {spawnedboss2} to " &8▪ &7Zacina za: &f00:%{_time::zacatek}%"
+				else:
+					set {spawnedboss2} to " &8▪ &7Zacina za: &f00:0%{_time::zacatek}%"
+				if {_time::zacatek} is 0:
+					delete {_time::zacatek}
+				else:
+					remove 1 from {_time::zacatek}
+				wait 1 second
+
+			send all players title "&4&lRAGE PIT" with subtitle "&7Udel nejvetsi &cposkozeni &7a &fvyhraj&7!" for 4 seconds
+
+			broadcast ""
+			broadcast "&8█&7███████&8█"
+			broadcast "&7████&b█&7████                    &4&lRAGE PIT"
+			broadcast "&7████&b█&7████"
+			broadcast "&7████&b█&7████    &7Uber nejvetsi pocet &csrdicek &7a vyhraj."
+			broadcast "&7████&b█&7████     &6Bonus&7: Pokud bude pocet zabiti &a+&f300&7,"
+			broadcast "&7███&6███&7███   &7kazdy obdrzi bonus o 30%% vetsi odmenu!"
+			broadcast "&7████&6█&7████"
+			broadcast "&7████&6█&7████      &7Více info &f➜ &d/ragepit &8┃ &d/program"
+			broadcast "&8█&7███████&8█"
+			broadcast ""
+
+			loop blocks in radius 6 + 1 around block at location 0, 113, 0 in world "world":
+				y-coordinate of loop-block is y-coordinate of block at location 0, 113, 0 in world "world"
+				loop-block is plain glass block
+				set loop-block to air
+
+			set {total::ragekills} to 0
+			set {bonussb} to " &8▪ &7Zabito: &f%{total::ragekills}%&7/300"
+
+			loop all players:
+				set {ragepit::%loop-player%} to 0
+			set {_toplist::*} to sorted {ragepit::*} from highest to lowest with output "@index"
+
+			loop {_toplist::*}:
+				add 1 to {_x}
+				set {sbaddon::%loop-value%} to " &8▪ &7Poskozeni: &c%{ragepit::%loop-value%}%&4❤ &7(##%{_x}%)"
+
+			set {__time::konec::min} to 5
+			set {_time::konec::sec} to 0
+			while {_time::konec::sec} is set:
+				if {_time::konec::sec} is higher or equal to 10:
+					set {spawnedboss2} to " &8▪ &7Zbyva: &f0%{__time::konec::min}%:%{_time::konec::sec}%"
+				else:
+					set {spawnedboss2} to " &8▪ &7Zbyva: &f0%{__time::konec::min}%:0%{_time::konec::sec}%"
+				if {_time::konec::sec} is 0:
+					if {__time::konec::min} is 0:
+						delete {_time::konec::sec}
+						delete {__time::konec::min}
+					else:
+						set {_time::konec::sec} to 59
+						if {__time::konec::min} is 1:
+							set {__time::konec::min} to 0
+						else:
+							remove 1 from {__time::konec::min}
+				else:
+					remove 1 from {_time::konec::sec}
+				wait 1 second
+
+			delete {ragepit}
+			set {bonussb} to ""
+			set {spawnedboss1} to ""
+			set {spawnedboss2} to ""
+			set {spawnedboss3} to ""
+
+			loop all players:
+				set {sbaddon::%loop-player%} to ""
+
+				if {activatedperk1::%loop-player%} or {activatedperk2::%loop-player%} or {activatedperk3::%loop-player%} or {activatedperk4::%loop-player%} is "rambo":
+					set the maximum health of the loop-player to 5 + {renown::%loop-player%::bonusovesrdicko}
+				else:
+					set the maximum health of the loop-player to 10 + {renown::%loop-player%::bonusovesrdicko}
+				wait 1 tick
+				heal loop-player
+
+				set {_num} to absorption hearts of loop-player
+				remove {_num} from absorption hearts of loop-player
+
+				loop all items in loop-player's inventory:
+					if loop-item is glowing 1 baked potato named "&cRage Potato" with lore "||&5Bonusy &lrage potato&5!||&8&l ▶ &dUzdravení &c2&4❤||&8&l ▶ &dBonusove srdicka &e2&6❤||&8&l ▶ &9Resistence II (0:10)":
+						set {_num} to item amount of loop-item
+						if {activatedperk1::%loop-player%} or {activatedperk2::%loop-player%} or {activatedperk3::%loop-player%} or {activatedperk4::%loop-player%} is "goldenhead":
+							set loop-item to {_num} of player head with custom nbt "{SkullOwner:{Id:""2dca1967-0d3e-4eb2-807b-daf8f735ad16"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGFiZDcwM2U1YjhjODhkNGIxZmNmYTk0YTkzNmEwZDZhNGY2YWJhNDQ1Njk2NjNkMzM5MWQ0ODgzMjIzYzUifX19""}]}}}" named "&6Zlata Hlava" with lore "||&5Bonusy &lzlate hlavy&5!||&8&l ▶ &9Regenerace II (0:10)||&8&l ▶ &9Absorpce I (0:10)||&r"
+						else if {activatedperk1::%loop-player%} or {activatedperk2::%loop-player%} or {activatedperk3::%loop-player%} or {activatedperk4::%loop-player%} is "olympus":
+							set loop-item to {_num} of water_bottle:8203 with no nbt named "&bOlympus Potion" with lore "||&5Bonusy &lolympus potionu&5!||&8&l ▶ &9Rychlost II (0:15)||&8&l ▶ &9Regenerace III (0:10)||&8&l ▶ &7Pri vypiti ziskas &3+&b20xp&7.||&r"
+						else if {activatedperk1::%loop-player%} or {activatedperk2::%loop-player%} or {activatedperk3::%loop-player%} or {activatedperk4::%loop-player%} is not "goldenhead" or "olympus":
+							set loop-item to {_num} of GOLDEN_APPLE named "&6Golden Apple"
+			loop {roh.sklo::*}:
+				set block at location at loop-value to air
+			loop 7 times:
+				loop {roh.sklo::*}:
+					block at location loop-number above loop-value-2 is plain glass block
+					set block at location loop-number above loop-value-2 to air
+			loop blocks in radius 21 + 1 around block at location 0, 83, 0 in world "world":
+				round(distance between loop-block and block at location 0, 83, 0 in world "world") is equal to 21
+				y-coordinate of loop-block is y-coordinate of block at location 0, 83, 0 in world "world"
+				set {_cyl::%loop-block%} to location at loop-block
+				loop-block is plain glass block
+				set loop-block to air
+			loop 29 times:
+				loop {_cyl::*}:
+					block at location loop-number above loop-value-2 is plain glass block
+					set block at location loop-number above loop-value-2 to air
+
+
+			set {_rage::*} to sorted {ragepit::*} from highest to lowest with output "@index"
+
+			loop 3 times:
+				set {_rage::%loop-value%} to {_rage::%loop-value%} parsed as offline player
+
+			broadcast ""
+			broadcast "&8█&7███████&8█"
+			broadcast "&7████&b█&7████                    &4&lRAGE PIT"
+			broadcast "&7████&b█&7████"
+			if {_rage::1} is set:
+				broadcast "&7████&b█&7████  &e&l##1 %{prestigebrackets::%{_rage::1}%}%[%{%{_rage::1}%.level.color}%%{level::%{_rage::1}%}%%{prestigebrackets::%{_rage::1}%}%] %coloured {_rage::1}'s offline suffix%%{_rage::1}% &7- &c%{ragepit::%{_rage::1}%}%&4❤"
+			else:
+				broadcast "&7████&b█&7████  &e&l##1 &f??? &7- &c✖&4❤"
+			if {_rage::2} is set:
+				broadcast "&7████&b█&7████  &7&l##2 %{prestigebrackets::%{_rage::2}%}%[%{%{_rage::2}%.level.color}%%{level::%{_rage::2}%}%%{prestigebrackets::%{_rage::2}%}%] %coloured {_rage::2}'s offline suffix%%{_rage::2}% &7- &c%{ragepit::%{_rage::2}%}%&4❤"
+			else:
+				broadcast "&7████&b█&7████  &7&l##2 &f??? &7- &c✖&4❤"
+			if {_rage::3} is set:
+				broadcast "&7███&6███&7███  &6&l##3 %{prestigebrackets::%{_rage::3}%}%[%{%{_rage::3}%.level.color}%%{level::%{_rage::3}%}%%{prestigebrackets::%{_rage::3}%}%] %coloured {_rage::3}'s offline suffix%%{_rage::3}% &7- &c%{ragepit::%{_rage::3}%}%&4❤"
+			else:
+				broadcast "&7███&6███&7███  &6&l##3 &f??? &7- &c✖&4❤"
+
+			broadcast "&7████&6█&7████"
+			set {_num} to splitCoins("%{total::ragekills}%")
+			if {total::ragekills} is higher or equal to 300:
+				broadcast "&7████&6█&7████   &a&lUspech! &7Dohromady zabito &f%{_num}%&7/300."
+			else:
+				broadcast "&7████&6█&7████    &c&lNeuspech! &7Bylo zabito pouze &f%{_num}%&7/300."
+			broadcast "&8█&7███████&8█      &7Více info &f➜ &d/ragepit &8┃ &d/program"
+			broadcast ""
+
+			loop all players:
+				if {vanish::%loop-player%} is not set:
+					if {strknumb::%loop-player%} is not set:
+						if {combat.second::%loop-player%} is set:
+							set {status::%loop-player%} to " &8▪ &7Combat: &c%{combat.second::%loop-player%}%&cs"
+						else:
+							set {status::%loop-player%} to " &8▪ &7Status: &fNecinny"
+					else:
+						set {status::%loop-player%} to " &8▪ &f%{%loop-player%.streak}% Streak &8┃ &e%{strknumb::%loop-player%}% Ⓩ"
+
+	
+				set {_gold.ragepitrandom} to {ragepit::%loop-player%} * 0.85
+				set {_xp.ragepitrandom} to {ragepit::%loop-player%} * 0.7
+
+				if {total::ragekills} is higher or equal to 300:
+					set {_gold.ragepitrandom} to {_gold.ragepitrandom} * 1.3
+					set {_xp.ragepitrandom} to {_xp.ragepitrandom} * 1.3
+
+				set {_gold.ragepitrandom} to GBooster({_gold.ragepitrandom}, loop-player)
+				set {_xp.ragepitrandom} to XPBooster({_xp.ragepitrandom}, loop-player)
+
+				set {_gold.ragepitrandom} to TierGBoost({_gold.ragepitrandom}, loop-player)
+				set {_xp.ragepitrandom} to TierXPBoost({_xp.ragepitrandom}, loop-player)
+
+				Zlataky("add", {_gold.ragepitrandom}, loop-player)
+				XP("remove", {_xp.ragepitrandom}, loop-player)
+
+				set {_toplist::*} to sorted {ragepit::*} from highest to lowest with output "@index"
+
+				set {_x} to 0
+				loop {_toplist::*}:
+					add 1 to {_x}
+					if loop-value-2 contains "%loop-player%":
+						if {_rage::1} is loop-player:
+							add 1 to {renown::%loop-player%}
+							message "&7Udelil jsi poskozeni za &c%{ragepit::%loop-player%}%&4❤ &7(ranked ##%{_x}%). &6+&e%round({_gold.ragepitrandom})% Ⓩ &3+&b%round({_xp.ragepitrandom})%xp &7(&a+&e1 Renown&7!)" to loop-player
+						else:
+							message "&7Udelil jsi poskozeni za &c%{ragepit::%loop-player%}%&4❤ &7(ranked ##%{_x}%). &6+&e%round({_gold.ragepitrandom})% Ⓩ &3+&b%round({_xp.ragepitrandom})%xp" to loop-player
+
+				LevelSystem(loop-player)
+
+				if {rating::%loop-player%::ragepit} is not set:
+					json("%loop-player%", "&8[&6&l!&r&8] &eAnketa! &7Ohodnot event Rage Pit! ||&2[5✯]||cmd:/nazor ragepit 5||ttp:&7Klikni zde pro &25✯&7.|| ||&a[4✯]||cmd:/nazor ragepit 4||ttp:&7Klikni zde pro &a4✯&7.|| ||&e[3✯]||cmd:/nazor ragepit 3||ttp:&7Klikni zde pro &e3✯&7.|| ||&c[2✯]||cmd:/nazor ragepit 2||ttp:&7Klikni zde pro &e&c2✯&7.|| ||&4[1✯]||cmd:/nazor ragepit 1||ttp:&7Klikni zde pro &41✯&7.")
+					if loop-player has permission "pit.admin":
+						send "&8[&c&l!&8] &4Admin! &7Podivej se na vysledky prikazem &d/vysledky&7." to loop-player
+
+			delete {ragepit::*}
+			delete {event::main}
+on skript start:
+	delete {ragepit::*}
+	delete {ragepit}
+
+on death of a player:
+	{ragepit} is true
+	attacker is a player
+	add 1 to {total::ragekills}
+	set {bonussb} to " &8▪ &7Zabito: &f%{total::ragekills}%&7/300"
+
+on damage of a player:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	{ragepit} is true
+	damage cause is not fall
+	attacker is a player
+	add damage to {ragepit::%attacker%}
+
+	set {_toplist::*} to sorted {ragepit::*} from highest to lowest with output "@index"
+	loop {_toplist::*}:
+		add 1 to {_x}
+		set {sbaddon::%loop-value%} to " &8▪ &7Poskozeni: &c%{ragepit::%loop-value%}%&4❤ &7(##%{_x}%)"
+
+on join:
+	if {ragepit} is set:
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "rambo":
+			set the maximum health of the player to 15 + {renown::%player%::bonusovesrdicko}
+		else:
+			set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+		wait 1 tick
+		heal player
+		if {ragepit::%player%} is not set:
+			set {ragepit::%player%} to 0
+
+		set {_toplist::*} to sorted {ragepit::*} from highest to lowest with output "@index"
+		loop {_toplist::*}:
+			add 1 to {_x}
+			set {sbaddon::%loop-value%} to " &8▪ &7Poskozeni: &c%{ragepit::%loop-value%}%&4❤ &7(##%{_x}%)"
+
+
+on quit:
+	if {ragepit} is set:
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "rambo":
+			set the maximum health of the player to 5 + {renown::%player%::bonusovesrdicko}
+		else:
+			set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+		wait 1 tick
+		heal player
+
+
+on right click with baked potato:
+	if lore of event-item contains "&5Bonusy &lrage potato&5!":
+		cancel event
+		heal player by 2 hearts
+		add 4 to absorption hearts of player
+		remove 1 of player's tool from player
+		if player has resistance:
+			set {_tier} to tier of potion effect resistance of player
+			if {_tier} is less or equal to 2:
+				remove resistance from player
+				apply potion of resistance of tier 2 to player for 10 seconds
+		else:
+			apply potion of resistance of tier 2 to player for 10 seconds
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+command /tdm [<text>]:
+	trigger:
+		if arg-1 is not set:
+			message "&7&m------------------------------------------"
+			message " &6Zakladni informace o eventu TDM&7:"
+			message ""
+			message "&3 * &5TDM &7je event, kdy jsou hraci rozrazeni do"
+			message "    &ccervenoho &7a &9modreho &7tymu a musi zabit druhy"
+			message "    &7tym co nejvicekrat. Vitezi tym s vyssim poctem &fzabiti&7."
+			message ""
+			message " &e&o,,Kdy se zase bude event poradat?"""
+			message "&3    &7Více info &f➜ &d/program"
+			message "&7&m------------------------------------------"
+		else:
+			if player doesn't have permission "pit.staff":
+				message "&8[&c&l!&8] &7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera."
+				stop
+			if arg-1 is not "start":
+				message "&cSpatne pouzity prikaz. &7arg-1 &8 = ""&fstart&8""&7, zacatek eventu."
+				stop
+		if arg-1 is "start":
+			if {event::main} is set:
+				message "&8[&4&l!&8] &7Event nelze spustit, jiz je zapnuty %{event::main}%&7."
+				stop
+			set {event::main} to "&5&lTDM"
+			broadcast "&5&lTDM! &7Za &f30 sekund &7zacne event."
+			set {spawnedboss1} to "&5&lEVENT TDM"
+			set {spawnedboss3} to "&f"
+
+			set {_time::zacatek} to 30
+			while {_time::zacatek} is set:
+				if {_time::zacatek} is higher or equal to 10:
+					set {spawnedboss2} to " &8▪ &7Zacina za: &f00:%{_time::zacatek}%"
+				else:
+					set {spawnedboss2} to " &8▪ &7Zacina za: &f00:0%{_time::zacatek}%"
+				if {_time::zacatek} is 0:
+					delete {_time::zacatek}
+				else:
+					remove 1 from {_time::zacatek}
+				wait 1 second
+
+			broadcast ""
+			broadcast "&8█&7███████&8█"
+			broadcast "&7████&4█&7████             &5&lTEAM DEATHMATCH"
+			broadcast "&7██&6██&4█&6██&7██"
+			broadcast "&7██&6█&8█&6█&8█&6█&7██   Vsichni byli rozdeleni do &ccervenoho"
+			broadcast "&7██&6█&8███&6█&7██  a &9modreho &7tymu! Vitezi tym, ktery bude"
+			broadcast "&7██&6██&8█&6██&7██   mit vyssi pocet &fzabiti &7druheho tymu!"
+			broadcast "&7███&6█&8█&6█&7███"
+			broadcast "&7███&6█&7█&6█&7███      &7Více info &f➜ &d/tdm &8┃ &d/program"
+			broadcast "&8█&7███████&8█"
+			broadcast ""
+
+			set {picker} to "&c"
+			set {red::_kills} to 0
+			set {blue::_kills} to 0
+			loop all players:
+				if {vanish::%loop-player%} is not set:
+					set {status::%loop-player%} to " &8▪ &7Status: &6Event"
+				set {helmet.tdm::%loop-player%} to loop-player's helmet
+				set {tdm.ka::%loop-player%} to 0
+				if lore of loop-player's helmet contains "Rychlost":
+					set {_tier} to tier of potion effect speed of loop-player
+					if {_tier} is 1:
+						remove speed from loop-player
+				if lore of loop-player's helmet contains "Fire Resistence":
+					remove fire resistance from loop-player
+				if {picker} is "&c":
+					set {tdm::%loop-player%} to "&c"
+					add loop-player to {red::*}
+					set {picker} to "&9"
+					if {staffmode::%loop-player%} is not set:
+						set loop-player's helmet to red wool block named "&cCerveny tym!"
+				else if {picker} is "&9":
+					set {tdm::%loop-player%} to "&9"
+					set {picker} to "&c"
+					add loop-player to {blue::*}
+					if {staffmode::%loop-player%} is not set:
+						set loop-player's helmet to blue wool block named "&9Modry tym!"
+				set {nametag::%loop-player%} to "%{tdm::%loop-player%}%"
+
+			send {red::*} title "&5&lTDM" with subtitle "&7Zabij co nejvice hracu &9modreho &7tymu!" for 4 seconds
+			send {blue::*} title "&5&lTDM" with subtitle "&7Zabij co nejvice hracu &ccerveneho &7tymu!" for 4 seconds
+
+			set {_toplist::*} to sorted {tdm.ka::*} from highest to lowest with output "@index"
+
+			set {bonussb} to " &8▪ &7Skore: &c%{red::_kills}% &7: &9%{blue::_kills}%"
+
+			loop {_toplist::*}:
+				add 1 to {_x}
+				set {sbaddon::%loop-value%} to " &8▪ &7Tve Z+A: &f%{tdm.ka::%loop-value%}% &7(##%{_x}%)"
+
+			set {__time::konec::min} to 5
+			set {_time::konec::sec} to 0
+			while {_time::konec::sec} is set:
+				if {_time::konec::sec} is higher or equal to 10:
+					set {spawnedboss2} to " &8▪ &7Zbyva: &f0%{__time::konec::min}%:%{_time::konec::sec}%"
+				else:
+					set {spawnedboss2} to " &8▪ &7Zbyva: &f0%{__time::konec::min}%:0%{_time::konec::sec}%"
+				if {_time::konec::sec} is 0:
+					if {__time::konec::min} is 0:
+						delete {_time::konec::sec}
+						delete {__time::konec::min}
+					else:
+						set {_time::konec::sec} to 59
+						if {__time::konec::min} is 1:
+							set {__time::konec::min} to 0
+						else:
+							remove 1 from {__time::konec::min}
+				else:
+					remove 1 from {_time::konec::sec}
+				wait 1 second
+
+			set {_top.tdm::*} to sorted {tdm.ka::*} from highest to lowest with output "@index"
+
+			loop 3 times:
+				set {_top.tdm::%loop-value%} to {_top.tdm::%loop-value%} parsed as offline player
+
+			broadcast ""
+			broadcast "&8█&7███████&8█"
+			broadcast "&7████&4█&7████             &5&lTEAM DEATHMATCH"
+			broadcast "&7██&6██&4█&6██&7██"
+			if {_top.tdm::1} is set:
+				broadcast "&7██&6█&8█&6█&8█&6█&7██  &e&l##1 %{prestigebrackets::%{_top.tdm::1}%}%[%{%{_top.tdm::1}%.level.color}%%{level::%{_top.tdm::1}%}%%{prestigebrackets::%{_top.tdm::1}%}%] %{tdm::%{_top.tdm::1}%}%%{_top.tdm::1}% &7- %{tdm::%{_top.tdm::1}%}%%{tdm.ka::%{_top.tdm::1}%}% &7Zabiti + Assistu"
+			else:
+				broadcast "&7██&6█&8█&6█&8█&6█&7██  &e&l##1 &f??? &7- &f✖ &7Zabiti + Assistu"
+			if {_top.tdm::2} is set:
+				broadcast "&7██&6█&8███&6█&7██  &7&l##2 %{prestigebrackets::%{_top.tdm::2}%}%[%{%{_top.tdm::2}%.level.color}%%{level::%{_top.tdm::2}%}%%{prestigebrackets::%{_top.tdm::2}%}%] %{tdm::%{_top.tdm::2}%}%%{_top.tdm::2}% &7- %{tdm::%{_top.tdm::2}%}%%{tdm.ka::%{_top.tdm::2}%}% &7Zabiti + Assistu"
+			else:
+				broadcast "&7██&6█&8███&6█&7██  &7&l##2 &f??? &7- &f✖ &7Zabiti + Assistu"
+			if {_top.tdm::3} is set:
+				broadcast "&7██&6██&8█&6██&7██  &6&l##3 %{prestigebrackets::%{_top.tdm::3}%}%[%{%{_top.tdm::3}%.level.color}%%{level::%{_top.tdm::3}%}%%{prestigebrackets::%{_top.tdm::3}%}%] %{tdm::%{_top.tdm::3}%}%%{_top.tdm::3}% &7- %{tdm::%{_top.tdm::3}%}%%{tdm.ka::%{_top.tdm::3}%}% &7Zabiti + Assistu"
+			else:
+				broadcast "&7██&6██&8█&6██&7██  &6&l##3 &f??? &7- &f✖ &7Zabiti + Assistu"
+
+			broadcast "&7███&6█&8█&6█&7███"
+			if {red::_kills} is equal to {blue::_kills}:
+				broadcast "&7███&6█&7█&6█&7███   &6&lRemiza! &7Se skorem &c%{red::_kills}% &7: &9%{blue::_kills}%&7."
+			else if {red::_kills} is higher than {blue::_kills}:
+				send "&7███&6█&7█&6█&7███    &c&lProhra! &7Se skorem &c%{red::_kills}% &7: &9%{blue::_kills}%&7. &7(&c-&f%{red::_kills} - {blue::_kills}%&7)" to {blue::*}
+				send "&7███&6█&7█&6█&7███   &a&lVyhra! &7Se skorem &c%{red::_kills}% &7: &9%{blue::_kills}%&7. &7(&a+&f%{red::_kills} - {blue::_kills}%&7)" to {red::*}
+			else if {blue::_kills} is higher than {red::_kills}:
+				send "&7███&6█&7█&6█&7███    &c&lProhra! &7Se skorem &c%{red::_kills}% &7: &9%{blue::_kills}%&7. &7(&c-&f%{blue::_kills} - {red::_kills}%&7)" to {red::*}
+				send "&7███&6█&7█&6█&7███   &a&lVyhra! &7Se skorem &c%{red::_kills}% &7: &9%{blue::_kills}%&7. &7(&a+&f%{blue::_kills} - {red::_kills}%&7)" to {blue::*}
+			broadcast "&8█&7███████&8█      &7Více info &f➜ &d/tdm &8┃ &d/program"
+			broadcast ""
+
+			loop all players:
+				if {vanish::%loop-player%} is not set:
+					if {strknumb::%loop-player%} is not set:
+						if {combat.second::%loop-player%} is set:
+							set {status::%loop-player%} to " &8▪ &7Combat: &c%{combat.second::%loop-player%}%&cs"
+						else:
+							set {status::%loop-player%} to " &8▪ &7Status: &fNecinny"
+					else:
+						set {status::%loop-player%} to " &8▪ &f%{%loop-player%.streak}% Streak &8┃ &e%{strknumb::%loop-player%}% Ⓩ"
+
+				set {_gold.tdmrandom} to ({tdm.ka::%loop-player%} + {red::_kills} + {blue::_kills}) * 1.5
+				set {_xp.tdmrandom} to ({tdm.ka::%loop-player%} + {red::_kills} + {blue::_kills}) * 1.1
+				if {red::_kills} is higher than {blue::_kills}:
+					if {red::*} contains "%loop-player%":
+						set {_gold.tdmrandom} to {_gold.tdmrandom} * 2
+						set {_xp.tdmrandom} to {_xp.tdmrandom} * 1.3
+				else if {blue::_kills} is higher than {red::_kills}:
+					if {blue::*} contains "%loop-player%":
+						set {_gold.tdmrandom} to {_gold.tdmrandom} * 2
+						set {_xp.tdmrandom} to {_xp.tdmrandom} * 1.3
+
+				if {%loop-player%.gbooster} is more than 0:
+					add {_gold.tdmrandom} * 0.2 to {_gold.tdmrandom}
+
+				if {%loop-player%.xpbooster} is more than 0:
+					add {_gold.tdmrandom} * 0.3 to {_xp.tdmrandom}
+
+				set {_gold.tdmrandom} to TierGBoost({_gold.tdmrandom}, loop-player)
+				set {_xp.tdmrandom} to TierXPBoost({_xp.tdmrandom}, loop-player)
+
+				Zlataky("add", {_gold.tdmrandom}, loop-player)
+				XP("remove", {_xp.tdmrandom}, loop-player)
+
+				set {_top.tdm::*} to sorted {tdm.ka::*} from highest to lowest with output "@index"
+
+				set {_x} to 0
+				loop {_top.tdm::*}:
+					add 1 to {_x}
+					if loop-value-2 contains "%loop-player%":
+						if {red::*} contains "%loop-player%":
+
+							if {_top.tdm::1} is loop-player:
+								add 1 to {renown::%loop-player%}
+								message "&7Ziskal jsi &c%{tdm.ka::%loop-player%}% &7Zabiti + Assistu &7(ranked ##%{_x}%). &6+&e%round({_gold.tdmrandom})% Ⓩ &3+&b%round({_xp.tdmrandom})%xp &7(&a+&e1 Renown&7!)" to loop-player
+							else:
+								message "&7Ziskal jsi &c%{tdm.ka::%loop-player%}% &7Zabiti + Assistu &7(ranked ##%{_x}%). &6+&e%round({_gold.tdmrandom})% Ⓩ &3+&b%round({_xp.tdmrandom})%xp" to loop-player
+						else if {blue::*} contains "%loop-player%":			
+							if {_top.tdm::1} is loop-player:
+								add 1 to {renown::%loop-player%}
+								message "&7Ziskal jsi &9%{tdm.ka::%loop-player%}% &7Zabiti + Assistu &7(ranked ##%{_x}%). &6+&e%round({_gold.tdmrandom})% Ⓩ &3+&b%round({_xp.tdmrandom})%xp &7(&a+&e1 Renown&7!)" to loop-player
+							else:
+								message "&7Ziskal jsi &9%{tdm.ka::%loop-player%}% &7Zabiti + Assistu &7(ranked ##%{_x}%). &6+&e%round({_gold.tdmrandom})% Ⓩ &3+&b%round({_xp.tdmrandom})%xp" to loop-player
+
+				LevelSystem(loop-player)
+
+			set {bonussb} to ""
+			set {spawnedboss1} to ""
+			set {spawnedboss2} to ""
+			set {spawnedboss3} to ""
+
+			loop all players:
+				set loop-player's helmet to {helmet.tdm::%loop-player%}
+				if lore of loop-player's helmet contains "Rychlost":
+					if loop-player has speed:
+						set {_tier} to tier of potion effect speed of loop-player
+						if {_tier} is 1:
+							apply potion of speed of tier 1 to the loop-player for 999 days
+					else:
+						apply potion of speed of tier 1 to the loop-player for 999 days
+				if lore of loop-player's helmet contains "Fire Resistence":
+					apply potion of fire resistance of tier 1 to the loop-player for 999 days
+
+				delete {helmet.tdm::%loop-player%}
+				set {sbaddon::%loop-player%} to ""
+				set {nametag::%loop-player%} to ""
+
+				if {rating::%loop-player%::tdm} is not set:
+					json("%loop-player%", "&8[&6&l!&r&8] &eAnketa! &7Ohodnot event TDM! ||&2[5✯]||cmd:/nazor tdm 5||ttp:&7Klikni zde pro &25✯&7.|| ||&a[4✯]||cmd:/nazor tdm 4||ttp:&7Klikni zde pro &a4✯&7.|| ||&e[3✯]||cmd:/nazor tdm 3||ttp:&7Klikni zde pro &e3✯&7.|| ||&c[2✯]||cmd:/nazor tdm 2||ttp:&7Klikni zde pro &e&c2✯&7.|| ||&4[1✯]||cmd:/nazor tdm 1||ttp:&7Klikni zde pro &41✯&7.")
+					if loop-player has permission "pit.admin":
+						send "&8[&c&l!&8] &4Admin! &7Podivej se na vysledky prikazem &d/vysledky&7." to loop-player
+
+			delete {tdm.ka::*}
+			delete {tdm::*}
+			delete {blue::*}
+			delete {red::*}
+			delete {picker}
+			delete {event::main}
+
+on skript start:
+	delete {tdm.ka::*}
+	delete {tdm::*}
+	delete {blue::*}
+	delete {red::*}
+	delete {picker}
+
+on inventory click:
+	if clicked slot is 39:
+		{picker} is set
+		cancel event
+
+on death of a player:
+	{picker} is set
+	if attacker is a player:
+		if {tdm::%victim%} is "&c":
+			add 1 to {blue::_kills}
+		else if {tdm::%victim%} is "&9":
+			add 1 to {red::_kills}
+
+		add 1 to {tdm.ka::%attacker%}
+		set {bonussb} to " &8▪ &7Skore: &c%{red::_kills}% &7: &9%{blue::_kills}%"
+
+	set {_top.tdm::*} to sorted {tdm.ka::*} from highest to lowest with output "@index"
+	loop {_top.tdm::*}:
+		add 1 to {_x}
+		set {sbaddon::%loop-value%} to " &8▪ &7Tve Z+A: &f%{tdm.ka::%loop-value%}% &7(##%{_x}%)"
+
+on join:
+	{picker} is set
+	if {%player%.log.kazna} is true:
+		if {renown::%player%::nadhernahelma} is set:
+			set {helmet.tdm::%player%} to unbreakable leather helmet dyed light blue named "&7Nadherná helma"
+	if lore of player's helmet contains "Rychlost":
+		set {_tier} to tier of potion effect speed of player
+		if {_tier} is 1:
+			remove speed from player
+	if lore of player's helmet contains "Fire Resistence":
+		remove fire resistance from player
+
+	set {helmet.tdm::%player%} to player's helmet
+
+	if {tdm::%player%} is not set:
+		set {tdm.ka::%player%} to 0
+		if {picker} is "&c":
+			set {tdm::%player%} to "&c"
+			add player to {red::*}
+			set {picker} to "&9"
+			set player's helmet to red wool block named "&cCerveny tym!"
+		else if {picker} is "&9":
+			set {tdm::%player%} to "&9"
+			set {picker} to "&c"
+			add player to {blue::*}
+			set player's helmet to blue wool block named "&9Modry tym!"
+	else:
+		if {tdm::%player%} contains "&c":
+			set player's helmet to red wool block named "&cCerveny tym!"
+		else if {tdm::%player%} contains "&9":
+			set player's helmet to blue wool block named "&9Modry tym!"
+
+	set {nametag::%player%} to "%{tdm::%player%}%"
+	set {_toplist::*} to sorted {tdm.ka::*} from highest to lowest with output "@index"
+
+	loop {_toplist::*}:
+		add 1 to {_x}
+		set {sbaddon::%loop-value%} to " &8▪ &7Tve Z+A: &f%{tdm.ka::%loop-value%}% &7(##%{_x}%)"
+
+on damage of a player:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	{picker} is set
+	attacker is a player	
+	if {tdm::%attacker%} is "&c":
+		if {tdm::%victim%} is "&c":
+			cancel event
+			send "&cTento hrac je ve tvem tymu!" to attacker
+	else if {tdm::%attacker%} is "&9":
+		if {tdm::%victim%} is "&9":
+			cancel event
+			send "&cTento hrac je ve tvem tymu!" to attacker
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+command /robbery [<text>]:
+	trigger:
+		if arg-1 is not set:
+			message "&7&m------------------------------------------"
+			message " &6Zakladni informace o eventu Robbery&7:"
+			message ""
+			message "&3 * &6Robbery &7je event, kdy kazdy hrac ziska &e100 Ⓩ"
+			message "    &7a musis &fukrast &7co nejvice zlataku od ostatnich."
+			message "    &6Bonus&7: Pokud bude dohromady ukradeno &e50.000 Ⓩ&7,"
+			message "    &7kazdy hrac ziska o 30%% vetsi odmenu!"
+			message ""
+			message " &e&o,,Kdy se zase bude event poradat?"""
+			message "&3    &7Více info &f➜ &d/program"
+			message "&7&m------------------------------------------"
+		else:
+			if player doesn't have permission "pit.staff":
+				message "&8[&c&l!&8] &7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera."
+				stop
+			if arg-1 is not "start":
+				message "&cSpatne pouzity prikaz. &7arg-1 &8 = ""&fstart&8""&7, zacatek eventu."
+				stop
+		if arg-1 is "start":
+			if {event::main} is set:
+				message "&8[&4&l!&8] &7Event nelze spustit, jiz je zapnuty %{event::main}%&7."
+				stop
+			set {event::main} to "&6&lRobbery"
+			broadcast "&6&lROBBERY! &7Za &f30 sekund &7zacne event."
+			set {spawnedboss1} to "&6&lEVENT ROBBERY"
+			set {spawnedboss3} to "&f"
+
+			set {_time::zacatek} to 30
+			while {_time::zacatek} is set:
+				if {_time::zacatek} is higher or equal to 10:
+					set {spawnedboss2} to " &8▪ &7Zacina za: &f00:%{_time::zacatek}%"
+				else:
+					set {spawnedboss2} to " &8▪ &7Zacina za: &f00:0%{_time::zacatek}%"
+				if {_time::zacatek} is 0:
+					delete {_time::zacatek}
+				else:
+					remove 1 from {_time::zacatek}
+				wait 1 second
+
+			broadcast ""
+			broadcast "&8█&7███████&8█"
+			broadcast "&7██&0█████&7██                     &6&lROBBERY"
+			broadcast "&7█&0███████&7█"
+			broadcast "&7█&0█&f█&3█&0█&f█&3█&0█&7█    Ukradni ostatnim co nejvice &ezlataku&7."
+			broadcast "&7█&0███████&7█  &6Bonus&7: Pokud bude ukradeno &a+&e50.000 Ⓩ&7,"
+			broadcast "&7█&0██&7███&0██&7█ &7kazdy obdrzi bonus o 30%% vetsi odmenu!"
+			broadcast "&7█&0█████&0██&7█"
+			broadcast "&7██&0█████&7██      &7Více info &f➜ &d/robbery &8┃ &d/program"
+			broadcast "&8█&7███████&8█"
+			broadcast ""
+
+			send all players title "&6&lROBBERY" with subtitle "&7Ukradni ostatnim co nejvic &ezlataku &7a zvitez!" for 4 seconds
+
+			set {robbery} to 0
+			set {bonussb} to " &8▪ &7Ukradeno: &e0 Ⓩ"
+
+			loop all players:
+				if {vanish::%loop-player%} is not set:
+					set {status::%loop-player%} to " &8▪ &7Status: &6Event"
+				set {robbery::%loop-player%} to 100
+				if {vanish::%loop-player%} is not set:
+					set {%loop-player%.bounty} to " &e%{robbery::%loop-player%}% Ⓩ"
+			set {_toplist::*} to sorted {robbery::*} from highest to lowest with output "@index"
+
+			loop {_toplist::*}:
+				add 1 to {_x}
+				set {sbaddon::%loop-value%} to " &8▪ &7Ucet: &e%{robbery::%loop-value%}% Ⓩ &7(##%{_x}%)"
+
+			set {__time::konec::min} to 5
+			set {_time::konec::sec} to 0
+			while {_time::konec::sec} is set:
+				if {_time::konec::sec} is higher or equal to 10:
+					set {spawnedboss2} to " &8▪ &7Zbyva: &f0%{__time::konec::min}%:%{_time::konec::sec}%"
+				else:
+					set {spawnedboss2} to " &8▪ &7Zbyva: &f0%{__time::konec::min}%:0%{_time::konec::sec}%"
+				if {_time::konec::sec} is 0:
+					if {__time::konec::min} is 0:
+						delete {_time::konec::sec}
+						delete {__time::konec::min}
+					else:
+						set {_time::konec::sec} to 59
+						if {__time::konec::min} is 1:
+							set {__time::konec::min} to 0
+						else:
+							remove 1 from {__time::konec::min}
+				else:
+					remove 1 from {_time::konec::sec}
+				wait 1 second
+
+			set {_top.robbery::*} to sorted {robbery::*} from highest to lowest with output "@index"
+
+			loop 3 times:
+				set {_top.robbery::%loop-value%} to {_top.robbery::%loop-value%} parsed as offline player
+
+			broadcast ""
+			broadcast "&8█&7███████&8█"
+			broadcast "&7██&0█████&7██                     &6&lROBBERY"
+			broadcast "&7█&0███████&7█"
+			if {_top.robbery::1} is set:
+				set {_num} to splitCoins("%{robbery::%{_top.robbery::1}%}%")
+				broadcast "&7█&0█&f█&3█&0█&f█&3█&0█&7█  &e&l##1 %{prestigebrackets::%{_top.robbery::1}%}%[%{%{_top.robbery::1}%.level.color}%%{level::%{_top.robbery::1}%}%%{prestigebrackets::%{_top.robbery::1}%}%] %coloured {_top.robbery::1}'s offline suffix%%{_top.robbery::1}% &7- &e%{_num}% Ⓩ"
+			else:
+				broadcast "&7█&0█&f█&3█&0█&f█&3█&0█&7█  &e&l##1 &f??? &7- &e✖ Ⓩ"
+			if {_top.robbery::2} is set:
+				set {_num} to splitCoins("%{robbery::%{_top.robbery::2}%}%")
+				broadcast "&7█&0███████&7█  &7&l##2 %{prestigebrackets::%{_top.robbery::2}%}%[%{%{_top.robbery::2}%.level.color}%%{level::%{_top.robbery::2}%}%%{prestigebrackets::%{_top.robbery::2}%}%] %coloured {_top.robbery::2}'s offline suffix%%{_top.robbery::2}% &7- &e%{_num}% Ⓩ"
+			else:
+				broadcast "&7█&0███████&7█  &7&l##2 &f??? &7- &e✖ Ⓩ"
+			if {_top.robbery::3} is set:
+				set {_num} to splitCoins("%{robbery::%{_top.robbery::3}%}%")
+				broadcast "&7█&0██&7███&0██&7█  &6&l##3 %{prestigebrackets::%{_top.robbery::3}%}%[%{%{_top.robbery::3}%.level.color}%%{level::%{_top.robbery::3}%}%%{prestigebrackets::%{_top.robbery::3}%}%] %coloured {_top.robbery::3}'s offline suffix%%{_top.robbery::3}% &7- &e%{_num}% Ⓩ"
+			else:
+				broadcast "&7█&0██&7███&0██&7█  &6&l##3 &f??? &7- &e✖ Ⓩ"
+
+			broadcast "&7█&0█████&0██&7█"
+
+			set {_num} to splitCoins("%{robbery}%")
+			if {robbery} is higher or equal to 50000:
+				broadcast "&7██&0█████&7██ &a&lUspech! &7Celkem ukradeno &e%{_num}%&7/&e50.000 Ⓩ&7."
+			else:
+				broadcast "&7██&0█████&7██ &c&lNeuspech! &7Ukradeno pouze &e%{_num}%&7/&e50.000 Ⓩ&7."
+
+			broadcast "&8█&7███████&8█      &7Více info &f➜ &d/robbery &8┃ &d/program"
+			broadcast ""
+
+			loop all players:
+				set {sbaddon::%loop-player%} to ""
+				if {vanish::%loop-player%} is not set:
+					if {strknumb::%loop-player%} is not set:
+						if {combat.second::%loop-player%} is set:
+							set {status::%loop-player%} to " &8▪ &7Combat: &c%{combat.second::%loop-player%}%&cs"
+						else:
+							set {status::%loop-player%} to " &8▪ &7Status: &fNecinny"
+					else:
+						set {status::%loop-player%} to " &8▪ &f%{%loop-player%.streak}% Streak &8┃ &e%{strknumb::%loop-player%}% Ⓩ"
+
+				if {vanish::%loop-player%} is not set:
+					if {strknumb::%loop-player%} is set:
+						set {%loop-player%.bounty} to " &e%{strknumb::%loop-player%}% Ⓩ"
+					else:
+						set {%loop-player%.bounty} to ""
+
+				set {_gold.robberyrandom} to {robbery::%loop-player%} * 1.1542
+				set {_xp.robberyrandom} to {robbery::%loop-player%} * 0.2568
+
+				if {robbery} is higher or equal to 50000:
+					set {_gold.robberyrandom} to {_gold.robberyrandom} * 1.3
+					set {_xp.robberyrandom} to {_xp.robberyrandom} * 1.3
+
+				set {_stash.r} to splitCoins("%{robbery::%loop-player%}%")
+				set {_gold.r} to splitCoins("%{_gold.robberyrandom}%")
+				set {_xp.r} to splitCoins("%{_xp.robberyrandom}%")
+
+				set {_gold.robberyrandom} to GBooster({_gold.robberyrandom}, loop-player)
+				set {_xp.robberyrandom} to XPBooster({_xp.robberyrandom}, loop-player)
+
+				set {_gold.robberyrandom} to TierGBoost({_gold.robberyrandom}, loop-player)
+				set {_xp.robberyrandom} to TierXPBoost({_xp.robberyrandom}, loop-player)
+
+				Zlataky("add", {_gold.robberyrandom}, loop-player)
+				XP("remove", {_xp.robberyrandom}, loop-player)
+
+				set {_toplist::*} to sorted {robbery::*} from highest to lowest with output "@index"
+
+				set {_x} to 0
+				loop {_toplist::*}:
+					add 1 to {_x}
+					if loop-value-2 contains "%loop-player%":
+						message "&7Dohromady jsi ukradl &e%{_stash.r}% Ⓩ &7(ranked ##%{_x}%). &6+&e%{_gold.r}% Ⓩ &3+&b%{_xp.r}%xp" to loop-player
+						if {_top.robbery::1} is loop-player:
+							add 1 to {renown::%loop-player%}
+							message "&7Dohromady jsi ukradl &e%{_stash.r}% Ⓩ &7(ranked ##%{_x}%). &6+&e%{_gold.r}% Ⓩ &3+&b%{_xp.r}%xp &7(&a+&e1 Renown&7!)" to loop-player
+
+						else:
+							message "&7Dohromady jsi ukradl &e%{_stash.r}% Ⓩ &7(ranked ##%{_x}%). &6+&e%{_gold.r}% Ⓩ &3+&b%{_xp.r}%xp" to loop-player
+
+				LevelSystem(loop-player)
+
+				if {rating::%loop-player%::robbery} is not set:
+					json("%loop-player%", "&8[&6&l!&r&8] &eAnketa! &7Ohodnot event Robbery! ||&2[5✯]||cmd:/nazor robbery 5||ttp:&7Klikni zde pro &25✯&7.|| ||&a[4✯]||cmd:/nazor robbery 4||ttp:&7Klikni zde pro &a4✯&7.|| ||&e[3✯]||cmd:/nazor robbery 3||ttp:&7Klikni zde pro &e3✯&7.|| ||&c[2✯]||cmd:/nazor robbery 2||ttp:&7Klikni zde pro &e&c2✯&7.|| ||&4[1✯]||cmd:/nazor robbery 1||ttp:&7Klikni zde pro &41✯&7.")
+					if loop-player has permission "pit.admin":
+						send "&8[&c&l!&8] &4Admin! &7Podivej se na vysledky prikazem &d/vysledky&7." to loop-player
+
+			delete {robbery::*}
+			delete {robbery}
+			delete {event::main}
+			set {spawnedboss1} to ""
+			set {spawnedboss2} to ""
+			set {spawnedboss3} to ""
+			set {bonussb} to ""
+
+on skript start:
+	delete {robbery::*}
+	delete {robbery}
+
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]->[{vanish::%attacker%} is not set]->[{vanish::%victim%} is not set]
+	attacker is a player
+	victim is a player
+	damage cause is not fall
+	{robbery} is set
+	if projectile is snowball:
+		stop
+	if projectile is not arrow:
+		if attacker's tool is fishing rod:
+			stop
+	set {_num} to {robbery::%victim%} * 0.05
+	set {_num} to round({_num})
+	add {_num} to {robbery}
+	set {_stolen} to splitCoins("%{robbery}%")
+	set {bonussb} to " &8▪ &7Ukradeno: &e%{_stolen}% Ⓩ"
+
+	if {_num} is 0:
+		{robbery::%victim%} is higher than 0
+		remove 1 from {robbery::%victim%}
+
+
+	remove {_num} from {robbery::%victim%}
+
+	set {_r} to random integer between 0 and 3
+	set {_y} to "1.%{_r}%" parsed as number
+	set {_z} to round({_num} * {_y} + 1)
+	if {robbery::%attacker%} is less than 10000:
+		if {robbery::%attacker%} + {_z} is higher than 10000:
+			set {_z} to 10000 - {robbery::%attacker%}
+			if {_z} is higher than 0:
+				add {_z} to {robbery::%attacker%}
+		else if {robbery::%attacker%} + {_z} is less or equal to 10000:
+			add {_z} to {robbery::%attacker%}
+
+
+	message "&e&lUkradeno &a+&e%{_z}% Ⓩ&e&l! &7od %{prestigebrackets::%victim%}%[%{%victim%.level.color}%%{level::%victim%}%%{prestigebrackets::%victim%}%] %coloured victim's offline suffix%%victim%&7." to attacker
+	message "&e&lUkradeno &c-&e%{_num}% Ⓩ&e&l! &7od %{prestigebrackets::%attacker%}%[%{%attacker%.level.color}%%{level::%attacker%}%%{prestigebrackets::%attacker%}%] %coloured attacker's offline suffix%%attacker%&7." to victim
+	set {_b.a} to splitCoins("%{robbery::%attacker%}%")
+	set {_b.v} to splitCoins("%{robbery::%victim%}%")
+	set {%attacker%.bounty} to " &e%{_b.a}% Ⓩ"
+	set {%victim%.bounty} to " &e%{_b.v}% Ⓩ"
+
+	set {_toplist::*} to sorted {robbery::*} from highest to lowest with output "@index"
+	loop {_toplist::*}:
+		add 1 to {_x}
+		set {_num} to splitCoins("%{robbery::%loop-value%}%")
+		set {sbaddon::%loop-value%} to " &8▪ &7Ucet: &e%{_num}% Ⓩ &7(##%{_x}%)"
+
+on death of a player:
+	{robbery} is set
+	if attacker is not a player:
+		if {robbery::%victim%} is less or equal to 20:
+			set {_num} to 0
+			add {_num} to {robbery}
+
+			set {robbery::%victim%} to 0
+			set {_stolen} to splitCoins("%{robbery}%")
+			set {bonussb} to " &8▪ &7Ukradeno: &e%{_stolen}% Ⓩ"
+		else:
+			set {_num} to {robbery::%victim%} / 2
+
+			set {_num} to round({_num})
+			add {_num} to {robbery}
+			set {_stolen} to splitCoins("%{robbery}%")
+			set {bonussb} to " &8▪ &7Ukradeno: &e%{_stolen}% Ⓩ"
+
+			remove {_num} from {robbery::%victim%}
+
+		set {_num} to splitCoins("%{_num}%")
+		message "&c&lUkradeno pri zabiti &c-&e%{_num}% Ⓩ &7(50%%)&c&l!" to victim
+
+		set {_b.v} to splitCoins("%{robbery::%victim%}%")
+		set {%victim%.bounty} to " &e%{_b.v}% Ⓩ"
+
+		set {_toplist::*} to sorted {robbery::*} from highest to lowest with output "@index"
+		loop {_toplist::*}:
+			add 1 to {_x}
+			set {_num} to splitCoins("%{robbery::%loop-value%}%")
+			set {sbaddon::%loop-value%} to " &8▪ &7Ucet: &e%{_num}% Ⓩ &7(##%{_x}%)"
+
+
+
+
+	attacker is a player
+	{vanish::%attacker%} is not set
+	if {robbery::%victim%} is less or equal to 20:
+		set {_num} to random integer between 10 and 30
+		add {_num} to {robbery}
+
+		set {_r} to random integer between 1 and 4
+		set {_y} to "1.%{_r}%" parsed as number
+		set {_z} to round({_num} * {_y} + 1)
+		if {robbery::%attacker%} is less than 10000:
+			if {robbery::%attacker%} + {_z} is higher than 10000:
+				set {_z} to 10000 - {robbery::%attacker%}
+				if {_z} is higher than 0:
+					add {_z} to {robbery::%attacker%}
+			else if {robbery::%attacker%} + {_z} is less or equal to 10000:
+				add {_z} to {robbery::%attacker%}
+
+		set {robbery::%victim%} to 0
+		set {_stolen} to splitCoins("%{robbery}%")
+		set {bonussb} to " &8▪ &7Ukradeno: &e%{_stolen}% Ⓩ"
+
+	else:
+		set {_num} to {robbery::%victim%} / 2
+
+		set {_num} to round({_num})
+		add {_num} to {robbery}
+		set {_stolen} to splitCoins("%{robbery}%")
+		set {bonussb} to " &8▪ &7Ukradeno: &e%{_stolen}% Ⓩ"
+
+		remove {_num} from {robbery::%victim%}
+
+		set {_r} to random integer between 0 and 4
+		set {_y} to "1.%{_r}%" parsed as number
+		set {_z} to round({_num} * {_y} + 1)
+		if {robbery::%attacker%} is less than 10000:
+			if {robbery::%attacker%} + {_z} is higher than 10000:
+				set {_z} to 10000 - {robbery::%attacker%}
+				if {_z} is higher than 0:
+					add {_z} to {robbery::%attacker%}
+			else if {robbery::%attacker%} + {_z} is less or equal to 10000:
+				add {_z} to {robbery::%attacker%}
+
+	set {_z} to splitCoins("%{_z}%")
+	set {_num} to splitCoins("%{_num}%")
+	message "&c&lUkradeno pri zabiti &a+&e%{_z}% Ⓩ &7(50%%)&c&l! &7od %{prestigebrackets::%victim%}%[%{%victim%.level.color}%%{level::%victim%}%%{prestigebrackets::%victim%}%] %coloured victim's offline suffix%%victim%&7." to attacker
+	message "&c&lUkradeno pri zabiti &c-&e%{_num}% Ⓩ &7(50%%)&c&l! &7od %{prestigebrackets::%attacker%}%[%{%attacker%.level.color}%%{level::%attacker%}%%{prestigebrackets::%attacker%}%] %coloured attacker's offline suffix%%attacker%&7." to victim
+	set {_b.a} to splitCoins("%{robbery::%attacker%}%")
+	set {_b.v} to splitCoins("%{robbery::%victim%}%")
+	set {%attacker%.bounty} to " &e%{_b.a}% Ⓩ"
+	set {%victim%.bounty} to " &e%{_b.v}% Ⓩ"
+
+	set {_toplist::*} to sorted {robbery::*} from highest to lowest with output "@index"
+	loop {_toplist::*}:
+		add 1 to {_x}
+		set {_num} to splitCoins("%{robbery::%loop-value%}%")
+		set {sbaddon::%loop-value%} to " &8▪ &7Ucet: &e%{_num}% Ⓩ &7(##%{_x}%)"
+
+on join:
+	{robbery} is set
+	if {robbery::%player%} is not set:
+		set {robbery::%player%} to 100
+
+	set {_toplist::*} to sorted {robbery::*} from highest to lowest with output "@index"
+
+	loop {_toplist::*}:
+		add 1 to {_x}
+		set {_num} to splitCoins("%{robbery::%loop-value%}%")
+		set {sbaddon::%loop-value%} to " &8▪ &7Ucet: &e%{_num}% Ⓩ &7(##%{_x}%)"
+
+	set {_j} to splitCoins("%{robbery::%player%}%")
+	set {%player%.bounty} to " &e%{_j}% Ⓩ"
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+command /cake [<text>]:
+	trigger:
+		if arg-1 is not set:
+			message "&7&m------------------------------------------"
+			message " &6Zakladni informace o eventu Cake&7:"
+			message ""
+			message "&3 * &dCake &7je event, kdy se &fuprostred &7pitu se objevi"
+			message "    &7obrovsky dort, ktery musis snist, tim ziskas &ezlataky&7."
+			message "    &6Bonus&7: Za kazdy cely snezeny &ddort &7ziskas"
+			message "    &7jako bonus &ezlataky &7navic."
+			message ""
+			message " &e&o,,Kdy se zase bude event poradat?"""
+			message "&3    &7Více info &f➜ &d/program"
+			message "&7&m------------------------------------------"
+		else:
+			if player doesn't have permission "pit.staff":
+				message "&8[&c&l!&8] &7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera."
+				stop
+			if arg-1 is not "setup" or "start":
+				message "&cSpatne pouzity prikaz. &7arg-1 &8= ""&fsetup&8""&7, nastaveni. &7arg-1 &8 = ""&fstart&8""&7, zacatek eventu."
+				stop
+		if arg-1 is "setup":
+			give player 1 stick named "&d&lDort Setup" with lore "||&7Klikni &flevym &7pro nastaveni bodu &f##&l1&7.||&7Klikni &fpravym &7pro nastaveni bodu &f##&l2&7.||||&7&o(Vyhozenim predmetu zrusis nastavovani.)"
+
+		if arg-1 is "start":
+			if {event::cake} is set:
+				message "&8[&4&l!&8] &7Nelze spustit event &d&lCake&7, jiz je spusten."
+				stop
+			set {event::cake} to 1
+			broadcast "&d&lOBROVSKY DORT! &7Rychle ho utikej snist, nachazi se v dropu."
+
+			send all players title "" with subtitle "&d&lObrovsky Dort! &7Rychle ho utikej snist, nachazi se v dropu." for 3 seconds
+
+			loop blocks within {cake.loc::1} to {cake.loc::2}:
+				set block at loop-block to cake:0
+			wait 2 minutes
+			loop blocks within {cake.loc::1} to {cake.loc::2}:
+				set block at loop-block to air
+			broadcast "&d&lOBROVSKY DORT! &7Uz zmizel, tak zase priste."
+			loop all players:
+				if {rating::%loop-player%::cake} is not set:
+					json("%loop-player%", "&8[&6&l!&r&8] &eAnketa! &7Ohodnot event Cake! ||&2[5✯]||cmd:/nazor cake 5||ttp:&7Klikni zde pro &25✯&7.|| ||&a[4✯]||cmd:/nazor cake 4||ttp:&7Klikni zde pro &a4✯&7.|| ||&e[3✯]||cmd:/nazor cake 3||ttp:&7Klikni zde pro &e3✯&7.|| ||&c[2✯]||cmd:/nazor cake 2||ttp:&7Klikni zde pro &e&c2✯&7.|| ||&4[1✯]||cmd:/nazor cake 1||ttp:&7Klikni zde pro &41✯&7.")
+					if loop-player has permission "pit.admin":
+						send "&8[&c&l!&8] &4Admin! &7Podivej se na vysledky prikazem &d/vysledky&7." to loop-player
+
+			delete {cakepart::*}
+			delete {wholecake::*}
+			delete {cakemoney::*}
+			delete {cake.timer::*}
+			delete {event::cake}
+
+on skript start:
+	loop blocks within {cake.loc::1} to {cake.loc::2}:
+		set block at loop-block to air
+	delete {cakepart::*}
+	delete {wholecake::*}
+	delete {cakemoney::*}
+	delete {cake.timer::*}
+
+on block physics:
+	block is cake or ladder
+	cancel event
+
+on right click on cake:
+	if {staffmode::%player%} or {vanish::%player%} is set:
+		message "&c&lMas zapnuty Staff Mode/Vanish! &7Nelze nicit dort."
+		stop
+	if {cake.timer::%player%} is set:
+		stop
+	add 1 to {cakepart::%player%}
+	if event-block is cake:0:
+		set event-block to cake:1
+	else if event-block is cake:1:
+		set event-block to cake:2
+	else if event-block is cake:2:
+		set event-block to cake:3
+	else if event-block is cake:3:
+		set event-block to cake:4
+	else if event-block is cake:4:
+		set event-block to cake:5
+	else if event-block is cake:5:
+		set event-block to cake:6
+	else if event-block is cake:6:
+		set event-block to air
+		add 1 to {wholecake::%player%}
+
+		if {wholecake::%player%} is less than 10:
+			set {_cakenumb} to 5
+		if {wholecake::%player%} is between 10 and 19:
+			set {_cakenumb} to 6
+		if {wholecake::%player%} is between 20 and 29:
+			set {_cakenumb} to 7
+		if {wholecake::%player%} is between 30 and 39:
+			set {_cakenumb} to 8
+		if {wholecake::%player%} is between 40 and 49:
+			set {_cakenumb} to 9
+		if {wholecake::%player%} is higher than 49:
+			set {_cakenumb} to 10
+
+		add {_cakenumb} to {cakemoney::%player%}
+		set {_cakenumb} to TierGBoost({_cakenumb}, player)
+		Zlataky("add", {_cakenumb}, player)
+		message "&d&lDORT! &6+&e%{_cakenumb}% Ⓩ &bsnedl jsi &f%{wholecake::%player%}% &bcely dort. &7(Ziskano &e%{cakemoney::%player%}% Ⓩ&7.)"
+		stop
+
+	if {cakepart::%player%} is less than 100:
+		set {_cakenumb} to 1
+	if {cakepart::%player%} is between 100 and 299:
+		set {_cakenumb} to 2
+	if {cakepart::%player%} is between 300 and 499:
+		set {_cakenumb} to 3
+	if {cakepart::%player%} is between 500 and 699:
+		set {_cakenumb} to 4
+	if {cakepart::%player%} is higher than 699:
+		set {_cakenumb} to 5
+
+	add {_cakenumb} to {cakemoney::%player%}
+	set {_cakenumb} to TierGBoost({_cakenumb}, player)
+	Zlataky("add", {_cakenumb}, player)
+	message "&d&lDORT! &6+&e%{_cakenumb}% Ⓩ &7snedl jsi &f%{cakepart::%player%}% &7kousku. (Ziskano &e%{cakemoney::%player%}% Ⓩ&7.)"
+
+	set {cake.timer::%player%} to true
+	wait 3 ticks
+	delete {cake.timer::%player%}
+
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+command /2xrewards [<text>]:
+	trigger:
+		if arg-1 is not set:
+			message "&7&m------------------------------------------"
+			message " &6Zakladni informace o eventu 2x Rewards&7:"
+			message ""
+			message "&3 * &22x Rewards &7je event, kdy se v jednom z rohu"
+			message "    &7mapy objevi kruh z &bdiamond blocku&7, a pokud"
+			message "    &7na nich nekoho zabijes, ziskas &fdvojnasobek"
+			message "    &7odmeny za zabiti."
+			message ""
+			message " &e&o,,Kdy se zase bude event poradat?"""
+			message "&3    &7Více info &f➜ &d/program"
+			message "&7&m------------------------------------------"
+		else:
+			if player doesn't have permission "pit.staff":
+				message "&8[&c&l!&8] &7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera."
+				stop
+			if arg-1 is not "1" or "2" or "3" or "4" or "start":
+				message "&cSpatne pouzity prikaz. &7arg-1 &8= ""&f1/2/3/4&8""&7, roh. &7arg-1 &8 = ""&fstart&8""&7, zacatek eventu."
+				stop
+		if arg-1 is "1" or "2" or "3" or "4":
+			set {doublerewards::%arg-1%} to block at player
+			message "&aLokace uspesne nastavena! &7Pozice &6##%arg-1% &7byla nastavena."
+		if arg-1 is "start":
+			if {event::2xrewards} is set:
+				message "&8[&4&l!&8] &7Nelze spustit event &2&l2x Rewards&7, jiz je spusten."
+				stop
+			set {event::2xrewards} to 1
+			if {kotl} is set:
+				if {kotl} is 1:
+					set {doublerewards} to 2
+				else if {kotl} is 2 or 3:
+					set {doublerewards} to 1
+				else if {kotl} is 4:
+					set {doublerewards} to 3
+			else:
+				set {doublerewards} to random integer between 1 and 4
+			broadcast "&2&l2x Rewards! &7v &6&l%{roh.nazev::%{doublerewards}%}% &7na &f5 minut&7."
+			send all players title "" with subtitle "&2&l2x Rewards! &7v &6&l%{roh.nazev::%{doublerewards}%}% &7na &f5 minut&7!" for 3 seconds
+
+			set {__time::konec::min} to 5
+			set {_time::konec::sec} to 0
+
+			if {roh.holo::%{doublerewards}%} is set:				
+				create holo object "&d&lMINOR EVENT!;&72x &bXP &7/ &ezlataku&7!;&7v &6&l%{roh.nazev::%{doublerewards}%}%;&a0%{__time::konec::min}%:0%{_time::konec::sec}%" with id "doublerewards" at {roh.holo::%{doublerewards}%}
+
+			while {_time::konec::sec} is set:
+				if {_time::konec::sec} is higher or equal to 10:
+					edit holo object "doublerewards" with line 4 to "&a0%{__time::konec::min}%:%{_time::konec::sec}%"
+					loop {list::%{doublerewards}%::*}:
+						chance of 22%:
+							display 1 villager happy particle at loop-value with color 100, 100, 100 offset by 0.0, 0.0, 0.0
+
+				else:
+					edit holo object "doublerewards" with line 4 to "&a0%{__time::konec::min}%:0%{_time::konec::sec}%"
+					loop {list::%{doublerewards}%::*}:
+						chance of 22%:
+							display 1 villager happy particle at loop-value with color 100, 100, 100 offset by 0.0, 0.0, 0.0
+
+				if {_time::konec::sec} is 0:
+					if {__time::konec::min} is 0:
+						delete {_time::konec::sec}
+						delete {__time::konec::min}
+					else:
+						set {_time::konec::sec} to 59
+						if {__time::konec::min} is 1:
+							set {__time::konec::min} to 0
+						else:
+							remove 1 from {__time::konec::min}
+				else:
+					remove 1 from {_time::konec::sec}
+				wait 1 second
+			broadcast "&2&l2x Rewards! &7v &6&l%{roh.nazev::%{doublerewards}%}% &7skoncil."
+			loop all players:
+				if {rating::%loop-player%::2xrewards} is not set:
+					json("%loop-player%", "&8[&6&l!&r&8] &eAnketa! &7Ohodnot event 2x Rewards! ||&2[5✯]||cmd:/nazor 2xrewards 5||ttp:&7Klikni zde pro &25✯&7.|| ||&a[4✯]||cmd:/nazor 2xrewards 4||ttp:&7Klikni zde pro &a4✯&7.|| ||&e[3✯]||cmd:/nazor 2xrewards 3||ttp:&7Klikni zde pro &e3✯&7.|| ||&c[2✯]||cmd:/nazor 2xrewards 2||ttp:&7Klikni zde pro &e&c2✯&7.|| ||&4[1✯]||cmd:/nazor 2xrewards 1||ttp:&7Klikni zde pro &41✯&7.")
+					if loop-player has permission "pit.admin":
+						send "&8[&c&l!&8] &4Admin! &7Podivej se na vysledky prikazem &d/vysledky&7." to loop-player
+
+			delete {doublerewards}
+			delete holo object "doublerewards"
+			delete {event::2xrewards}
+on skript start:
+	delete {doublerewards}
+	delete {list::*}
+	loop all blocks in region "2xrewards-1":
+		loop-value is air
+		chance of 1%:
+			add loop-value's location to {list::1::*}
+	loop all blocks in region "2xrewards-2":
+		loop-value is air
+		chance of 1%:
+			add loop-value's location to {list::2::*}
+	loop all blocks in region "2xrewards-3":
+		loop-value is air
+		chance of 1%:
+			add loop-value's location to {list::3::*}
+	loop all blocks in region "2xrewards-4":
+		loop-value is air
+		chance of 1%:
+			add loop-value's location to {list::4::*}
+
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+command /kotl [<text>]:
+	trigger:
+		if arg-1 is not set:
+			message "&7&m------------------------------------------"
+			message " &6Zakladni informace o eventu KOTL&7:"
+			message ""
+			message "&3 * &aKOTL &7je event, kdy se v jednom z rohu"
+			message "    &7mapy objevi objekt s &6zebriky&7, kdy ten"
+			message "    &7kdo bude stat na vrcholu ziska &fodmenu"
+			message "    &7kazdou sekundu."
+			message ""
+			message " &e&o,,Kdy se zase bude event poradat?"""
+			message "&3    &7Více info &f➜ &d/program"
+			message "&7&m------------------------------------------"
+		else:
+			if player doesn't have permission "pit.staff":
+				message "&8[&c&l!&8] &7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera."
+				stop
+			if arg-1 is not "1" or "2" or "3" or "4" or "start":
+				message "&cSpatne pouzity prikaz. &7arg-1 &8= ""&f1/2/3/4&8""&7, roh. &7arg-1 &8 = ""&fstart&8""&7, zacatek eventu."
+				stop
+		if arg-1 is "1" or "2" or "3" or "4":
+			set {kotl::%arg-1%} to location at player
+			message "&aLokace uspesne nastavena! &7Pozice &6##%arg-1% &7byla nastavena."
+		if arg-1 is "start":
+			if {event::kotl} is set:
+				message "&8[&4&l!&8] &7Nelze spustit event &a&lKOTL&7, jiz je spusten."
+				stop
+			set {event::kotl} to 1
+			if {doublerewards} is set:
+				if {doublerewards} is 1:
+					set {kotl} to 2
+				else if {doublerewards} is 2 or 3:
+					set {kotl} to 1
+				else if {doublerewards} is 4:
+					set {kotl} to 3
+			else:
+				set {kotl} to random integer between 1 and 4
+			broadcast "&a&lKOTL! &7v &6&l%{roh.nazev::%{kotl}%}% &7na &f3 minuty&7."
+			send all players title "" with subtitle "&a&lKotL! &7v &6&l%{roh.nazev::%{kotl}%}% &7na &e3 minuty&7." for 3 seconds
+
+			set {_kotl} to location at {kotl::%{kotl}%}
+			loop 10 times:
+				set block at {_kotl} to light green clay
+				set block north east {_kotl} to light green clay
+				set block north {_kotl} to light green clay
+				set block east {_kotl} to light green clay
+
+				set block 2 north {_kotl} to ladder:1
+				set block 2 north 1 east {_kotl} to ladder:1
+				set block 1 south {_kotl} to ladder:3
+				set block 1 south 1 east {_kotl} to ladder:3
+				set block west {_kotl} to ladder:4
+				set block 1 west 1 north {_kotl} to ladder:4
+				set block 2 east {_kotl} to ladder:5
+				set block 2 east 1 north {_kotl} to ladder:5
+
+				if loop-value is 10:
+					loop 8 times:
+						if loop-value-2 is less or equal to 4:
+							set block 2 south (2 - loop-value-2) west {_kotl} to upside-down normal slab item
+							set block 3 south (2 - loop-value-2) west {_kotl} to upside-down normal slab item
+							set block 3 north (2 - loop-value-2) west {_kotl} to upside-down normal slab item
+							set block 4 north (2 - loop-value-2) west {_kotl} to upside-down normal slab item
+
+						set block 3 east (5 - loop-value-2) north {_kotl} to upside-down normal slab item
+						set block 4 east (5 - loop-value-2) north {_kotl} to upside-down normal slab item
+						set block 2 west (5 - loop-value-2) north {_kotl} to upside-down normal slab item
+						set block 3 west (5 - loop-value-2) north {_kotl} to upside-down normal slab item
+					set {roh::1} to location at block 5 east 4 north {_kotl}
+					set {roh::2} to location at block 4 south 3 west 5 above {_kotl}
+
+				set {_kotl} to block above {_kotl}
+
+			set {__time::konec::min} to 3
+			set {_time::konec::sec} to 0
+
+			if {roh.holo::%{kotl}%} is set:				
+				create holo object "&d&lMINOR EVENT!;&aKOTL&7!;&7v &6&l%{roh.nazev::%{kotl}%}%;&a0%{__time::konec::min}%:0%{_time::konec::sec}%" with id "kotl" at {roh.holo::%{kotl}%}
+
+			while {_time::konec::sec} is set:
+				if {_time::konec::sec} is higher or equal to 10:
+					edit holo object "kotl" with line 4 to "&a0%{__time::konec::min}%:%{_time::konec::sec}%"
+				else:
+					edit holo object "kotl" with line 4 to "&a0%{__time::konec::min}%:0%{_time::konec::sec}%"
+
+				delete {_x}
+				delete {_reward::*}
+				loop all players:
+					loop-player's gamemode is not creative or spectator
+					if loop-player's location is within {roh::1} to {roh::2}:
+						add 1 to {_x}
+						add loop-player to {_reward::*}
+
+				set {_gold.random} to random integer between 60 and 75 / {_x}
+				set {_gold.random} to round({_gold.random})
+				loop {_reward::*}:
+					if {_x} is 1:
+						set {_out} to ""
+					else if {_x} is 2 or 3 or 4:
+						set {_out} to " (%{_x}% hraci)"
+					else if {_x} is higher or equal to 5:
+						set {_out} to " (%{_x}% hracu)"
+
+					Zlataky("add", {_gold.random}, loop-value)
+					set {_gold.random} to TierGBoost({_gold.random}, player)
+					show an actionbar from "&a&lKOTL! &6+&e%{_gold.random}% Ⓩ&7/s%{_out}%" to loop-value
+
+				if {_time::konec::sec} is 0:
+					if {__time::konec::min} is 0:
+						delete {_time::konec::sec}
+						delete {__time::konec::min}
+					else:
+						set {_time::konec::sec} to 59
+						if {__time::konec::min} is 1:
+							set {__time::konec::min} to 0
+						else:
+							remove 1 from {__time::konec::min}
+				else:
+					remove 1 from {_time::konec::sec}
+				wait 1 second
+
+
+			broadcast "&a&lKOTL! &7v &6&l%{roh.nazev::%{kotl}%}% &7skoncil."
+			loop all players:
+				if {rating::%loop-player%::kotl} is not set:
+					json("%loop-player%", "&8[&6&l!&r&8] &eAnketa! &7Ohodnot event KotL! ||&2[5✯]||cmd:/nazor kotl 5||ttp:&7Klikni zde pro &25✯&7.|| ||&a[4✯]||cmd:/nazor kotl 4||ttp:&7Klikni zde pro &a4✯&7.|| ||&e[3✯]||cmd:/nazor kotl 3||ttp:&7Klikni zde pro &e3✯&7.|| ||&c[2✯]||cmd:/nazor kotl 2||ttp:&7Klikni zde pro &e&c2✯&7.|| ||&4[1✯]||cmd:/nazor kotl 1||ttp:&7Klikni zde pro &41✯&7.")
+					if loop-player has permission "pit.admin":
+						send "&8[&c&l!&8] &4Admin! &7Podivej se na vysledky prikazem &d/vysledky&7." to loop-player
+
+			set {_kotl} to location at {kotl::%{kotl}%}
+			set {roh::1} to location at block 3 west 4 north 9 above {_kotl}
+			set {roh::2} to location at block 3 south 4 east {_kotl}
+			loop blocks within {roh::1} to {roh::2}:
+				set block at loop-block to air
+			delete {roh::*}
+			delete {kotl}
+			delete holo object "kotl"
+			delete {event::kotl}
+on skript start:
+	loop 4 times:
+		set {_kotl} to location at {kotl::%loop-number%}
+		set {roh::1} to location at block 3 west 4 north 9 above {_kotl}
+		set {roh::2} to location at block 3 south 4 east {_kotl}
+		loop blocks within {roh::1} to {roh::2}:
+			set block at loop-block to air
+	delete {kotl}
+	delete {roh::*}
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+command /dragonegg [<text>]:
+	trigger:
+		if arg-1 is not set:
+			message "&7&m------------------------------------------"
+			message " &6Zakladni informace o eventu Draci Vejce&7:"
+			message ""
+			message "&3 * &5Draci Vejce &7je event, kdy se uprostred pitu"
+			message "    &7objevi &ddragon egg&7, na ktere musis klikat."
+			message "    &7Vejce ma nad sebou &fhologram&7, ktery udava"
+			message "    &7kolikrat na nej lze kliknout nez se &bteleportuje&7."
+			message ""
+			message " &e&o,,Kdy se zase bude event poradat?"""
+			message "&3    &7Více info &f➜ &d/program"
+			message "&7&m------------------------------------------"
+		else:
+			if player doesn't have permission "pit.staff":
+				message "&8[&c&l!&8] &7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera."
+				stop
+			if arg-1 is not "1" or "2" or "3" or "4" or "5" or "6" or "7" or "8" or "9" or "10" or "start":
+				message "&cSpatne pouzity prikaz. &7arg-1 &8= ""&f1/2/../9/10&8""&7, lokace. &7arg-1 &8 = ""&fstart&8""&7, zacatek eventu."
+				stop
+		if arg-1 is "1" or "2" or "3" or "4" or "5" or "6" or "7" or "8" or "9" or "10":
+			set {_num} to arg-1 parsed as number
+			add 4 to {_num}
+			set {egg.loc::%{_num}%} to player's location
+			message "&aLokace uspesne nastavena! &7Pozice &6##%arg-1% &7byla nastavena."
+		if arg-1 is "start":
+			if {event::dragonegg} is set:
+				message "&8[&4&l!&8] &7Nelze spustit event &5&lDraci Vejce&7, jiz je spusten."
+				stop
+			set {event::dragonegg} to 1
+			set {drag::max} to 5
+			set {drag::act} to {drag::max}
+
+			set {_loc} to {egg.loc::%{drag::max}%}
+			add 1.5 to y-coordinate of {_loc}
+			create holo object "&7&l%{drag::act}%x" with id "holoegg" at {_loc}
+
+			set block at {egg.loc::%{drag::max}%} to dragon egg
+			broadcast "&5&lDRACI VEJCE! &7event prave zacal, rychle utikej do &fstredu&7!"
+			send all players title "" with subtitle "&5&lDraci Vejce! &7event prave zacal, rychle utikej do &fstredu&7!" for 3 seconds
+
+			strike fake fake lightning at {egg.loc::%{drag::max}%}
+
+			wait 3 minutes
+
+			if {drag::max} is set:
+				set block at {egg.loc::%{drag::max}%} to air
+				delete holo object "holoegg"
+				loop all players:
+					if {drag::clicked::%loop-player%} is not set:
+						add loop-player to {_list::*}
+				message "&5&lDRACI VEJCE! &7event skoncil." to {_list::*}
+				loop {drag::clicked::*}:
+					set {_xp} to splitCoins("%{drag.totalxp::%loop-index%}%")
+					set {_gold} to splitCoins("%25 * {drag::clicked::%loop-index%}%")
+					message "&5&lDRACI VEJCE! &7event skoncil. Ziskal jsi &3+&b%{_xp}%xp &6+&e%{_gold}% Ⓩ&7." to loop-index parsed as player
+				loop all players:
+					if {rating::%loop-player%::dragonegg} is not set:
+						json("%loop-player%", "&8[&6&l!&r&8] &eAnketa! &7Ohodnot event Dragon Egg! ||&2[5✯]||cmd:/nazor dragonegg 5||ttp:&7Klikni zde pro &25✯&7.|| ||&a[4✯]||cmd:/nazor dragonegg 4||ttp:&7Klikni zde pro &a4✯&7.|| ||&e[3✯]||cmd:/nazor dragonegg 3||ttp:&7Klikni zde pro &e3✯&7.|| ||&c[2✯]||cmd:/nazor dragonegg 2||ttp:&7Klikni zde pro &e&c2✯&7.|| ||&4[1✯]||cmd:/nazor dragonegg 1||ttp:&7Klikni zde pro &41✯&7.")
+						if loop-player has permission "pit.admin":
+							send "&8[&c&l!&8] &4Admin! &7Podivej se na vysledky prikazem &d/vysledky&7." to loop-player
+
+				delete {drag::*}
+				delete {drag::xp::*}
+				delete {drag::clicked::*}
+				delete {drag.timer::*}
+				delete {drag.totalxp::*}
+				delete {event::dragonegg}
+on skript start:
+	loop 10 times:
+		set block at {egg.loc::%loop-number + 4%} to air
+
+	delete {drag::*}
+	delete {drag::xp::*}
+	delete {drag::clicked::*}
+	delete {drag.timer::*}
+	delete {drag.totalxp::*}
+
+on left click on dragon egg:
+	cancel event
+	if {drag.timer::%player%} is set:
+		stop
+	{drag::max} is set
+	remove 1 from {drag::act}
+
+	edit holo object "holoegg" with line 1 to "&7&l%{drag::act}%x"
+
+	if {drag::act} is 0:
+		delete holo object "holoegg"
+
+		set {drag::max} to {drag::max} + 1
+		set block at clicked block to air
+		if {drag::max} is 15:
+			loop all players:
+				if {drag::clicked::%loop-player%} is not set:
+					add loop-player to {_list::*}
+			message "&5&lDRACI VEJCE! &7event skoncil." to {_list::*}
+			loop {drag::clicked::*}:
+				set {_xp} to splitCoins("%{drag.totalxp::%loop-index%}%")
+				set {_gold} to splitCoins("%25 * {drag::clicked::%loop-index%}%")
+				message "&5&lDRACI VEJCE! &7event skoncil. Ziskal jsi &3+&b%{_xp}%xp &6+&e%{_gold}% Ⓩ&7." to loop-index parsed as player
+			loop all players:
+				if {rating::%loop-player%::dragonegg} is not set:
+					json("%loop-player%", "&8[&6&l!&r&8] &eAnketa! &7Ohodnot event Dragon Egg! ||&2[5✯]||cmd:/nazor dragonegg 5||ttp:&7Klikni zde pro &25✯&7.|| ||&a[4✯]||cmd:/nazor dragonegg 4||ttp:&7Klikni zde pro &a4✯&7.|| ||&e[3✯]||cmd:/nazor dragonegg 3||ttp:&7Klikni zde pro &e3✯&7.|| ||&c[2✯]||cmd:/nazor dragonegg 2||ttp:&7Klikni zde pro &e&c2✯&7.|| ||&4[1✯]||cmd:/nazor dragonegg 1||ttp:&7Klikni zde pro &41✯&7.")
+					if loop-player has permission "pit.admin":
+						send "&8[&c&l!&8] &4Admin! &7Podivej se na vysledky prikazem &d/vysledky&7." to loop-player
+
+			delete {drag::*}
+			delete {drag::xp::*}
+			delete {drag::clicked::*}
+			delete {drag.timer::*}
+			delete {drag.totalxp::*}
+			delete {event::dragonegg}
+			stop
+
+		set {drag::act} to {drag::max}
+		set block at {egg.loc::%{drag::max}%} to dragon egg
+		strike fake fake lightning at {egg.loc::%{drag::max}%}
+
+		set {_loc} to {egg.loc::%{drag::max}%}
+		add 1.5 to y-coordinate of {_loc}
+		create holo object "&7&l%{drag::max}%x" with id "holoegg" at {_loc}
+
+	add 1 to {drag::clicked::%player%}
+
+	set {_gold.dragrandom} to 25
+	set {_xp.dragrandom} to 4 + {drag::xp::%player%}
+
+	add {_xp.dragrandom} to {drag.totalxp::%player%}
+
+	set {_gold.dragrandom} to GBooster({_gold.dragrandom}, player)
+	set {_xp.dragrandom} to XPBooster({_xp.dragrandom}, player)
+
+	Zlataky("add", {_gold.dragrandom}, player)
+	XP("remove", {_xp.dragrandom}, player)
+
+	set {_gold.dragrandom} to TierGBoost({_gold.dragrandom}, player)
+	set {_xp.dragrandom} to TierXPBoost({_xp.dragrandom}, player)
+
+	message "&5&lDRACI VEJCE! &7Kliknul jsi po &6##&e%{drag::clicked::%player%}%&7. &3+&b%{_xp.dragrandom}%xp &6+&e%{_gold.dragrandom}%Ⓩ"
+
+	add random integer between 0 and 2 to {drag::xp::%player%}
+
+	LevelSystem(player)
+
+	set {drag.timer::%player%} to true
+	wait 10 ticks
+	delete {drag.timer::%player%}
+
+
+on right click on dragon egg:
+	cancel event
+	if {drag.timer::%player%} is set:
+		stop
+	{drag::max} is set
+	remove 1 from {drag::act}
+
+	edit holo object "holoegg" with line 1 to "&7&l%{drag::act}%x"
+
+	if {drag::act} is 0:
+		delete holo object "holoegg"
+
+		set {drag::max} to {drag::max} + 1
+		set block at clicked block to air
+		if {drag::max} is 15:
+			loop all players:
+				if {drag::clicked::%loop-player%} is not set:
+					add loop-player to {_list::*}
+			message "&5&lDRACI VEJCE! &7event skoncil." to {_list::*}
+			loop {drag::clicked::*}:
+				set {_xp} to splitCoins("%{drag.totalxp::%loop-index%}%")
+				set {_gold} to splitCoins("%25 * {drag::clicked::%loop-index%}%")
+				message "&5&lDRACI VEJCE! &7event skoncil. Ziskal jsi &3+&b%{_xp}%xp &6+&e%{_gold}% Ⓩ&7." to loop-index parsed as player
+			loop all players:
+				if {rating::%loop-player%::dragonegg} is not set:
+					json("%loop-player%", "&8[&6&l!&r&8] &eAnketa! &7Ohodnot event Dragon Egg! ||&2[5✯]||cmd:/nazor dragonegg 5||ttp:&7Klikni zde pro &25✯&7.|| ||&a[4✯]||cmd:/nazor dragonegg 4||ttp:&7Klikni zde pro &a4✯&7.|| ||&e[3✯]||cmd:/nazor dragonegg 3||ttp:&7Klikni zde pro &e3✯&7.|| ||&c[2✯]||cmd:/nazor dragonegg 2||ttp:&7Klikni zde pro &e&c2✯&7.|| ||&4[1✯]||cmd:/nazor dragonegg 1||ttp:&7Klikni zde pro &41✯&7.")
+					if loop-player has permission "pit.admin":
+						send "&8[&c&l!&8] &4Admin! &7Podivej se na vysledky prikazem &d/vysledky&7." to loop-player
+
+			delete {drag::*}
+			delete {drag::xp::*}
+			delete {drag::clicked::*}
+			delete {drag.timer::*}
+			delete {drag.totalxp::*}
+			delete {event::dragonegg}
+			stop
+
+		set {drag::act} to {drag::max}
+		set block at {egg.loc::%{drag::max}%} to dragon egg
+		strike fake fake lightning at {egg.loc::%{drag::max}%}
+
+		set {_loc} to {egg.loc::%{drag::max}%}
+		add 1.5 to y-coordinate of {_loc}
+		create holo object "&7&l%{drag::max}%x" with id "holoegg" at {_loc}
+
+	add 1 to {drag::clicked::%player%}
+
+	set {_gold.dragrandom} to 25
+	set {_xp.dragrandom} to 4 + {drag::xp::%player%}
+
+	add {_xp.dragrandom} to {drag.totalxp::%player%}
+
+	set {_gold.dragrandom} to GBooster({_gold.dragrandom}, player)
+	set {_xp.dragrandom} to XPBooster({_xp.dragrandom}, player)
+
+	set {_gold.dragrandom} to TierGBoost({_gold.dragrandom}, player)
+	set {_xp.dragrandom} to TierXPBoost({_xp.dragrandom}, player)
+
+	Zlataky("add", {_gold.dragrandom}, player)
+	XP("remove", {_xp.dragrandom}, player)
+
+	message "&5&lDRACI VEJCE! &7Kliknul jsi po &6##&e%{drag::clicked::%player%}%&7. &3+&b%{_xp.dragrandom}%xp &6+&e%{_gold.dragrandom}%Ⓩ"
+
+	add random integer between 0 and 2 to {drag::xp::%player%}
+
+	LevelSystem(player)
+
+	set {drag.timer::%player%} to true
+	wait 10 ticks
+	delete {drag.timer::%player%}
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+function splitCoins(int: text) :: text:
+    set {_int} to {_int} parsed as number    
+    set {_int} to round({_int})
+    set {_Coins} to "%{_int}%"
+    set {_length} to length of {_Coins}
+    if {_length} >= 3:
+        set {_mod} to {_length} mod 3
+        if {_mod} is 0:
+            set {_groups::*} to groups 1 of {_Coins} matched to "([0-9]{3})"
+            set {_Coins} to join {_groups::*} with "."
+        else:
+            set {_1} to the first {_mod} characters of {_Coins}
+            set {_2} to subtext of {_Coins} from characters ({_mod}+1) to {_length}
+            set {_groups::*} to groups 1 of {_2} matched to "([0-9]{3})"
+            set {_Coins} to "%{_1}%.%join {_groups::*} with "".""%"
+    return {_Coins}

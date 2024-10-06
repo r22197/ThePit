@@ -1,0 +1,10 @@
+import:
+	ch.njol.skript.hooks.VaultHook
+ 
+expression %offlineplayer%'s offline prefix:
+	get:
+		return VaultHook.chat.getPlayerPrefix(null, expr-1)  
+
+expression %offlineplayer%'s offline suffix:
+	get:
+		return VaultHook.chat.getPlayerSuffix(null, expr-1)

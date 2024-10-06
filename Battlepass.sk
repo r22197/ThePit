@@ -1,0 +1,321 @@
+function BattlePass(s: number, l: number, r: text, i: item, name: text, lore: text, c: text, p: player, vip: text):
+	if "%{_vip}%" is not "":
+		set {_z} to "&7Pouze pro rank &a+%{_vip}%&7."
+		if {_p} doesn't have permission "pit.battlepass.%{_l}%":
+			if {level::%{_p}%} is less than {_l}:
+				set {_x} to nether quartz ore
+			if {level::%{_p}%} is higher or equal to {_l}:
+				set {_x} to bars
+			create a gui slot {_s} of {_p} with {_x} named "&dLevel &7[&f##%{_l}%&7]" with lore "||&6Odmena za &llevel&6!||&8&l ▶ &e%{_r}%||||&8&l⚔ %{_z}% &8&l⚔||&7    ➥ &cNemas potrebne opravneni k levelu."
+			stop
+		set {_x} to nether quartz ore
+	else:
+		set {_z} to "&7Odmena pro &fvsechny&7."
+		set {_x} to bedrock
+	if {level::%{_p}%} is less than {_l}:
+		create a gui slot {_s} of {_p} with {_x} named "&dLevel &7[&f##%{_l}%&7]" with lore "||&6Odmena za &llevel&6!||&8&l ▶ &e%{_r}%||||&8&l⚔ %{_z}% &8&l⚔||&7    ➥ &cNemas dostatecny level pro odmenu."
+	if {level::%{_p}%} is higher or equal to {_l}:
+		if {battlepass::%{_p}%::%{_l}%} is not set:
+			create a gui slot {_s} of {_p} with light green glass block named "&dLevel &7[&f##%{_l}%&7]" with lore "||&6Odmena za &llevel&6!||&8&l ▶ &e%{_r}%||||&8&l⚔ %{_z}% &8&l⚔||&7    ➥ &aKlikni zde pro vybrani odmeny." to run:
+
+				set {battlepass::%{_p}%::%{_l}%} to 1
+
+				if "%{_r}%" contains "Booster Zlataku":
+					set {_lore} to {_lore} parsed as number
+					add {_lore} to {%{_p}%.gbooster}
+				else if "%{_r}%" contains "XP Booster":
+					set {_lore} to {_lore} parsed as number
+					add {_lore} to {%{_p}%.xpbooster}
+				else if "%{_r}%" contains "Sípu":
+					make {_p} run command "%{_lore}%" as op
+				else if "%{_r}%" contains "Ⓩ":
+					set {_lore} to {_lore} parsed as number
+					Zlataky("add", {_lore}, {_p})
+				else if "%{_r}%" contains "Tag":
+					if "%{_name}%" is not "":
+						make console execute command "/lp user %{_p}% permission set %{_name}%"
+					make console execute command "/lp user %{_p}% permission set %{_lore}%"
+				else if "%{_r}%" doesn't contain "Sípu" or "XP Booster" or "Booster Zlataku" or "Ⓩ" or "Tag":
+					give {_p} {_i} named "%{_name}%" with lore "%{_lore}%"
+
+				message "&8[&b&l!&8] &7Jako odmenu jsi ziskal %{_c}%&7."
+
+				if "%now%" contains "Wed":
+					Quest("wednesday5", 50, {_p})
+
+				BattlePass({_s}, {_l}, "%{_r}%", {_i}, "%{_name}%", "%{_lore}%", "%{_c}%", player, "%{_vip}%")
+		else:
+			create a gui slot {_s} of {_p} with light gray glass block named "&dLevel &7[&f##%{_l}%&7]" with lore "||&6Odmena za &llevel&6!||&8&l ▶ &e%{_r}%||||&8&l⚔ %{_z}% &8&l⚔||&7    ➥ &5Odmenu pro level sis jiz vybral."
+
+
+
+
+command /battlepass [<text>]:
+	trigger:
+		if {battlepass::%player%::bought} is not set:
+			open chest with 5 rows named "&eProhlízís si Battle Pass.." to player
+			wait 2 ticks
+			set {_tokeny::%player%} to placeholder "tm_tokens_raw" from player parsed as number
+			set {_token} to splitCoins("%{_tokeny::%player%}%")
+
+			set {_blackSlots::*} to 0, 1, 2, 3, 5, 6, 7, 8, 36, 37, 38, 39, 40, 41, 42, 43 and 44
+			format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+			create a gui slot 4 of player with nether star named "&bBattle Pass" with lore "||&5Info o &lBattle Passu&5!||&8&l ▶ &7Za kazdy novy &blevel &7lze ziskat||    &7odmenu z velkeho spektra!||||&8&l ▶ &7Lze ziskat kazdy &fpremiovy &7predmet,||    &atagy&7, &6sipy&7, &ezlataky &7a mnoho dalsiho!||||&5Tva &lekonomika&5!|| &8▪ &7Zlataky: &e%{gold::%player%}% Ⓩ|| &8▪ &7PvPCoiny: &6%{_token}% Ⓟ||&7&o(Lze zakoupit v obchode! &d&o/obchod&7&o)||&r"
+			set {_shop} to {gold::%player%}
+			replace all "." in {_shop} with ""
+			set {_shop} to {_shop} parsed as number
+
+			if {_tokeny::%player%} is greater than or equal to 100:
+				if {_shop} is greater than or equal to 1500:
+					create a gui slot 24 of player with orange dye named "&bZakoupit Battle Pass" with lore "||&7Battle Pass stoji &6100 Ⓟ&7.||&f ➥ &aKlikni zde pro zaplaceni PvPCoiny." to run:
+						close player's inventory
+						set {battlepass::%player%::bought} to 1
+						message ""
+						message "&aUspesne jsi zakoupil Battle Pass."
+						make console execute command "/tm remove %player% 100"
+						message ""
+						make player execute command "/battlepass"
+					create a gui slot 20 of player with yellow dye named "&bZakoupit Battle Pass" with lore "||&7Battle Pass stoji &e1.500 Ⓩ&7.||&f ➥ &aKlikni zde pro zaplaceni zlataky." to run:
+						close player's inventory
+						set {battlepass::%player%::bought} to 1
+						Zlataky("remove", 1500, player)
+						message ""
+						message "&aUspesne jsi zakoupil Battle Pass."
+						message "&f ➥ &7Z uctu ti bylo odebrano &e1.500 Ⓩ&7."
+						message ""	
+						make player execute command "/battlepass"			
+				else:		
+					create a gui slot 24 of player with orange dye named "&bZakoupit Battle Pass" with lore "||&7Battle Pass stoji &6100 Ⓟ&7.||&f ➥ &aKlikni zde pro zaplaceni PvPCoiny." to run:
+						close player's inventory
+						set {battlepass::%player%::bought} to 1
+						message ""
+						message "&aUspesne jsi zakoupil Battle Pass."
+						make console execute command "/tm remove %player% 100"
+						message ""
+						make player execute command "/battlepass"
+					create a gui slot 20 of player with yellow dye named "&bZakoupit Battle Pass" with lore "||&7Battle Pass stoji &e1.500 Ⓩ&7.||&f ➥ &cNemas dostatek zlataku."			
+			else:
+				if {_shop} is greater than or equal to 1500:
+					create a gui slot 24 of player with orange dye named "&bZakoupit Battle Pass" with lore "||&7Battle Pass stoji &6100 Ⓟ&7.||&f ➥ &cNemas dostatek PvPCoinu."
+					create a gui slot 20 of player with yellow dye named "&bZakoupit Battle Pass" with lore "||&7Battle Pass stoji &e1.500 Ⓩ&7.||&f ➥ &aKlikni zde pro zaplaceni zlataky." to run:
+						close player's inventory
+						set {battlepass::%player%::bought} to 1
+						Zlataky("remove", 1500, player)
+						message ""
+						message "&aUspesne jsi zakoupil Battle Pass."
+						message "&f ➥ &7Z uctu ti bylo odebrano &e1.500 Ⓩ&7."
+						message ""
+						make player execute command "/battlepass"	
+				else:
+					create a gui slot 24 of player with orange dye named "&bZakoupit Battle Pass" with lore "||&7Battle Pass stoji &6100 Ⓟ&7.||&f ➥ &cNemas dostatek PvPCoinu."
+					create a gui slot 20 of player with yellow dye named "&bZakoupit Battle Pass" with lore "||&7Battle Pass stoji &e1.500 Ⓩ&7.||&f ➥ &cNemas dostatek zlataku."
+		else:
+			if arg-1 is not set:
+				make player execute command "/battlepass 1"
+				stop
+			if arg-1 is "1":
+				open chest with 6 rows named "&eProhlízís si Battle Pass.." to player
+				wait 2 ticks
+
+				set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16 and 17
+				format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+				create a gui slot 0 of player with rose red named "&cOpustit menu" with lore "||&eKlikni zde pro opusteni menu!||&r" to close
+				create a gui slot 4 of player with skull of ("%player%" parsed as an offline player) named "&6Postava" with lore "||&7Momentalne mas level %{%player%.level.color}%%{level::%player%}%&7.||&r"
+				create a gui slot 8 of player with Arrow named "&bStrana &3##2" with lore "||&eKlikni zde pro dalsi stranku!||&r" to run:
+					make player execute command "/battlepass 2"
+
+#-----------------------------------------------------------------				
+				BattlePass(18, 1, "100 Ⓩ", stone, "", "100", "&e100 Ⓩ", player, "")
+				BattlePass(19, 2, "XP Booster &8[&f15 minut&8]", stone, "", "15", "&bXP Booster &7na &f15 minut", player, "&eMighty")
+				BattlePass(20, 3, "12 Obsidianu", 12 obsidian, "&8Obsidian", "||&7Obsidian vydrzi &f60 sekund&7.||&r", "&812 Obsidianu", player, "")
+				BattlePass(21, 4, "250 Ⓩ", stone, "", "250", "&e250 Ⓩ", player, "")
+				BattlePass(22, 5, "Booster Zlataku &8[&f15 minut&8]", stone, "", "15", "&eBooster Zlataku &7na &f15 minut", player, "")
+				BattlePass(23, 6, "5 Sípu Jedu", stone, "", "/ca give poison 5", "&f5 &2Sípu Jedu", player, "")
+				if {prestige::%player%} is not set:
+					BattlePass(24, 7, "Tag &8""&5##corona&8"" &7➜ &d/tag", stone, "", "pit.tag.corona", "tag &8""&5##corona&8""", player, "")
+				else:
+					BattlePass(24, 7, "Elixír rychlosti", water_bottle:8194 with no nbt, "&bElixír rychlosti", "||&5Info o &lelixíru&5!||&8&l ▶ &9Rychlost I (3:00)||&r", "&bElixír rychlosti", player, "")
+				BattlePass(25, 8, "2 Vybusne TNT", 2 tnt, "&6Vybusne TNT", "||&7Vyhodi do vzduchu vsechny||&7v okruhu &f7 bloku&7.||&r", "&f2 &6Vybusne TNT", player, "&eMighty")
+				BattlePass(26, 9, "6 Pavucin", 6 cobweb, "", "", "&f6 Pavucin", player, "")
+				BattlePass(27, 10, "Random Box", player head with custom nbt "{SkullOwner:{Id:""2c43fd70-4e96-4d1c-bb85-f44d2eb3f563"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWJhMDlkZDRiMTU2ZjRjZTJlODk3ZjRjMzZhYmRiZDQ2YTk1OTNhNjE4NDU4NjE2ZThkYTM5YTEwYTg1M2Y2In19fQ==""}]}}}", "&cRandom Box", "||&5Obsah &lboxu&5!||&d&l ▶ &dNahodna maska||&d&l ▶ &dNovy level||&d&l ▶ &dBoost Zlataku||&d&l ▶ &dXP Booster||||&eKvalita boxu &8[&6&l✩✩✩✩✩&8]||&eZiskano uzivatelem &f%player%&e.||||&eHodne stesti ti preje tym PvPCraftu. &4❤", "&cRandom Box", player, "")
+				BattlePass(28, 11, "2 Prohazovacich snehovych kouli", 2 snowball, "&6Prohazovaci snehove koule", "||&7Prohod svoji lokaci s &fostatnimi&7.||&r", "&f2 &6Prohazovacich snehovych kouli", player, "&eMighty")
+				BattlePass(29, 12, "400 Ⓩ", stone, "", "400", "&e400 Ⓩ", player, "")
+				BattlePass(30, 13, "5 Sípu Ohne", stone, "", "/ca give hellfire 5", "&f5 &cSípu Ohne", player, "")
+				BattlePass(31, 14, "Booster Zlataku &8[&f20 minut&8]", stone, "", "20", "&eBooster Zlataku &7na &f20 minut", player, "")
+				if {prestige::%player%} is not set:
+					BattlePass(32, 15, "Tag &8""&2$&8"" &7➜ &d/tag", stone, "", "pit.tag.dollar", "tag &8""&2$&8""", player, "&eMighty")
+				else:
+					BattlePass(32, 15, "Elixír regenerace", water_bottle:8225 with no nbt, "&dElixír regenerace", "||&5Info o &lelixíru&5!||&8&l ▶ &9Regenerace II (1:30)||&r", "&dElixír regenerace", player, "&eMighty")
+				BattlePass(33, 16, "18 Obsidianu", 18 obsidian, "&8Obsidian", "||&7Obsidian vydrzi &f60 sekund&7.||&r", "&818 Obsidianu", player, "")
+				BattlePass(34, 17, "4 Vybusne TNT", 4 tnt, "&6Vybusne TNT", "||&7Vyhodi do vzduchu vsechny||&7v okruhu &f7 bloku&7.||&r", "&f4 &6Vybusne TNT", player, "")
+				BattlePass(35, 18, "XP Booster &8[&f20 minut&8]", stone, "", "20", "&bXP Booster &7na &f20 minut", player, "")
+				BattlePass(36, 19, "8 Pavucin", 8 cobweb, "", "", "&f8 Pavucin", player, "")
+				BattlePass(37, 20, "Random Box", player head with custom nbt "{SkullOwner:{Id:""2c43fd70-4e96-4d1c-bb85-f44d2eb3f563"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWJhMDlkZDRiMTU2ZjRjZTJlODk3ZjRjMzZhYmRiZDQ2YTk1OTNhNjE4NDU4NjE2ZThkYTM5YTEwYTg1M2Y2In19fQ==""}]}}}", "&cRandom Box", "||&5Obsah &lboxu&5!||&d&l ▶ &dNahodna maska||&d&l ▶ &dNovy level||&d&l ▶ &dBoost Zlataku||&d&l ▶ &dXP Booster||||&eKvalita boxu &8[&6&l✩✩✩✩✩&8]||&eZiskano uzivatelem &f%player%&e.||||&eHodne stesti ti preje tym PvPCraftu. &4❤", "&cRandom Box", player, "")
+				BattlePass(38, 21, "5 Prohazovacich snehovych kouli", 5 snowball, "&6Prohazovaci snehove koule", "||&7Prohod svoji lokaci s &fostatnimi&7.||&r", "&f5 &6Prohazovacich snehovych kouli", player, "")
+				BattlePass(39, 22, "prut Catcher", glowing unbreakable fishing rod, "&cCatcher", "&8 ➥ &7Zivotu&7: &a3&8/&f3||||&7Pritahni ostatni &chrace &7k sobe,||&7cooldown &f10 sekund&7.", "&cCatcher", player, "&eMighty")
+				if {prestige::%player%} is not set:
+					BattlePass(40, 23, "Tag &8""&4❤&8"" &7➜ &d/tag", stone, "", "pit.tag.heart", "tag &8""&4❤&8""", player, "")
+				else:
+					BattlePass(40, 23, "Elixír jedu", water_bottle:16388 with no nbt, "&2Elixír jedu", "||&5Info o &lelixíru&5!||&8&l ▶ &9Jed I (0:33)||&r", "&2Elixír jedu", player, "")
+				BattlePass(41, 24, "500 Ⓩ", stone, "", "500", "&e500 Ⓩ", player, "")
+
+				BattlePass(42, 25, "4 Vybusne TNT", 4 tnt, "&6Vybusne TNT", "||&7Vyhodi do vzduchu vsechny||&7v okruhu &f7 bloku&7.||&r", "&f2 &6Vybusne TNT", player, "")
+				BattlePass(43, 26, "XP Booster &8[&f25 minut&8]", stone, "", "25", "&bXP Booster &7na &f25 minut", player, "&aHeroic")
+				BattlePass(44, 27, "12 Pavucin", 12 cobweb, "", "", "&f12 Pavucin", player, "")
+				BattlePass(45, 28, "5 Sípu Thora", stone, "", "/ca give thor 5", "&f5 &bSípu Thora", player, "")
+				BattlePass(46, 29, "24 Obsidianu", 24 obsidian, "&8Obsidian", "||&7Obsidian vydrzi &f60 sekund&7.||&r", "&824 Obsidianu", player, "")
+				BattlePass(47, 30, "Random Box", player head with custom nbt "{SkullOwner:{Id:""2c43fd70-4e96-4d1c-bb85-f44d2eb3f563"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWJhMDlkZDRiMTU2ZjRjZTJlODk3ZjRjMzZhYmRiZDQ2YTk1OTNhNjE4NDU4NjE2ZThkYTM5YTEwYTg1M2Y2In19fQ==""}]}}}", "&cRandom Box", "||&5Obsah &lboxu&5!||&d&l ▶ &dNahodna maska||&d&l ▶ &dNovy level||&d&l ▶ &dBoost Zlataku||&d&l ▶ &dXP Booster||||&eKvalita boxu &8[&6&l✩✩✩✩✩&8]||&eZiskano uzivatelem &f%player%&e.||||&eHodne stesti ti preje tym PvPCraftu. &4❤", "&cRandom Box", player, "&aHeroic")
+				BattlePass(48, 31, "800 Ⓩ", stone, "", "800", "&e800 Ⓩ", player, "")
+				BattlePass(49, 32, "8 Vybusne TNT", 8 tnt, "&6Vybusne TNT", "||&7Vyhodi do vzduchu vsechny||&7v okruhu &f7 bloku&7.||&r", "&f8 &6Vybusne TNT", player, "")
+				BattlePass(50, 33, "XP Booster &8[&f30 minut&8]", stone, "", "30", "&bXP Booster &7na &f30 minut", player, "")
+				BattlePass(51, 34, "28 Obsidianu", 28 obsidian, "&8Obsidian", "||&7Obsidian vydrzi &f60 sekund&7.||&r", "&828 Obsidianu", player, "")
+				BattlePass(52, 35, "5 Sípu Vybuchu", stone, "", "/ca give explosive 5", "&f5 &6Sípu Vybuchu", player, "")
+				BattlePass(53, 36, "7 Prohazovacich snehovych kouli", 7 snowball, "&6Prohazovaci snehove koule", "||&7Prohod svoji lokaci s &fostatnimi&7.||&r", "&f7 &6Prohazovacich snehovych kouli", player, "&aHeroic")
+#------------------------------------------------------------------------------------------------------
+			if arg-1 is "2":
+				open chest with 6 rows named "&eProhlízís si Battle Pass.." to player
+				wait 2 ticks
+
+				set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16 and 17
+				format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+				create a gui slot 0 of player with Arrow named "&bStrana &3##1" with lore "||&eKlikni zde pro predchozi stranku!||&r" to run:
+					make player execute command "/battlepass 1"
+				create a gui slot 4 of player with skull of ("%player%" parsed as an offline player) named "&6Postava" with lore "||&7Momentalne mas level %{%player%.level.color}%%{level::%player%}%&7.||&r"
+				create a gui slot 8 of player with Arrow named "&bStrana &3##3" with lore "||&eKlikni zde pro dalsi stranku!||&r" to run:
+					make player execute command "/battlepass 3"
+
+
+				BattlePass(18, 37, "10 Vybusne TNT", 10 tnt, "&6Vybusne TNT", "||&7Vyhodi do vzduchu vsechny||&7v okruhu &f7 bloku&7.||&r", "&f10 &6Vybusne TNT", player, "")
+				if {prestige::%player%} is not set:
+					BattlePass(19, 38, "Tag &8""&4❤&8"" &7➜ &d/tag", stone, "", "pit.tag.heart", "tag &8""&4❤&8""", player, "&bExalted")
+				else:
+					BattlePass(19, 38, "Elixír uzdravení", water_bottle:16453 with no nbt, "&dElixír uzdravení", "||&5Info o &lelixíru&5!||&8&l ▶ &dUzdravení &c2&4❤||&r", "&dElixír uzdravení", player, "&bExalted")
+				BattlePass(20, 39, "Booster Zlataku &8[&f30 minut&8]", stone, "", "30", "&eBooster Zlataku &7na &f30 minut", player, "")
+				BattlePass(21, 40, "Random Box", player head with custom nbt "{SkullOwner:{Id:""2c43fd70-4e96-4d1c-bb85-f44d2eb3f563"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWJhMDlkZDRiMTU2ZjRjZTJlODk3ZjRjMzZhYmRiZDQ2YTk1OTNhNjE4NDU4NjE2ZThkYTM5YTEwYTg1M2Y2In19fQ==""}]}}}", "&cRandom Box", "||&5Obsah &lboxu&5!||&d&l ▶ &dNahodna maska||&d&l ▶ &dNovy level||&d&l ▶ &dBooster Zlataku||&d&l ▶ &dXP Booster||||&eKvalita boxu &8[&6&l✩✩✩✩✩&8]||&eZiskano uzivatelem &f%player%&e.||||&eHodne stesti ti preje tym PvPCraftu. &4❤", "&cRandom Box", player, "")
+				BattlePass(22, 41, "1.000 Ⓩ", stone, "", "1000", "&e1.000 Ⓩ", player, "")
+				BattlePass(23, 42, "5 Sípu Hromu", stone, "", "/ca give thundergod 5", "&f5 &8Sípu Hromu", player, "")
+				BattlePass(24, 43, "5 Schodu", 5 clay_bricks stairs, "&6Schody", "||&5Info o &lschodech&5!||&8&l ▶ &7Postav schody o vysce &f3 bloku&7.||||&7Schody zmizi za &e20 sekund&7.", "&f5 &6Schodu", player, "&bExalted")
+				BattlePass(25, 44, "XP Booster &8[&f35 minut&8]", stone, "", "35", "&bXP Booster &7na &f35 minut", player, "")
+				if {prestige::%player%} is not set:
+					BattlePass(26, 45, "Tag &8""&2Pepega&8"" &7➜ &d/tag", stone, "", "pit.tag.pepega", "tag &8""&2Pepega&8""", player, "")
+				else:
+					BattlePass(26, 45, "Elixír síly", water_bottle:8233 with no nbt, "&5Elixír síly", "||&5Info o &lelixíru&5!||&8&l ▶ &9Síla II (1:30)||&r", "&5Elixír síly", player, "")
+				BattlePass(27, 46, "10 Prohazovacich snehovych kouli", 10 snowball, "&6Prohazovaci snehove koule", "||&7Prohod svoji lokaci s &fostatnimi&7.||&r", "&f10 &6Prohazovacich snehovych kouli", player, "")
+				BattlePass(28, 47, "Booster Zlataku &8[&f35 minut&8]", stone, "", "35", "&eBooster Zlataku &7na &f35 minut", player, "")
+				BattlePass(29, 48, "32 Obsidianu", 32 obsidian, "&8Obsidian", "||&7Obsidian vydrzi &f60 sekund&7.||&r", "&832 Obsidianu", player, "")
+				BattlePass(30, 49, "1.200 Ⓩ", stone, "", "1200", "&e1.200 Ⓩ", player, "")
+				BattlePass(31, 50, "Random Box", player head with custom nbt "{SkullOwner:{Id:""2c43fd70-4e96-4d1c-bb85-f44d2eb3f563"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWJhMDlkZDRiMTU2ZjRjZTJlODk3ZjRjMzZhYmRiZDQ2YTk1OTNhNjE4NDU4NjE2ZThkYTM5YTEwYTg1M2Y2In19fQ==""}]}}}", "&cRandom Box", "||&5Obsah &lboxu&5!||&d&l ▶ &dNahodna maska||&d&l ▶ &dNovy level||&d&l ▶ &dBooster Zlataku||&d&l ▶ &dXP Booster||||&eKvalita boxu &8[&6&l✩✩✩✩✩&8]||&eZiskano uzivatelem &f%player%&e.||||&eHodne stesti ti preje tym PvPCraftu. &4❤", "&cRandom Box", player, "&bExalted")
+				BattlePass(32, 51, "XP Booster &8[&f40 minut&8]", stone, "", "40", "&bXP Booster &7na &f40 minut", player, "")
+				BattlePass(33, 52, "prut Catcher", glowing unbreakable fishing rod, "&cCatcher", "&8 ➥ &7Zivotu&7: &a3&8/&f3||||&7Pritahni ostatni &chrace &7k sobe,||&7cooldown &f10 sekund&7.", "&cCatcher", player, "")
+				BattlePass(34, 53, "12 Prohazovacich snehovych kouli", 12 snowball, "&6Prohazovaci snehove koule", "||&7Prohod svoji lokaci s &fostatnimi&7.||&r", "&f12 &6Prohazovacich snehovych kouli", player, "")
+				BattlePass(35, 54, "5 Zdi", 5 clay_bricks_block, "&6Zed", "||&5Info o &lzdi&5!||&8&l ▶ &7Postav zed o rozmerech &f3x3&7.||||&7Zed zmizi za &e20 sekund&7.", "&f5 &6Zdi", player, "&cImmortal")
+				BattlePass(36, 55, "40 Obsidianu", 40 obsidian, "&8Obsidian", "||&7Obsidian vydrzi &f60 sekund&7.||&r", "&840 Obsidianu", player, "")
+				BattlePass(37, 56, "1.500 Ⓩ", stone, "", "1500", "&e1.500 Ⓩ", player, "")
+				BattlePass(38, 57, "Booster Zlataku &8[&f40 minut&8]", stone, "", "40", "&eBooster Zlataku &7na &f40 minut", player, "&cImmortal")
+				BattlePass(39, 58, "12 Vybusne TNT", 12 tnt, "&6Vybusne TNT", "||&7Vyhodi do vzduchu vsechny||&7v okruhu &f7 bloku&7.||&r", "&f12 &6Vybusne TNT", player, "")
+				if {prestige::%player%} is not set:
+					BattlePass(40, 59, "Tag &8""&2☘&a&oSt. Patrick&8"" &7➜ &d/tag||&8&l ▶ &eTag &8""&8(&eɔ&f◔‿◔&8)&eɔ &4♥&8""", stone, "pit.tag.smajlik", "pit.tag.patrick", "tagy &8""&2☘&a&oSt. Patrick&8"" &7& &8""&8(&eɔ&f◔‿◔&8)&eɔ &4♥&8""", player, "")
+				else:
+					BattlePass(40, 59, "Elixír rychlosti", water_bottle:8194 with no nbt, "&bElixír rychlosti", "||&5Info o &lelixíru&5!||&8&l ▶ &9Rychlost I (3:00)||&r", "&bElixír rychlosti", player, "")
+				BattlePass(41, 60, "Random Box", player head with custom nbt "{SkullOwner:{Id:""2c43fd70-4e96-4d1c-bb85-f44d2eb3f563"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWJhMDlkZDRiMTU2ZjRjZTJlODk3ZjRjMzZhYmRiZDQ2YTk1OTNhNjE4NDU4NjE2ZThkYTM5YTEwYTg1M2Y2In19fQ==""}]}}}", "&cRandom Box", "||&5Obsah &lboxu&5!||&d&l ▶ &dNahodna maska||&d&l ▶ &dNovy level||&d&l ▶ &dBooster Zlataku||&d&l ▶ &dXP Booster||||&eKvalita boxu &8[&6&l✩✩✩✩✩&8]||&eZiskano uzivatelem &f%player%&e.||||&eHodne stesti ti preje tym PvPCraftu. &4❤", "&cRandom Box", player, "")
+				BattlePass(42, 61, "Ochranny stit", ink_sack, "&bOchranny stit", "||&5Info o &lstitu&5!||&8&l ▶ &7Postav okolo sebe &fstit||    &7a schovej se pred ostatnimi.||||&eMoznych pouziti &8[&f3&8]||||&7Stit zmizi za &e15 sekund&7.", "&bOchranny stit", player, "&cImmortal")
+				BattlePass(43, 62, "7 Schodu", 7 clay_bricks stairs, "&6Schody", "||&5Info o &lschodech&5!||&8&l ▶ &7Postav schody o vysce &f3 bloku&7.||||&7Schody zmizi za &e20 sekund&7.", "&f7 &6Schodu", player, "")
+				BattlePass(44, 63, "XP Booster &8[&f45 minut&8]", stone, "", "45", "&bXP Booster &7na &f45 minut", player, "")
+				if {prestige::%player%} is not set:
+					BattlePass(45, 64, "Tag &8""&d¯\_(ツ)_/¯&8"" &7➜ &d/tag", stone, "", "pit.tag.shrug", "tag &8""&d¯\_(ツ)_/¯&8""", player, "")
+				else:
+					BattlePass(45, 64, "Elixír regenerace", water_bottle:8225 with no nbt, "&dElixír regenerace", "||&5Info o &lelixíru&5!||&8&l ▶ &9Regenerace II (1:30)||&r", "&dElixír regenerace", player, "")
+				BattlePass(46, 65, "15 Vybusne TNT", 15 tnt, "&6Vybusne TNT", "||&7Vyhodi do vzduchu vsechny||&7v okruhu &f7 bloku&7.||&r", "&f15 &6Vybusne TNT", player, "&6Legendary")
+				BattlePass(47, 66, "Booster Zlataku &8[&f45 minut&8]", stone, "", "45", "&eBooster Zlataku &7na &f45 minut", player, "")
+				BattlePass(48, 67, "7 Zdi", 7 clay_bricks_block, "&6Zed", "||&5Info o &lzdi&5!||&8&l ▶ &7Postav zed o rozmerech &f3x3&7.||||&7Zed zmizi za &e20 sekund&7.", "&f7 &6Zdi", player, "")
+				BattlePass(49, 68, "15 Sípu Hromu", stone, "", "/ca give thundergod 15", "&f5 &8Sípu Hromu", player, "")
+				BattlePass(50, 69, "3.200 Ⓩ", stone, "", "3200", "&e3.200 Ⓩ", player, "&6Legendary")
+				BattlePass(51, 70, "Random Box", player head with custom nbt "{SkullOwner:{Id:""2c43fd70-4e96-4d1c-bb85-f44d2eb3f563"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWJhMDlkZDRiMTU2ZjRjZTJlODk3ZjRjMzZhYmRiZDQ2YTk1OTNhNjE4NDU4NjE2ZThkYTM5YTEwYTg1M2Y2In19fQ==""}]}}}", "&cRandom Box", "||&5Obsah &lboxu&5!||&d&l ▶ &dNahodna maska||&d&l ▶ &dNovy level||&d&l ▶ &dBooster Zlataku||&d&l ▶ &dXP Booster||||&eKvalita boxu &8[&6&l✩✩✩✩✩&8]||&eZiskano uzivatelem &f%player%&e.||||&eHodne stesti ti preje tym PvPCraftu. &4❤", "&cRandom Box", player, "")
+				BattlePass(52, 71, "48 Obsidianu", 48 obsidian, "&8Obsidian", "||&7Obsidian vydrzi &f60 sekund&7.||&r", "&848 Obsidianu", player, "")
+				BattlePass(53, 72, "Booster Zlataku &8[&f50 minut&8]", stone, "", "50", "&eBooster Zlataku &7na &f50 minut", player, "")
+
+
+#------------------------------------------------------------------------------------------------------
+			if arg-1 is "3":
+				open chest with 6 rows named "&eProhlízís si Battle Pass.." to player
+				wait 2 ticks
+
+				set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16 and 17
+				format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+				create a gui slot 0 of player with Arrow named "&bStrana &3##2" with lore "||&eKlikni zde pro predchozi stranku!||&r" to run:
+					make player execute command "/battlepass 2"
+				create a gui slot 8 of player with Arrow named "&bStrana &3##4" with lore "||&eKlikni zde pro dalsi stranku!||&r" to run:
+					make player execute command "/battlepass 4"
+				create a gui slot 4 of player with skull of ("%player%" parsed as an offline player) named "&6Postava" with lore "||&7Momentalne mas level %{%player%.level.color}%%{level::%player%}%&7.||&r"
+
+				BattlePass(18, 73, "Nuzky omraceni", shears, "&bNuzky omraceni", "||&5Info o &lnuzkach&5!||&d&l ▶ &dSlowness III||&d&l ▶ &dBlindness X||&d&l ▶ &dOtoceni o &f180°||||&eMoznych pouziti &8[&f5&8]||||&7Omraceni hrace trva &e10 sekund&7.", "&bNuzky omraceni", player, "&6Legendary")
+				BattlePass(19, 74, "12 Prohazovacich snehovych kouli", 12 snowball, "&6Prohazovaci snehove koule", "||&7Prohod svoji lokaci s &fostatnimi&7.||&r", "&f12 &6Prohazovacich snehovych kouli", player, "")
+				BattlePass(20, 75, "7 Zdi", 7 clay_bricks_block, "&6Zed", "||&5Info o &lzdi&5!||&8&l ▶ &7Postav zed o rozmerech &f3x3&7.||||&7Zed zmizi za &e20 sekund&7.", "&f7 &6Zdi", player, "")
+				BattlePass(21, 76, "2.500 Ⓩ", stone, "", "2500", "&e2.500 Ⓩ", player, "&dMythical")
+				BattlePass(22, 77, "15 Vybusne TNT", 15 tnt, "&6Vybusne TNT", "||&7Vyhodi do vzduchu vsechny||&7v okruhu &f7 bloku&7.||&r", "&f15 &6Vybusne TNT", player, "")
+				BattlePass(23, 78, "XP Booster &8[&f50 minut&8]", stone, "", "50", "&bXP Booster &7na &f50 minut", player, "&dMythical")
+				BattlePass(24, 79, "Ochranny stit", ink_sack, "&bOchranny stit", "||&5Info o &lstitu&5!||&8&l ▶ &7Postav okolo sebe &fstit||    &7a schovej se pred ostatnimi.||||&eMoznych pouziti &8[&f3&8]||||&7Stit zmizi za &e15 sekund&7.", "&bOchranny stit", player, "")
+				BattlePass(25, 80, "Random Box", player head with custom nbt "{SkullOwner:{Id:""2c43fd70-4e96-4d1c-bb85-f44d2eb3f563"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWJhMDlkZDRiMTU2ZjRjZTJlODk3ZjRjMzZhYmRiZDQ2YTk1OTNhNjE4NDU4NjE2ZThkYTM5YTEwYTg1M2Y2In19fQ==""}]}}}", "&cRandom Box", "||&5Obsah &lboxu&5!||&d&l ▶ &dNahodna maska||&d&l ▶ &dNovy level||&d&l ▶ &dBooster Zlataku||&d&l ▶ &dXP Booster||||&eKvalita boxu &8[&6&l✩✩✩✩✩&8]||&eZiskano uzivatelem &f%player%&e.||||&eHodne stesti ti preje tym PvPCraftu. &4❤", "&cRandom Box", player, "")
+				BattlePass(26, 81, "12 Schodu", 12 clay_bricks stairs, "&6Schody", "||&5Info o &lschodech&5!||&8&l ▶ &7Postav schody o vysce &f3 bloku&7.||||&7Schody zmizi za &e20 sekund&7.", "&f12 &6Schodu", player, "")
+				BattlePass(27, 82, "Booster Zlataku &8[&f55 minut&8]", stone, "", "55", "&eBooster Zlataku &7na &f55 minut", player, "")
+				BattlePass(28, 83, "Ochranny stit", ink_sack, "&bOchranny stit", "||&5Info o &lstitu&5!||&8&l ▶ &7Postav okolo sebe &fstit||    &7a schovej se pred ostatnimi.||||&eMoznych pouziti &8[&f3&8]||||&7Stit zmizi za &e15 sekund&7.", "&bOchranny stit", player, "")
+				BattlePass(29, 84, "Nuzky omraceni", shears, "&bNuzky omraceni", "||&5Info o &lnuzkach&5!||&d&l ▶ &dSlowness III||&d&l ▶ &dBlindness X||&d&l ▶ &dOtoceni o &f180°||||&eMoznych pouziti &8[&f5&8]||||&7Omraceni hrace trva &e10 sekund&7.", "&bNuzky omraceni", player, "")
+				BattlePass(30, 85, "Upiri lektvar", water_bottle with no nbt, "&cUpiri lektvar", "||&5Info o &llektvaru&5!||&8&l ▶ &9Rychlost III (3:00)||&8&l ▶ &9Sila II (3:00)||&8&l ▶ &9Jump Boost III (3:00)||&7&o(Stan se upirem a zabij vsechy!)", "&cUpiri lektvar", player, "&dMythical")
+				if {prestige::%player%} is not set:
+					BattlePass(31, 86, "Tag &8""&7##&24&a20&8"" &7➜ &d/tag", stone, "", "pit.tag.420", "tag &8""&7##&24&a20&8""", player, "")
+				else:
+					BattlePass(31, 86, "Elixír síly", water_bottle:8233 with no nbt, "&5Elixír síly", "||&5Info o &lelixíru&5!||&8&l ▶ &9Síla II (1:30)||&r", "&5Elixír síly", player, "")
+				BattlePass(32, 87, "prut Catcher", glowing unbreakable fishing rod, "&cCatcher", "&8 ➥ &7Zivotu&7: &a3&8/&f3||||&7Pritahni ostatni &chrace &7k sobe,||&7cooldown &f10 sekund&7.", "&cCatcher", player, "")
+				BattlePass(33, 88, "XP Booster &8[&f55 minut&8]", stone, "", "55", "&bXP Booster &7na &f55 minut", player, "&5Ultimate")
+				BattlePass(34, 89, "12 Zdi", 12 clay_bricks_block, "&6Zed", "||&5Info o &lzdi&5!||&8&l ▶ &7Postav zed o rozmerech &f3x3&7.||||&7Zed zmizi za &e20 sekund&7.", "&f12 &6Zdi", player, "")
+				BattlePass(35, 90, "Random Box", player head with custom nbt "{SkullOwner:{Id:""2c43fd70-4e96-4d1c-bb85-f44d2eb3f563"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWJhMDlkZDRiMTU2ZjRjZTJlODk3ZjRjMzZhYmRiZDQ2YTk1OTNhNjE4NDU4NjE2ZThkYTM5YTEwYTg1M2Y2In19fQ==""}]}}}", "&cRandom Box", "||&5Obsah &lboxu&5!||&d&l ▶ &dNahodna maska||&d&l ▶ &dNovy level||&d&l ▶ &dBooster Zlataku||&d&l ▶ &dXP Booster||||&eKvalita boxu &8[&6&l✩✩✩✩✩&8]||&eZiskano uzivatelem &f%player%&e.||||&eHodne stesti ti preje tym PvPCraftu. &4❤", "&cRandom Box", player, "")
+				BattlePass(36, 91, "Booster Zlataku &8[&f60 minut&8]", stone, "", "60", "&eBooster Zlataku &7na &f60 minut", player, "")
+				BattlePass(37, 92, "5.000 Ⓩ", stone, "", "5000", "&e5.000 Ⓩ", player, "&5Ultimate")
+				BattlePass(38, 93, "18 Vybusne TNT", 18 tnt, "&6Vybusne TNT", "||&7Vyhodi do vzduchu vsechny||&7v okruhu &f7 bloku&7.||&r", "&f18 &6Vybusne TNT", player, "")
+				BattlePass(39, 94, "Ochranny stit", ink_sack, "&bOchranny stit", "||&5Info o &lstitu&5!||&8&l ▶ &7Postav okolo sebe &fstit||    &7a schovej se pred ostatnimi.||||&eMoznych pouziti &8[&f3&8]||||&7Stit zmizi za &e15 sekund&7.", "&bOchranny stit", player, "")
+				BattlePass(40, 95, "15 Schodu", 15 clay_bricks stairs, "&6Schody", "||&5Info o &lschodech&5!||&8&l ▶ &7Postav schody o vysce &f3 bloku&7.||||&7Schody zmizi za &e20 sekund&7.", "&f15 &6Schodu", player, "")
+				BattlePass(41, 96, "XP Booster &8[&f60 minut&8]", stone, "", "60", "&bXP Booster &7na &f60 minut", player, "")
+				BattlePass(42, 97, "15 Prohazovacich snehovych kouli", 15 snowball, "&6Prohazovaci snehove koule", "||&7Prohod svoji lokaci s &fostatnimi&7.||&r", "&f15 &6Prohazovacich snehovych kouli", player, "")
+				BattlePass(43, 98, "Upiri lektvar", water_bottle with no nbt, "&cUpiri lektvar", "||&5Info o &llektvaru&5!||&8&l ▶ &9Rychlost III (3:00)||&8&l ▶ &9Sila II (3:00)||&8&l ▶ &9Jump Boost III (3:00)||&7&o(Stan se upirem a zabij vsechy!)", "&cUpiri lektvar", player, "")
+				if {prestige::%player%} is not set:
+					BattlePass(44, 99, "Tag &8""&8(&6✿&f◠‿◠&8)&8"" &7➜ &d/tag", stone, "", "pit.tag.smajlikv2", "tag &8""&8(&6✿&f◠‿◠&8)&8""", player, "&5Ultimate")
+				else:
+					BattlePass(44, 99, "Zlaty Mec", unbreakable golden sword, "&eZlaty Mec", "||&5Info o &lzlatem meci&5!||&8&l ▶ &7&7Lze aplikovat v &6&lMystickem Vylepsení&7.||&8&l ▶ &7Pri vylepsení &94 &7➠ &96.5 Attack Damge&7.||&7&o(Pri smrti nezmizi z inventare.)", "&eZlaty Mec", player, "&5Ultimate")
+				BattlePass(45, 100, "Random Box", player head with custom nbt "{SkullOwner:{Id:""2c43fd70-4e96-4d1c-bb85-f44d2eb3f563"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWJhMDlkZDRiMTU2ZjRjZTJlODk3ZjRjMzZhYmRiZDQ2YTk1OTNhNjE4NDU4NjE2ZThkYTM5YTEwYTg1M2Y2In19fQ==""}]}}}", "&cRandom Box", "||&5Obsah &lboxu&5!||&d&l ▶ &dNahodna maska||&d&l ▶ &dNovy level||&d&l ▶ &dBooster Zlataku||&d&l ▶ &dXP Booster||||&eKvalita boxu &8[&6&l✩✩✩✩✩&8]||&eZiskano uzivatelem &f%player%&e.||||&eHodne stesti ti preje tym PvPCraftu. &4❤", "&cRandom Box", player, "")
+				BattlePass(46, 101, "21 Vybusne TNT", 21 tnt, "&6Vybusne TNT", "||&7Vyhodi do vzduchu vsechny||&7v okruhu &f7 bloku&7.||&r", "&f21 &6Vybusne TNT", player, "")
+				BattlePass(47, 102, "15 Zdi", 15 clay_bricks_block, "&6Zed", "||&5Info o &lzdi&5!||&8&l ▶ &7Postav zed o rozmerech &f3x3&7.||||&7Zed zmizi za &e20 sekund&7.", "&f15 &6Zdi", player, "")
+				BattlePass(48, 103, "XP Booster &8[&f80 minut&8]", stone, "", "80", "&bXP Booster &7na &f80 minut", player, "")
+				BattlePass(49, 104, "prut Catcher", glowing unbreakable fishing rod, "&cCatcher", "&8 ➥ &7Zivotu&7: &a3&8/&f3||||&7Pritahni ostatni &chrace &7k sobe,||&7cooldown &f10 sekund&7.", "&cCatcher", player, "")
+				BattlePass(50, 105, "Ochranny stit", ink_sack, "&bOchranny stit", "||&5Info o &lstitu&5!||&8&l ▶ &7Postav okolo sebe &fstit||    &7a schovej se pred ostatnimi.||||&eMoznych pouziti &8[&f3&8]||||&7Stit zmizi za &e15 sekund&7.", "&bOchranny stit", player, "")
+				BattlePass(51, 106, "Upiri lektvar", water_bottle with no nbt, "&cUpiri lektvar", "||&5Info o &llektvaru&5!||&8&l ▶ &9Rychlost III (3:00)||&8&l ▶ &9Sila II (3:00)||&8&l ▶ &9Jump Boost III (3:00)||&7&o(Stan se upirem a zabij vsechy!)", "&cUpiri lektvar", player, "")
+				BattlePass(52, 107, "Booster Zlataku &8[&f80 minut&8]", stone, "", "80", "&eBooster Zlataku &7na &f80 minut", player, "")
+				BattlePass(53, 108, "Zlaty Mec", unbreakable golden sword, "&eZlaty Mec", "||&5Info o &lzlatem meci&5!||&8&l ▶ &7&7Lze aplikovat v &6&lMystickem Vylepsení&7.||&8&l ▶ &7Pri vylepsení &94 &7➠ &96.5 Attack Damge&7.||&7&o(Pri smrti nezmizi z inventare.)", "&eZlaty Mec", player, "")
+#------------------------------------------------------------------------------------------------------
+			if arg-1 is "4":
+				open chest with 6 rows named "&eProhlízís si Battle Pass.." to player
+				wait 2 ticks
+
+				set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16 and 17
+				format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+				create a gui slot 0 of player with Arrow named "&bStrana &3##3" with lore "||&eKlikni zde pro predchozi stranku!||&r" to run:
+					make player execute command "/battlepass 3"
+				create a gui slot 4 of player with skull of ("%player%" parsed as an offline player) named "&6Postava" with lore "||&7Momentalne mas level %{%player%.level.color}%%{level::%player%}%&7.||&r"
+
+
+				BattlePass(18, 109, "Nuzky omraceni", shears, "&bNuzky omraceni", "||&5Info o &lnuzkach&5!||&d&l ▶ &dSlowness III||&d&l ▶ &dBlindness X||&d&l ▶ &dOtoceni o &f180°||||&eMoznych pouziti &8[&f5&8]||||&7Omraceni hrace trva &e10 sekund&7.", "&bNuzky omraceni", player, "")
+				BattlePass(19, 110, "Random Box", player head with custom nbt "{SkullOwner:{Id:""2c43fd70-4e96-4d1c-bb85-f44d2eb3f563"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWJhMDlkZDRiMTU2ZjRjZTJlODk3ZjRjMzZhYmRiZDQ2YTk1OTNhNjE4NDU4NjE2ZThkYTM5YTEwYTg1M2Y2In19fQ==""}]}}}", "&cRandom Box", "||&5Obsah &lboxu&5!||&d&l ▶ &dNahodna maska||&d&l ▶ &dNovy level||&d&l ▶ &dBooster Zlataku||&d&l ▶ &dXP Booster||||&eKvalita boxu &8[&6&l✩✩✩✩✩&8]||&eZiskano uzivatelem &f%player%&e.||||&eHodne stesti ti preje tym PvPCraftu. &4❤", "&cRandom Box", player, "")
+				BattlePass(20, 111, "18 Prohazovacich snehovych kouli", 18 snowball, "&6Prohazovaci snehove koule", "||&7Prohod svoji lokaci s &fostatnimi&7.||&r", "&f18 &6Prohazovacich snehovych kouli", player, "")
+				BattlePass(21, 112, "Ochranny stit", ink_sack, "&bOchranny stit", "||&5Info o &lstitu&5!||&8&l ▶ &7Postav okolo sebe &fstit||    &7a schovej se pred ostatnimi.||||&eMoznych pouziti &8[&f3&8]||||&7Stit zmizi za &e15 sekund&7.", "&bOchranny stit", player, "")
+				BattlePass(22, 113, "18 Schodu", 18 clay_bricks stairs, "&6Schody", "||&5Info o &lschodech&5!||&8&l ▶ &7Postav schody o vysce &f3 bloku&7.||||&7Schody zmizi za &e20 sekund&7.", "&f18 &6Schodu", player, "")
+				BattlePass(23, 114, "Zlaty Mec", unbreakable golden sword, "&eZlaty Mec", "||&5Info o &lzlatem meci&5!||&8&l ▶ &7&7Lze aplikovat v &6&lMystickem Vylepsení&7.||&8&l ▶ &7Pri vylepsení &94 &7➠ &96.5 Attack Damge&7.||&7&o(Pri smrti nezmizi z inventare.)", "&eZlaty Mec", player, "")
+				BattlePass(24, 115, "Nuzky omraceni", shears, "&bNuzky omraceni", "||&5Info o &lnuzkach&5!||&d&l ▶ &dSlowness III||&d&l ▶ &dBlindness X||&d&l ▶ &dOtoceni o &f180°||||&eMoznych pouziti &8[&f5&8]||||&7Omraceni hrace trva &e10 sekund&7.", "&bNuzky omraceni", player, "")
+				BattlePass(25, 116, "24 Vybusne TNT", 24 tnt, "&6Vybusne TNT", "||&7Vyhodi do vzduchu vsechny||&7v okruhu &f7 bloku&7.||&r", "&f24 &6Vybusne TNT", player, "")
+				BattlePass(26, 117, "15 Zdi", 15 clay_bricks_block, "&6Zed", "||&5Info o &lzdi&5!||&8&l ▶ &7Postav zed o rozmerech &f3x3&7.||||&7Zed zmizi za &e20 sekund&7.", "&f15 &6Zdi", player, "")
+				BattlePass(27, 118, "Upiri lektvar", water_bottle with no nbt, "&cUpiri lektvar", "||&5Info o &llektvaru&5!||&8&l ▶ &9Rychlost III (3:00)||&8&l ▶ &9Sila II (3:00)||&8&l ▶ &9Jump Boost III (3:00)||&7&o(Stan se upirem a zabij vsechy!)", "&cUpiri lektvar", player, "")
+				BattlePass(28, 119, "7200 Ⓩ", stone, "", "7200", "&e7200 Ⓩ", player, "")
+				BattlePass(29, 120, "Random Box", player head with custom nbt "{SkullOwner:{Id:""2c43fd70-4e96-4d1c-bb85-f44d2eb3f563"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWJhMDlkZDRiMTU2ZjRjZTJlODk3ZjRjMzZhYmRiZDQ2YTk1OTNhNjE4NDU4NjE2ZThkYTM5YTEwYTg1M2Y2In19fQ==""}]}}}", "&cRandom Box", "||&5Obsah &lboxu&5!||&d&l ▶ &dNahodna maska||&d&l ▶ &dNovy level||&d&l ▶ &dBooster Zlataku||&d&l ▶ &dXP Booster||||&eKvalita boxu &8[&6&l✩✩✩✩✩&8]||&eZiskano uzivatelem &f%player%&e.||||&eHodne stesti ti preje tym PvPCraftu. &4❤", "&cRandom Box", player, "")

@@ -1,0 +1,201 @@
+#function ZbrojirnaMenu(s: number, t: number, i: item, n: text, l: text, nbt: text, p: player):
+#	set {_shop} to {gold::%{_p}%}
+#	replace all "." in {_shop} with ""
+#	set {_shop} to {_shop} parsed as number
+#
+#	set {_x} to splitCoins("%{_t}%")
+#	if {_shop} is greater than or equal to {_t}:	
+#		create a gui slot {_s} of {_p} with {_i} named "{_n}" with lore "{_l}||||&7Predmet stoji &e{_x} Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni predmetu." to run:
+#
+#			close inventory of {_p}
+#			Zlataky("remove", {_t}, {_p})
+#			play "ORB_PICKUP" to {_p}
+#			message "&aPredmet &8""%{_n}%&8"" &azakoupen. &7Bylo odebrano &e%{_x}% Ⓩ&7."
+#			set {diamondchestplate} to {_p}'s chestplate
+#			set {_num} to 9
+#			loop 28 times:
+#				if slot {_num} of inventory of {_p} is air:
+#					set slot {_num} of {_p} to {diamondchestplate}
+#					stop loop
+#				add 1 to {_num}
+#				if {_num} is {_s}:
+#					give {diamondchestplate} to {_p}
+#			delete {diamondchestplate}
+#			set {_p}'s chestplate to {_i} named "{_n}" with lore "{_l}||&r"
+#			ZbrojirnaReloader({_p})
+#	else:
+#		create a gui slot {_s} of {_p} with {_i} named "{_n}" with lore "{_l}||||&7Predmet stoji &e{_x} Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+command /zbrojirna:
+	trigger:
+		"%region at player%" contains "nopvpzone"
+		open chest with 6 rows named "&eKoukás do zbrojírny.." to player
+		wait 2 ticks
+
+		set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52 and 53
+		format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+		create a gui slot 0 of player with rose red named "&cOpustit menu" with lore "||&eKlikni zde pro opusteni menu!||&r" to close
+		set {_tokeny::%player%} to placeholder "tm_tokens_raw" from player parsed as number
+		set {_token} to splitCoins("%{_tokeny::%player%}%")
+		create a gui slot 4 of player with skull of ("%player%" parsed as an offline player) named "&6Postava" with lore "||&5Tva &lekonomika&5!|| &8▪ &7Zlataky: &e%{gold::%player%}% Ⓩ|| &8▪ &7PvPCoiny: &6%{_token}% Ⓟ||&7&o(Lze zakoupit v obchode! &d&o/obchod&7&o)||&r"
+
+		set {_shop} to {gold::%player%}
+		replace all "." in {_shop} with ""
+		set {_shop} to {_shop} parsed as number
+
+		if {_shop} is greater than or equal to 500:	
+			create a gui slot 28 of player with unbreakable diamond chestplate named "&bDiamantová zbroj" with lore "&7&o(Predmet pri smrti zmizi.)||||&7Predmet stoji &e500 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni predmetu." to run:
+
+				close inventory of player
+				Zlataky("remove", 500, player)
+				play "ORB_PICKUP" to player
+				message ""
+				message "&aUspesne jsi zakoupil Diamantovou zbroj."
+				message "&f ➥ &7Z uctu ti bylo odebrano &e500 Ⓩ&7."
+				message ""
+				set {diamondchestplate} to player's chestplate
+				set {_num} to 9
+				loop 28 times:
+					if slot {_num} of inventory of player is air:
+						set slot {_num} of player to {diamondchestplate}
+						stop loop
+					add 1 to {_num}
+					if {_num} is 28:
+						give {diamondchestplate} to player
+				delete {diamondchestplate}
+				set player's chestplate to unbreakable diamond chestplate named "&bDiamantová zbroj" with lore "&7&o(Predmet pri smrti zmizi.)||&r"
+				make player execute command "/zbrojirna"
+		else:
+			create a gui slot 28 of player with unbreakable diamond chestplate named "&bDiamantová zbroj" with lore "&7&o(Predmet pri smrti zmizi.)||||&7Predmet stoji &e500 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+
+		if {_shop} is greater than or equal to 300:	
+			create a gui slot 37 of player with unbreakable diamond boots named "&bDiamantové boty" with lore "&7&o(Predmet pri smrti zmizi.)||||&7Predmet stoji &e300 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni predmetu." to run:
+
+				close inventory of player
+				Zlataky("remove", 300, player)
+				play "ORB_PICKUP" to player
+				message ""
+				message "&aUspesne jsi zakoupil Diamantové boty."
+				message "&f ➥ &7Z uctu ti bylo odebrano &e300 Ⓩ&7."
+				message ""
+				set {diamondboots} to player's boots
+				set {_num} to 9
+				loop 28 times:
+					if slot {_num} of inventory of player is air:
+						set slot {_num} of player to {diamondboots}
+						stop loop
+					add 1 to {_num}
+					if {_num} is 28:
+						give {diamondboots} to player
+				delete {diamondboots}
+				set player's boots to unbreakable diamond boots named "&bDiamantové boty" with lore "&7&o(Predmet pri smrti zmizi.)||&r"
+				make player execute command "/zbrojirna"
+		else:
+			create a gui slot 37 of player with unbreakable diamond boots named "&bDiamantové boty" with lore "&7&o(Predmet pri smrti zmizi.)||||&7Predmet stoji &e300 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "barbarian":
+			if {_shop} is greater than or equal to 150:
+				create a gui slot 30 of player with unbreakable diamond axe with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:8,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "&bDiamantovy mec" with lore "&7&o(Predmet pri smrti zmizi.)||||&c+20%% &7poskozeni proti hraci s &ebounty&7.||||&7Predmet stoji &e150 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni predmetu." to run:
+
+					close inventory of player
+					Zlataky("remove", 150, player)
+					play "ORB_PICKUP" to player
+					message ""
+					message "&aUspesne jsi zakoupil Diamantovy Mec."
+					message "&f ➥ &7Z uctu ti bylo odebrano &e150 Ⓩ&7."
+					message ""
+					set {_num} to 0
+					loop 36 times:
+						if slot {_num} of inventory of player is iron axe:
+							set slot {_num} of player to unbreakable diamond axe with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:8,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "&bDiamantovy mec" with lore "&7&o(Predmet pri smrti zmizi.)"
+							stop loop
+						add 1 to {_num}
+						if {_num} is 36:
+							give unbreakable diamond axe with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:8,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "&bDiamantovy mec" with lore "&7&o(Predmet pri smrti zmizi.)" to player
+					make player execute command "/zbrojirna"
+
+
+			else:
+				create a gui slot 30 of player with unbreakable diamond axe with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:8,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "&bDiamantovy mec" with lore "&7&o(Predmet pri smrti zmizi.)||||&c+20%% &7poskozeni proti hraci s &ebounty&7.||||&7Predmet stoji &e150 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+
+		else:
+			if {_shop} is greater than or equal to 150:	
+				create a gui slot 30 of player with unbreakable diamond sword named "&bDiamantovy mec" with lore "&7&o(Predmet pri smrti zmizi.)||||&c+20%% &7poskozeni proti hraci s &ebounty&7.||||&7Predmet stoji &e150 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni predmetu." to run:
+
+					close inventory of player
+					Zlataky("remove", 150, player)
+					play "ORB_PICKUP" to player
+					message ""
+					message "&aUspesne jsi zakoupil Diamantovy Mec."
+					message "&f ➥ &7Z uctu ti bylo odebrano &e150 Ⓩ&7."
+					message ""
+					set {_num} to 0
+					loop 36 times:
+						if slot {_num} of inventory of player is iron sword:
+							set slot {_num} of player to unbreakable diamond sword named "&bDiamantovy mec" with lore "&7&o(Predmet pri smrti zmizi.)"
+							stop loop
+						add 1 to {_num}
+						if {_num} is 36:
+							give unbreakable diamond sword named "&bDiamantovy mec" with lore "&7&o(Predmet pri smrti zmizi.)" to player
+					make player execute command "/zbrojirna"
+
+
+			else:
+				create a gui slot 30 of player with unbreakable diamond sword named "&bDiamantovy mec" with lore "&7&o(Predmet pri smrti zmizi.)||||&c+20%% &7poskozeni proti hraci s &ebounty&7.||||&7Predmet stoji &e150 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+ 
+
+		if {%player%.bow} is set:
+			if {_shop} is greater than or equal to 80:	
+				create a gui slot 34 of player with glowing 4 arrow named "&7Sípy" with lore "&7&o(Predmet pri smrti zmizi.)||||&7Predmet stoji &e80 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni predmetu." to run:
+
+					close inventory of player
+					Zlataky("remove", 80, player)
+					play "ORB_PICKUP" to player
+					message ""
+					message "&aUspesne jsi zakoupil Sípy."
+					message "&f ➥ &7Z uctu ti bylo odebrano &e80 Ⓩ&7."
+					message ""
+					give glowing 4 arrow named "&7Síp" to player
+					make player execute command "/zbrojirna"
+			else:
+				create a gui slot 34 of player with glowing 4 arrow named "&7Sípy" with lore "&7&o(Predmet pri smrti zmizi.)||||&7Predmet stoji &e80 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+		else:
+			create a gui slot 34 of player with glowing 4 arrow named "&7Sípy" with lore "||&7&o(Luk lze zakoupit v &d&l&oMagickych upgradech&7&o!)||||&ePredmet nelze zakoupit.||&8 ➥ &cNemas zakoupeny luk."
+	
+
+		if {_shop} is greater than or equal to 60:	
+			create a gui slot 31 of player with 8 cobblestone named "&7Cobblestone" with lore "&7&o(Predmet pri smrti zmizi.)||||&7Cobblestone vydrzi &f30 sekund&7.||||&7Predmet stoji &e60 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni predmetu." to run:
+
+				close inventory of player
+				Zlataky("remove", 60, player)
+				play "ORB_PICKUP" to player
+				message ""
+				message "&aUspesne jsi zakoupil Cobblestone."
+				message "&f ➥ &7Z uctu ti bylo odebrano &e80 Ⓩ&7."
+				message ""
+				give 8 cobblestone named "&7Cobblestone" with lore "||&7Cobblestone vydrzi &f30 sekund&7.||&r" to player
+				make player execute command "/zbrojirna"
+		else:
+			create a gui slot 31 of player with 8 cobblestone named "&7Cobblestone" with lore "&7&o(Predmet pri smrti zmizi.)||||&7Cobblestone vydrzi &f30 sekund&7.||||&7Predmet stoji &e60 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+
+
+		if {_shop} is greater than or equal to 3800:	
+			create a gui slot 33 of player with enchanted book named "&eProtection I Enchantment" with lore "&7&o(Enchantment pri smrti zmizi.)||||&5Info o &lenchantmentu&5!||&d&l ▶ &dEnchant&7: &fProtection I||&d&l ▶ &7Chestplate&f, &7Kalhoty&f, &7Boty&f.||||&7Enchant stoji &e3.800 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni enchantmentu." to run:
+				close inventory of player
+				Zlataky("remove", 3800, player)
+				play "ORB_PICKUP" to player
+				message ""
+				message "&aUspesne jsi zakoupil Protection."
+				message "&f ➥ &7Z uctu ti bylo odebrano &e3.800 Ⓩ&7."
+				message ""
+
+				enchant player's chestplate with protection 1
+				enchant player's leggings with protection 1
+				enchant player's boots with protection 1
+				make player execute command "/zbrojirna"
+		else:	
+			create a gui slot 33 of player with enchanted book named "&eProtection I Enchantment" with lore "&7&o(Enchantment pri smrti zmizi.)||||&5Info o &lenchantmentu&5!||&d&l ▶ &dEnchant&7: &fProtection I||&d&l ▶ &7Chestplate&f, &7Kalhoty&f, &7Boty&f.||||&7Enchant stoji &e3.800 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."

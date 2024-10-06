@@ -1,0 +1,1489 @@
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# 			// events //
+
+options:
+	NoPermissions: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.
+	
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# 			// commandy //
+
+command /resetstats [<offline player>]:
+	permission: pit.admin
+	permission message: {@NoPermissions}
+	trigger:
+		if arg-1 is not set:
+			send "&cZapomnel jsi uvest hrace." to player
+			send "&3 * &d/resetstats &8<&fhrac&8>" to player
+		if {staffmode::%arg-1%} is set:
+			message "&cNelze resetovat nastaveni, %coloured arg-1's offline prefix%%arg-1% &cma Staff Mode."
+			stop
+
+		else if arg-1 is set:
+			clear effects from arg-1
+			clear arg-1's inventory
+
+			set the maximum health of the arg-1 to 10
+			heal arg-1
+	
+			set slot 0 of arg-1 to unbreakable iron sword named "&7Zelezny mec"
+			set {_armor} to random integer between 1 and 3
+			if {_armor} is 1:
+				set arg-1's chestplate to unbreakable chain chestplate named "&7Krouzkovaná zbroj"
+				set arg-1's leggings to unbreakable chain leggings named "&7Krouzkované kalhoty"
+				set arg-1's boots to unbreakable iron boots named "&7Zelezné boty"
+			if {_armor} is 2:
+				set arg-1's chestplate to unbreakable chain chestplate named "&7Krouzkovaná zbroj"
+				set arg-1's leggings to unbreakable iron leggings named "&7Zelezné boty"
+				set arg-1's boots to unbreakable chain boots named "&7Krouzkované boty"
+			if {_armor} is 3:
+				set arg-1's chestplate to unbreakable iron chestplate named "&7Zelezná zbroj"
+				set arg-1's leggings to unbreakable chain leggings named "&7Krouzkované kalhoty"
+				set arg-1's boots to unbreakable chain boots named "&7Krouzkované boty" #'
+
+			delete {leaderboard.streak::%arg-1%}
+			delete {renown::%arg-1%::*}	
+	
+			delete {perk::%arg-1%::*}
+			delete {tier.perk::%arg-1%::*}
+
+			delete {activatedperk1::%arg-1%}
+			delete {activatedperk2::%arg-1%}
+			delete {activatedperk3::%arg-1%}
+			delete {activatedperk4::%arg-1%}
+
+			delete {prestige::%arg-1%}
+			delete {renown::%arg-1%}
+			delete {bonusxpprestige::%arg-1%}
+			set {prestigebrackets::%arg-1%} to "&7"
+			set {scoreboard::renown::%player%} to ""
+			delete {tag::%arg-1%::*}
+			set {tag::%arg-1%} to ""
+
+			set {inventoryslot::%arg-1%::sword} to 0
+			delete {inventoryslot::%arg-1%::bow}
+			delete {inventoryslot::%arg-1%::fishingrod}
+			delete {inventoryslot::%arg-1%::lava}
+			delete {inventoryslot::%arg-1%::pickaxe}
+			delete {inventoryslot::%arg-1%::arrow}
+			set {%arg-1%.level.color} to "&7"
+			set {needxp::%arg-1%} to 15
+			set {kills::%arg-1%} to 0
+			set {%arg-1%.streak} to 0
+			delete {strknumb::%player%}
+			if {floor} or {raffle} or {ragepit} or {picker} or {robbery} is set:
+				set {status::%player%} to " &8▪ &7Status: &6Event"
+			else:
+				if {combat.second::%player%} is set:
+					set {status::%player%} to " &8▪ &7Combat: &c%{combat.second::%player%}%&cs"
+				else:
+					set {status::%player%} to " &8▪ &7Status: &fNecinny"
+			set {gold::%arg-1%} to 0
+			set {level::%arg-1%} to 1
+			set arg-1's xp to 0
+			set arg-1's level to {level::%arg-1%}
+			delete {%arg-1%.arrow}
+			delete {%arg-1%.sword}
+			delete {%arg-1%.bow}
+			delete {%arg-1%.armor}
+			delete {%arg-1%.pickaxe}
+			delete {battlepass::%arg-1%::*}
+			delete {%arg-1%.gbooster}
+			delete {%arg-1%.xpbooster}
+			set {_num} to 0
+			loop 36 times:
+				delete {enderchest::%{_num}%::%arg-1%}
+				add 1 to {_num}
+			send "&8[&4&l!&8] &7Resetoval jsi statistiky pro %coloured arg-1's offline prefix%%arg-1%&7."
+
+command /resetbooster [<offline player>]:
+	permission: pit.admin
+	permission message: {@NoPermissions}
+	trigger:
+		if arg-1 is not set:
+			send "&cZapomnel jsi uvest hrace." to player
+			send "&3 * &d/resetbooster &8<&fhrac&8>" to player
+		else if arg-1 is set:
+			delete {%arg-1%.gbooster}
+			delete {%arg-1%.xpbooster}
+			send "&8[&4&l!&8] &7Resetoval jsi boostery pro %coloured arg-1's offline prefix%%arg-1%&7."
+
+command /setgbooster [<offline player>] [<number>]:
+	permission: pit.admin
+	permission message: {@NoPermissions}
+	trigger:
+		if arg-1 is not set:
+			send "&cZapomnel jsi uvest hrace a cas." to player
+			send "&3 * &d/setgbooster &8<&fhrac&8> &8<&fcas&8>" to player
+			send "&3 * &7Pouze cela cisla pro cas, &e1 &7= &e1 minuta&7."
+			stop
+		if arg-2 is not set:
+			send "&cZapomnel jsi uvest cas." to player
+			send "&3 * &d/setgbooster &8<&fhrac&8> &8<&fcas&8>" to player
+			send "&3 * &7Pouze cela cisla pro cas, &e1 &7= &e1 minuta&7."
+		else if arg-2 is set:
+			set {%arg-1%.gbooster} to arg-2
+			send "&8[&4&l!&8] &7Nastavil jsi &e%arg-2% minut &7[&6Gold&7] &7boosteru pro %coloured arg-1's offline prefix%%arg-1%&7."
+
+
+command /setxpbooster [<offline player>] [<number>]:
+	permission: pit.admin
+	permission message: {@NoPermissions}
+	trigger:
+		if arg-1 is not set:
+			send "&cZapomnel jsi uvest hrace a cas." to player
+			send "&3 * &d/setxpbooster &8<&fhrac&8> &8<&fcas&8>" to player
+			send "&3 * &7Pouze cela cisla pro cas, &e1 &7= &e1 minuta&7."
+			stop
+		if arg-2 is not set:
+			send "&cZapomnel jsi uvest cas." to player
+			send "&3 * &d/setxpbooster &8<&fhrac&8> &8<&fcas&8>" to player
+			send "&3 * &7Pouze cela cisla pro cas, &e1 &7= &e1 minuta&7."
+		else if arg-2 is set:
+			set {%arg-1%.xpbooster} to arg-2
+			send "&8[&4&l!&8] &7Nastavil jsi &e%arg-2% minut &7[&bXP&7] &7boosteru pro %coloured arg-1's offline prefix%%arg-1%&7."
+
+
+
+command /setkills [<offline player>] [<number>]:
+	permission: pit.admin
+	permission message: {@NoPermissions}
+	trigger:
+		if arg-1 is not set:
+			send "&cZapomnel jsi uvest hrace a pocet zabiti." to player
+			send "&3 * &d/setkills &8<&fhrac&8> &8<&fpocet&8>" to player
+			stop
+		if arg-2 is not set:
+			send "&cZapomnel jsi uvest pocet zabiti." to player
+			send "&3 * &d/setkills &8<&fhrac&8> &8<&fpocet&8>" to player
+		else if arg-2 is set:
+			set {kills::%arg-1%} to arg-2
+			send "&8[&4&l!&8] &7Nastavil jsi &c%arg-2% zabiti &7pro %coloured arg-1's offline prefix%%arg-1%&7."
+
+command /setbounty [<offlineplayer>] [<number>]:
+	permission: pit.admin
+	permission message: {@NoPermissions}
+	trigger:
+		if arg-2 is not set:
+			send "&cZapomnel jsi uvest pocet zlataku." to player
+			send "&3 * &d/setbounty &8<&fhrac&8> &8<&fpocet&8>" to player
+			stop
+		if arg-1 is not online:
+			send "&c%arg-1% je offline." to player
+			stop
+		if arg-2 is less than 0:
+			send "&8[&4&l!&8] &7Minimalni bounty musi byt &e1 Ⓩ&7." to player
+			stop
+		if arg-2 is higher than 1000:
+			send "&8[&4&l!&8] &7Maximalni bounty muze byt &e1.000 Ⓩ&7." to player
+			stop
+		if arg-2 is 0:
+			delete {strknumb::%arg-1%}
+			if {robbery} is not set:
+				set {%arg-1%.bounty} to ""
+				if check [{floor} is not set]->[{ragepit} is not set]->[{picker} is not set]->[{raffle} is not set]->[{robbery} is not set]:
+					if {combat.second::%arg-1%} is set:
+						set {status::%arg-1%} to " &8▪ &7Combat: &c%{combat.second::%arg-1%}%&cs"
+					else:
+						set {status::%arg-1%} to " &8▪ &7Status: &fNecinny"
+			message "&8[&2&l!&8] &7Bounty uspesne &codstranena&7."
+			stop
+		if {strknumb::%arg-1%} is not set:
+			set {strknumb::%arg-1%} to splitCoins("%arg-2%")
+			make arg-1 run command "/streakaround" as op
+		else:
+			set {strknumb::%arg-1%} to splitCoins("%arg-2%")
+
+		send "&8[&2&l!&8] &7Bounty pro %coloured arg-1's offline suffix%%arg-1% &7nastavena na &e%{strknumb::%arg-1%}% Ⓩ&7." to player
+		if {robbery} is not set:
+			set {%arg-1%.bounty} to " &e%{strknumb::%arg-1%}% Ⓩ"
+			if check [{floor} is not set]->[{ragepit} is not set]->[{picker} is not set]->[{raffle} is not set]->[{robbery} is not set]:
+				set {status::%arg-1%} to " &8▪ &f%{%arg-1%.streak}% Streak &8┃ &e%{strknumb::%arg-1%}% Ⓩ"
+
+command /setgold [<offline player>] [<number>]:
+	permission: pit.admin
+	permission message: {@NoPermissions}
+	trigger:
+		if arg-1 is not set:
+			send "&cZapomnel jsi uvest hrace a pocet zlataku." to player
+			send "&3 * &d/setgold &8<&fhrac&8> &8<&fpocet&8>" to player
+			stop
+		if arg-2 is not set:
+			send "&cZapomnel jsi uvest pocet zlataku." to player
+			send "&3 * &d/setgold &8<&fhrac&8> &8<&fpocet&8>" to player
+		else if arg-2 is set:
+			Zlataky("set", arg-2, arg-1)
+			set {_num} to splitCoins("%arg-2%")
+			send "&8[&4&l!&8] &7Nastavil jsi &e%{_num}% Ⓩ &7pro %coloured arg-1's offline prefix%%arg-1%&7."
+
+command /addgold [<offline player>] [<number>]:
+	permission: pit.admin
+	permission message: {@NoPermissions}
+	trigger:
+		if arg-1 is not set:
+			send "&cZapomnel jsi uvest hrace a pocet zlataku." to player
+			send "&3 * &d/addgold &8<&fhrac&8> &8<&fpocet&8>" to player
+			stop
+		if arg-2 is not set:
+			send "&cZapomnel jsi uvest pocet zlataku." to player
+			send "&3 * &d/addgold &8<&fhrac&8> &8<&fpocet&8>" to player
+		else if arg-2 is set:
+			Zlataky("add", arg-2, arg-1)
+			set {_num} to splitCoins("%arg-2%")
+			send "&8[&4&l!&8] &7Pridal jsi &e%{_num}% Ⓩ &7pro %coloured arg-1's offline prefix%%arg-1%&7."
+
+command /setrenown [<offline player>] [<number>]:
+	permission: pit.admin
+	permission message: {@NoPermissions}
+	trigger:
+		if arg-1 is not set:
+			send "&cZapomnel jsi uvest hrace a pocet Renown." to player
+			send "&3 * &d/setrenown &8<&fhrac&8> &8<&fpocet&8>" to player
+			stop
+		if arg-2 is not set:
+			send "&cZapomnel jsi uvest pocet Renown." to player
+			send "&3 * &d/setrenown &8<&fhrac&8> &8<&fpocet&8>" to player
+		else if arg-2 is set:
+			set {renown::%arg-1%} to arg-2
+			send "&8[&4&l!&8] &7Nastavil jsi &e%arg-2% Renown &7pro %coloured arg-1's offline prefix%%arg-1%&7."
+
+command /addrenown [<offline player>] [<number>]:
+	permission: pit.admin
+	permission message: {@NoPermissions}
+	trigger:
+		if arg-1 is not set:
+			send "&cZapomnel jsi uvest hrace a pocet Renown." to player
+			send "&3 * &d/addrenown &8<&fhrac&8> &8<&fpocet&8>" to player
+			stop
+		if arg-2 is not set:
+			send "&cZapomnel jsi uvest pocet Renown." to player
+			send "&3 * &d/addrenown &8<&fhrac&8> &8<&fpocet&8>" to player
+		else if arg-2 is set:
+			add arg-2 to {renown::%arg-1%}
+			set {renown::%arg-1%} to round({renown::%arg-1%})
+			send "&8[&4&l!&8] &7Pridal jsi &e%arg-2% Renown &7pro %coloured arg-1's offline prefix%%arg-1%&7."
+
+command /addxp [<offline player>] [<number>]:
+	permission: pit.admin
+	permission message: {@NoPermissions}
+	trigger:
+		if arg-1 is not set:
+			send "&cZapomnel jsi uvest hrace a pocet XP." to player
+			send "&3 * &d/addxp &8<&fhrac&8> &8<&fpocet&8>" to player
+			stop
+		if arg-2 is not set:
+			send "&cZapomnel jsi uvest pocet XP." to player
+			send "&3 * &d/addxp &8<&fhrac&8> &8<&fpocet&8>" to player
+		else if arg-2 is set:
+			if {level::%arg-1%} is 120:
+				message "&cTento hrac jiz dosahl maximalniho levelu."
+				stop
+			XP("remove", arg-2, arg-1)
+			set {_num} to splitCoins("%arg-2%")
+			send "&8[&4&l!&8] &7Pridal jsi &b%{_num}% xp &7pro %coloured arg-1's offline prefix%%arg-1%&7."
+
+			LevelSystem(arg-1)
+
+			
+
+command /setlevel [<offline player>] [<number>]:
+	aliases: /setlvl
+	permission: pit.admin
+	permission message: {@NoPermissions}
+	trigger:
+		if arg-1 is not set:
+			send "&cZapomnel jsi uvest hrace a level." to player
+			send "&3 * &d/setlevel &8<&fhrac&8> &8<&flevel&8>" to player
+			stop
+		if arg-2 is not set:
+			send "&cZapomnel jsi uvest level." to player
+			send "&3 * &d/setlevel &8<&fhrac&8> &8<&flevel&8>" to player
+		else if arg-2 is set:
+			if arg-2 is more than 120:
+				send "&c##Error&f: &7Maximalni level je &b&l120&7."
+				stop
+			else if arg-2 is less than 1:
+				send "&c##Error&f: &7Minimalni level je &f&l1&7."
+				stop			
+			else:
+				set {level::%arg-1%} to arg-2
+
+				if {level::%arg-1%} is between 1 and 9:
+					XP("set", 15 + 15 * {bonusxpprestige::%arg-1%}, arg-1)
+					set {%arg-1%.level.color} to "&7"
+				if {level::%arg-1%} is between 10 and 19:
+					XP("set", 30 + 30 * {bonusxpprestige::%arg-1%}, arg-1)
+					set {%arg-1%.level.color} to "&9"
+				if {level::%arg-1%} is between 20 and 29:
+					XP("set", 50 + 50 * {bonusxpprestige::%arg-1%}, arg-1)
+					set {%arg-1%.level.color} to "&3"
+				if {level::%arg-1%} is between 30 and 39:
+					XP("set", 75 + 75 * {bonusxpprestige::%arg-1%}, arg-1)
+					set {%arg-1%.level.color} to "&2"
+				if {level::%arg-1%} is between 40 and 49:
+					XP("set", 125 + 125 * {bonusxpprestige::%arg-1%}, arg-1)
+					set {%arg-1%.level.color} to "&a"
+				if {level::%arg-1%} is between 50 and 59:
+					XP("set", 300 + 300 * {bonusxpprestige::%arg-1%}, arg-1)
+					set {%arg-1%.level.color} to "&e"
+				if {level::%arg-1%} is between 60 and 69:
+					XP("set", 600 + 600 * {bonusxpprestige::%arg-1%}, arg-1)
+					set {%arg-1%.level.color} to "&6&l"
+				if {level::%arg-1%} is between 70 and 79:
+					XP("set", 800 + 800 * {bonusxpprestige::%arg-1%}, arg-1)
+					set {%arg-1%.level.color} to "&c&l"
+				if {level::%arg-1%} is between 80 and 89:
+					XP("set", 900 + 900 * {bonusxpprestige::%arg-1%}, arg-1)
+					set {%arg-1%.level.color} to "&4&l"
+				if {level::%arg-1%} is between 90 and 99:
+					XP("set", 1000 + 1000 * {bonusxpprestige::%arg-1%}, arg-1)
+					set {%arg-1%.level.color} to "&5&l"
+				if {level::%arg-1%} is between 100 and 109:
+					XP("set", 1200 + 1200 * {bonusxpprestige::%arg-1%}, arg-1)
+					set {%arg-1%.level.color} to "&d&l"
+				if {level::%arg-1%} is between 110 and 119:
+					XP("set", 1500 + 1500 * {bonusxpprestige::%arg-1%}, arg-1)
+					set {%arg-1%.level.color} to "&f&l"
+				if {level::%arg-1%} is 120:
+					set {needxp::%arg-1%} to "MAX!"
+					set {%arg-1%.level.color} to "&b&l"
+					set arg-1's xp to 2044
+				else:
+					set arg-1's xp to 0
+
+				send "&8[&4&l!&8] &7Nastavil jsi level %{%arg-1%.level.color}%%{level::%arg-1%}% &7pro %coloured arg-1's offline prefix%%arg-1%&7."
+				set arg-1's level to {level::%arg-1%}
+
+
+
+command /setprestige [<offline player>] [<number>]:
+	aliases: /setlvl
+	permission: pit.admin
+	permission message: {@NoPermissions}
+	trigger:
+		if arg-1 is not set:
+			send "&cZapomnel jsi uvest hrace a prestige." to player
+			send "&3 * &d/setprestige &8<&fhrac&8> &8<&fprestige&8>" to player
+			stop
+		if arg-2 is not set:
+			send "&cZapomnel jsi uvest prestige." to player
+			send "&3 * &d/setprestige &8<&fhrac&8> &8<&fprestige&8>" to player
+		else if arg-2 is set:
+			if arg-2 is 0:
+				if {prestige::%arg-1%} is not set:
+					message "&c%arg-1% nema prestige."
+					stop
+
+				delete {bonusxpprestige::%arg-1%}
+				set {prestigebrackets::%arg-1%} to "&7"
+				delete {prestige::%arg-1%}
+				send "&8[&4&l!&8] &7Resetoval jsi prestige pro %coloured arg-1's offline prefix%%arg-1%&7."
+				set {scoreboard::renown::%arg-1%} to ""
+				stop
+			if arg-2 is more than 10:
+				send "&c##Error&f: &7Maximalni prestige je &e&l10&7."
+				stop
+			else if arg-2 is less than 1:
+				send "&c##Error&f: &7Minimalni prestige je &e&l1&7."
+				stop			
+			else:
+				if arg-2 is 1:
+					if {prestige::%arg-1%} is "I":
+						message "&c%arg-1% ma jiz tuto prestige."
+						stop
+
+					set {bonusxpprestige::%arg-1%} to 0.1
+					set {prestigebrackets::%arg-1%} to "&9"
+					set {prestige::%arg-1%} to "I"
+				if arg-2 is 2:
+					if {prestige::%arg-1%} is "II":
+						message "&c%arg-1% ma jiz tuto prestige."
+						stop
+
+					set {bonusxpprestige::%arg-1%} to 0.2
+					set {prestigebrackets::%arg-1%} to "&9"
+					set {prestige::%arg-1%} to "II"
+				if arg-2 is 3:
+					if {prestige::%arg-1%} is "III":
+						message "&c%arg-1% ma jiz tuto prestige."
+						stop
+
+					set {bonusxpprestige::%arg-1%} to 0.3
+					set {prestigebrackets::%arg-1%} to "&9"
+					set {prestige::%arg-1%} to "III"
+				if arg-2 is 4:
+					if {prestige::%arg-1%} is "IV":
+						message "&c%arg-1% ma jiz tuto prestige."
+						stop
+
+					set {bonusxpprestige::%arg-1%} to 0.4
+					set {prestigebrackets::%arg-1%} to "&9"
+					set {prestige::%arg-1%} to "IV"
+				if arg-2 is 5:
+					if {prestige::%arg-1%} is "V":
+						message "&c%arg-1% ma jiz tuto prestige."
+						stop
+
+					set {bonusxpprestige::%arg-1%} to 0.5
+					set {prestigebrackets::%arg-1%} to "&e"
+					set {prestige::%arg-1%} to "V"
+				if arg-2 is 6:
+					if {prestige::%arg-1%} is "VI":
+						message "&c%arg-1% ma jiz tuto prestige."
+						stop
+
+					set {bonusxpprestige::%arg-1%} to 0.75
+					set {prestigebrackets::%arg-1%} to "&e"
+					set {prestige::%arg-1%} to "VI"
+				if arg-2 is 7:
+					if {prestige::%arg-1%} is "VII":
+						message "&c%arg-1% ma jiz tuto prestige."
+						stop
+
+					set {bonusxpprestige::%arg-1%} to 1
+					set {prestigebrackets::%arg-1%} to "&e"
+					set {prestige::%arg-1%} to "VII"
+				if arg-2 is 8:
+					if {prestige::%arg-1%} is "VIII":
+						message "&c%arg-1% ma jiz tuto prestige."
+						stop
+
+					set {bonusxpprestige::%arg-1%} to 1.5
+					set {prestigebrackets::%arg-1%} to "&e"
+					set {prestige::%arg-1%} to "VIII"
+				if arg-2 is 9:
+					if {prestige::%arg-1%} is "IX":
+						message "&c%arg-1% ma jiz tuto prestige."
+						stop
+
+					set {bonusxpprestige::%arg-1%} to 2
+					set {prestigebrackets::%arg-1%} to "&e"
+					set {prestige::%arg-1%} to "IX"
+				if arg-2 is 10:
+					if {prestige::%arg-1%} is "X":
+						message "&c%arg-1% ma jiz tuto prestige."
+						stop
+
+					set {bonusxpprestige::%arg-1%} to 3
+					set {prestigebrackets::%arg-1%} to "&6"
+					set {prestige::%arg-1%} to "X"
+				set {scoreboard::renown::%arg-1%} to " &8▪ &7Prestige: &6##&e%{prestige::%arg-1%}%"
+				send arg-1 title "&e&lPRESTIGE!" with subtitle "&7Uspesne jsi odemknul prestige &6##&e%{prestige::%arg-1%}%&7!" for 4 seconds
+				send "&8[&4&l!&8] &7Nastavil jsi prestige &6##&e%{prestige::%arg-1%}% &7pro %coloured arg-1's offline prefix%%arg-1%&7."
+				play "ORB_PICKUP" to arg-1
+
+
+
+command /setweapon [<offline player>] [<number>]:
+	aliases: /setweap
+	permission: pit.admin
+	permission message: {@NoPermissions}
+	trigger:
+		if arg-1 is not set:
+			send "&cZapomnel jsi uvest hrace a level zbrane." to player
+			send "&3 * &d/setweapon &8<&fhrac&8> &8<&flevel&8>" to player
+			stop
+		if arg-2 is not set:
+			send "&cZapomnel jsi uvest level zbrane." to player
+			send "&3 * &d/setweapon &8<&fhrac&8> &8<&flevel&8>" to player
+		else if arg-2 is set:
+			if arg-2 is more than 7:
+				send "&c##Error&f: &7Maximalni level zbrane je &c7&7."
+				stop
+			else if arg-2 is less than 1:
+				send "&c##Error&f: &7Minimalni level zbrane je &c1&7."
+				stop			
+			else:
+				set {%arg-1%.sword} to arg-2
+				send "&8[&4&l!&8] &7Nastavil jsi level zbrane &8[&f%{level::%arg-1%}%&8] &7hraci %coloured arg-1's offline prefix%%arg-1%&7."
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------	
+on first join:
+	set {leaderboard.streak::%player%} to 0
+	set {%player%.level.color} to "&7"
+	set {prestigebrackets::%player%} to "&7"
+	set {needxp::%player%} to 15
+	set {kills::%player%} to 0
+	set {%player%.streak} to 0
+	set {gold::%player%} to 0
+	set {level::%player%} to 1
+	set {%player%.bounty} to ""
+	set player's level to 1
+
+	set slot 0 of player to unbreakable iron sword named "&7Zelezny mec"
+	set {_armor} to random integer between 1 and 3
+	if {_armor} is 1:
+		set player's chestplate to unbreakable chain chestplate named "&7Krouzkovaná zbroj"
+		set player's leggings to unbreakable chain leggings named "&7Krouzkované kalhoty"
+		set player's boots to unbreakable iron boots named "&7Zelezné boty"
+	if {_armor} is 2:
+		set player's chestplate to unbreakable chain chestplate named "&7Krouzkovaná zbroj"
+		set player's leggings to unbreakable iron leggings named "&7Zelezné boty"
+		set player's boots to unbreakable chain boots named "&7Krouzkované boty"
+	if {_armor} is 3:
+		set player's chestplate to unbreakable iron chestplate named "&7Zelezná zbroj"
+		set player's leggings to unbreakable chain leggings named "&7Krouzkované kalhoty"
+		set player's boots to unbreakable chain boots named "&7Krouzkované boty"
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+on death of a player:
+	attacker is not a player
+	if {floor} is not set:
+		set {%victim%.streak} to 0	
+
+on death of a player:
+	{vanish::%victim%} is not set
+	if {robbery} is not set:
+		set {%victim%.bounty} to ""
+	if check [{floor} is not set]->[{ragepit} is not set]->[{picker} is not set]->[{raffle} is not set]->[{robbery} is not set]:
+		set {status::%victim%} to " &8▪ &7Status: &fNecinny"
+	if {combat.second::%victim%} is set:
+		delete {combat.second::%victim%}
+		delete {combat.check::%victim%}
+
+	{floor::%victim%} is not set
+	set {backpoint} to location of victim
+	heal victim
+	set gamemode of victim to spectator
+
+	if attacker is a player:
+		if attacker's tool is air:
+			set {_sword} to "s &frukou"
+		else if attacker's tool is iron_sword:
+			set {_sword} to "s &fZeleznym Mecem"
+		else if attacker's tool is diamond_sword:
+			set {_sword} to "s &bDiamantovym Mecem"
+		else if attacker's tool is gold_sword:
+			set {_sword} to "se &eZlatym Mecem"
+		else if attacker's tool is bow:
+			set {_sword} to "s &fLukem"
+		else if attacker's tool is iron_axe:
+			set {_sword} to "s &fZeleznou Sekerou"
+		else if attacker's tool is diamond_axe:
+			set {_sword} to "s &bDiamantovou Sekerou"
+		else if attacker's tool is not iron_sword or diamond_sword or gold_sword or bow or iron_axe or diamond_axe or air:
+			set {_sword} to "zahadnym zpusobem &fO_o"
+		send "&c&lByl jsi zabit! &7zabil te %{prestigebrackets::%attacker%}%[%{%attacker%.level.color}%%{level::%attacker%}%%{prestigebrackets::%attacker%}%] %coloured attacker's offline suffix%%attacker%&7!" to victim
+		send victim title "&c&lByl jsi zabit!" with subtitle "&7Zabil te %{prestigebrackets::%attacker%}%[%{%attacker%.level.color}%%{level::%attacker%}%%{prestigebrackets::%attacker%}%] %coloured attacker's offline suffix%%attacker% &7%{_sword}%&7!" for 4 seconds
+	else:
+		send "&c&lByl jsi zabit!" to victim
+		send victim title "&c&lByl jsi zabit!" with subtitle "&7Priste musis byt silnejsi!" for 4 seconds
+	wait 1 tick
+	teleport victim to {backpoint}
+	clear all potion effects from victim
+	apply night vision 1  without any particles to victim for 999 days
+
+on death of a player:
+
+	victim is a player
+	set {_io} to {needxp::%victim%}
+	replace all "." in {_io} with ""
+	set {_io} to {_io} parsed as number
+
+	if {level::%victim%} is between 1 and 9:
+		set victim's xp to round((({_io} / (15 + 15 * {bonusxpprestige::%victim%}) - 1) * -1 * 147) + 1897)
+	if {level::%victim%} is between 10 and 19:
+		set victim's xp to round((({_io} / (30 + 30 * {bonusxpprestige::%victim%}) - 1) * -1 * 147) + 1897)
+	if {level::%victim%} is between 20 and 29:
+		set victim's xp to round((({_io} / (50 + 50 * {bonusxpprestige::%victim%}) - 1) * -1 * 147) + 1897)
+	if {level::%victim%} is between 30 and 39:
+		set victim's xp to round((({_io} / (75 + 75 * {bonusxpprestige::%victim%}) - 1) * -1 * 147) + 1897)
+	if {level::%victim%} is between 40 and 49:
+		set victim's xp to round((({_io} / (125 + 125 * {bonusxpprestige::%victim%}) - 1) * -1 * 147) + 1897)
+	if {level::%victim%} is between 50 and 59:
+		set victim's xp to round((({_io} / (300 + 300 * {bonusxpprestige::%victim%}) - 1) * -1 * 147) + 1897)
+	if {level::%victim%} is between 60 and 69:
+		set victim's xp to round((({_io} / (600 + 600 * {bonusxpprestige::%victim%}) - 1) * -1 * 147) + 1897)
+	if {level::%victim%} is between 70 and 79:
+		set victim's xp to round((({_io} / (800 + 800 * {bonusxpprestige::%victim%}) - 1) * -1 * 147) + 1897)
+	if {level::%victim%} is between 80 and 89:
+		set victim's xp to round((({_io} / (900 + 900 * {bonusxpprestige::%victim%}) - 1) * -1 * 147) + 1897)
+	if {level::%victim%} is between 90 and 99:
+		set victim's xp to round((({_io} / (1000 + 1000 * {bonusxpprestige::%victim%}) - 1) * -1 * 147) + 1897)
+	if {level::%victim%} is between 100 and 109:
+		set victim's xp to round((({_io} / (1200 + 1200 * {bonusxpprestige::%victim%}) - 1) * -1 * 147) + 1897)
+	if {level::%victim%} is between 110 and 119:
+		set victim's xp to round((({_io} / (1500 + 1500 * {bonusxpprestige::%victim%}) - 1) * -1 * 147) + 1897)
+
+	if {level::%victim%} is 120:
+		set victim's xp to 2044
+	set victim's level to {level::%victim%}
+
+	if attacker is a player:
+		if {floor::%attacker%} is not set:
+			if {activatedperk1::%attacker%} or {activatedperk2::%attacker%} or {activatedperk3::%attacker%} or {activatedperk4::%attacker%} is not "vampire":
+				if {activatedperk1::%attacker%} or {activatedperk2::%attacker%} or {activatedperk3::%attacker%} or {activatedperk4::%attacker%} is not "rambo":
+					if {ragepit} is not set:
+						if {activatedperk1::%attacker%} or {activatedperk2::%attacker%} or {activatedperk3::%attacker%} or {activatedperk4::%attacker%} is "goldenhead":
+							if {activatedperk1::%attacker%} or {activatedperk2::%attacker%} or {activatedperk3::%attacker%} or {activatedperk4::%attacker%} is not "overheal":
+								if amount of player head with custom nbt "{SkullOwner:{Id:""2dca1967-0d3e-4eb2-807b-daf8f735ad16"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGFiZDcwM2U1YjhjODhkNGIxZmNmYTk0YTkzNmEwZDZhNGY2YWJhNDQ1Njk2NjNkMzM5MWQ0ODgzMjIzYzUifX19""}]}}}" named "&6Zlata Hlava" with lore "||&5Bonusy &lzlate hlavy&5!||&8&l ▶ &9Regenerace II (0:10)||&8&l ▶ &9Absorpce I (0:10)||&r" in attacker's inventory is less than 2:
+									give attacker 1 player head with custom nbt "{SkullOwner:{Id:""2dca1967-0d3e-4eb2-807b-daf8f735ad16"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGFiZDcwM2U1YjhjODhkNGIxZmNmYTk0YTkzNmEwZDZhNGY2YWJhNDQ1Njk2NjNkMzM5MWQ0ODgzMjIzYzUifX19""}]}}}" named "&6Zlata Hlava" with lore "||&5Bonusy &lzlate hlavy&5!||&8&l ▶ &9Regenerace II (0:10)||&8&l ▶ &9Absorpce I (0:10)||&r"
+							else:
+								if amount of player head with custom nbt "{SkullOwner:{Id:""2dca1967-0d3e-4eb2-807b-daf8f735ad16"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGFiZDcwM2U1YjhjODhkNGIxZmNmYTk0YTkzNmEwZDZhNGY2YWJhNDQ1Njk2NjNkMzM5MWQ0ODgzMjIzYzUifX19""}]}}}" named "&6Zlata Hlava" with lore "||&5Bonusy &lzlate hlavy&5!||&8&l ▶ &9Regenerace II (0:10)||&8&l ▶ &9Absorpce I (0:10)||&r" in attacker's inventory is less than 4:
+									give attacker 1 player head with custom nbt "{SkullOwner:{Id:""2dca1967-0d3e-4eb2-807b-daf8f735ad16"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGFiZDcwM2U1YjhjODhkNGIxZmNmYTk0YTkzNmEwZDZhNGY2YWJhNDQ1Njk2NjNkMzM5MWQ0ODgzMjIzYzUifX19""}]}}}" named "&6Zlata Hlava" with lore "||&5Bonusy &lzlate hlavy&5!||&8&l ▶ &9Regenerace II (0:10)||&8&l ▶ &9Absorpce I (0:10)||&r"
+						else if {activatedperk1::%attacker%} or {activatedperk2::%attacker%} or {activatedperk3::%attacker%} or {activatedperk4::%attacker%} is "olympus":
+							if {activatedperk1::%attacker%} or {activatedperk2::%attacker%} or {activatedperk3::%attacker%} or {activatedperk4::%attacker%} is not "overheal":
+								if amount of water_bottle:8203 in attacker's inventory is less than 1:
+									give attacker 1 water_bottle:8203 with no nbt named "&bOlympus Potion" with lore "||&5Bonusy &lolympus potionu&5!||&8&l ▶ &9Rychlost II (0:15)||&8&l ▶ &9Regenerace III (0:10)||&8&l ▶ &7Pri vypiti ziskas &3+&b20xp&7.||&r"
+							else:
+								if amount of water_bottle:8203 in attacker's inventory is less than 2:
+									give attacker 1 water_bottle:8203 with no nbt named "&bOlympus Potion" with lore "||&5Bonusy &lolympus potionu&5!||&8&l ▶ &9Rychlost II (0:15)||&8&l ▶ &9Regenerace III (0:10)||&8&l ▶ &7Pri vypiti ziskas &3+&b20xp&7.||&r"
+		
+						else if {activatedperk1::%attacker%} or {activatedperk2::%attacker%} or {activatedperk3::%attacker%} or {activatedperk4::%attacker%} is not "goldenhead" or "olympus":
+							if {activatedperk1::%attacker%} or {activatedperk2::%attacker%} or {activatedperk3::%attacker%} or {activatedperk4::%attacker%} is not "overheal":
+								if amount of golden apple in attacker's inventory is less than 2:
+									give attacker 1 GOLDEN_APPLE named "&6Golden Apple"
+							else:
+								if amount of golden apple in attacker's inventory is less than 4:
+									give attacker 1 GOLDEN_APPLE named "&6Golden Apple"
+					else:
+						if {activatedperk1::%attacker%} or {activatedperk2::%attacker%} or {activatedperk3::%attacker%} or {activatedperk4::%attacker%} is not "overheal":
+							if amount of baked potato in attacker's inventory is less than 2:
+								give attacker glowing 1 baked potato named "&cRage Potato" with lore "||&5Bonusy &lrage potato&5!||&8&l ▶ &dUzdravení &c2&4❤||&8&l ▶ &dBonusove srdicka &e2&6❤||&8&l ▶ &9Resistence II (0:10)"
+						else:
+							if amount of baked potato in attacker's inventory is less than 4:
+								give attacker glowing 1 baked potato named "&cRage Potato" with lore "||&5Bonusy &lrage potato&5!||&8&l ▶ &dUzdravení &c2&4❤||&8&l ▶ &dBonusove srdicka &e2&6❤||&8&l ▶ &9Resistence II (0:10)"
+				else:
+					heal attacker
+		else:
+			if {activatedperk1::%attacker%} or {activatedperk2::%attacker%} or {activatedperk3::%attacker%} or {activatedperk4::%attacker%} is not "overheal":
+				if amount of magma cream in attacker's inventory is less than 2:
+					give attacker 1 magma cream named "&bZlomena Duse" with lore "||&5Bonusy &lzlomene duse&5!||&8&l ▶ &dUzdravení &c4&4❤||&8&l ▶ &9Absorpce I (0:30)||&r"
+			else:
+				if amount of magma cream in attacker's inventory is less than 4:
+					give attacker 1 magma cream named "&bZlomena Duse" with lore "||&5Bonusy &lzlomene duse&5!||&8&l ▶ &dUzdravení &c4&4❤||&8&l ▶ &9Absorpce I (0:30)||&r"
+
+
+		add 1 to {kills::%attacker%}
+		set {kills::%attacker%} to round({kills::%attacker%})
+
+		if {floor} is not set:
+			add 1 to {%attacker%.streak}
+			set {%attacker%.streak} to round({%attacker%.streak})
+			if {strknumb::%attacker%} is set:
+				if check [{floor} is not set]->[{ragepit} is not set]->[{picker} is not set]->[{raffle} is not set]->[{robbery} is not set]->[{vanish::%attacker%} is not set]:
+					set {status::%attacker%} to " &8▪ &f%{%attacker%.streak}% Streak &8┃ &e%{strknumb::%attacker%}% Ⓩ"
+
+			if {%attacker%.streak} is higher than {leaderboard.streak::%attacker%}:
+				set {leaderboard.streak::%attacker%} to {%attacker%.streak}
+
+		set {_gold.random} to a random integer between 7 and 15
+		set {_xp.random} to a random integer between 5 and 12
+
+		if {floor} is not set:
+
+			if {strknumb::%victim%} is set:
+				set {_s} to {strknumb::%victim%}
+				replace all "." in {_s} with ""
+				set {_s} to {_s} parsed as number
+				add {_s} to {_gold.random}
+				loop all players:
+					{bounty.message::%loop-player%} is not set
+					send "&e&lBounty obdrzena! %{prestigebrackets::%attacker%}%[%{%attacker%.level.color}%%{level::%attacker%}%%{prestigebrackets::%attacker%}%] %coloured attacker's offline suffix%%attacker% &7zabil %{prestigebrackets::%victim%}%[%{%victim%.level.color}%%{level::%victim%}%%{prestigebrackets::%victim%}%] %coloured victim's offline suffix%%victim% &7a ziskal &e%{strknumb::%victim%}% Ⓩ&7." to loop-player
+
+			if "%now%" contains "Sat":
+				if {%victim%.streak} is between 10 and 19:
+					Quest("saturday4", 20, attacker)
+
+			set {%victim%.streak} to 0	
+			delete {strknumb::%victim%}
+
+		delete {streaker.counter::%victim%}
+
+		if lore of attacker's tool contains "XP Bump I&1":
+			add 2 to {_xp.random}
+		if lore of attacker's tool contains "XP Bump II&2":
+			add 4 to {_xp.random}
+		if lore of attacker's tool contains "XP Bump III":
+			add 6 to {_xp.random}
+
+		
+		if lore of attacker's tool contains "Gold Bump I&1":
+			add 4 to {_gold.random}
+		if lore of attacker's tool contains "Gold Bump II&2":
+			add 8 to {_gold.random}
+		if lore of attacker's tool contains "Gold Bump III":
+			add 12 to {_gold.random}
+
+		if lore of attacker's tool contains "Moctezuma I&1":
+			add 7 to {_gold.random}
+		if lore of attacker's tool contains "Moctezuma II&2":
+			add 14 to {_gold.random}
+		if lore of attacker's tool contains "Moctezuma III":
+			add 21 to {_gold.random}
+
+		if lore of attacker's tool contains "Sierra I&1":
+			if victim's chestplate is diamond chestplate:
+				add 20 to {_gold.random}
+			if victim's leggings is diamond leggings:
+				add 20 to {_gold.random}
+			if victim's boots is diamond boots:
+				add 20 to {_gold.random}
+		if lore of attacker's tool contains "Sierra II&2":
+			if victim's chestplate is diamond chestplate:
+				add 40 to {_gold.random}
+			if victim's leggings is diamond leggings:
+				add 40 to {_gold.random}
+			if victim's boots is diamond boots:
+				add 40 to {_gold.random}
+		if lore of attacker's tool contains "Sierra III":
+			if victim's chestplate is diamond chestplate:
+				add 60 to {_gold.random}
+			if victim's leggings is diamond leggings:
+				add 60 to {_gold.random}
+			if victim's boots is diamond boots:
+				add 60 to {_gold.random}
+
+		if lore of attacker's tool contains "Gold Boost I&1":
+			set {_gold.random} to {_gold.random} * 1.15
+		if lore of attacker's tool contains "Gold Boost III&2":
+			set {_gold.random} to {_gold.random} * 1.30
+		if lore of attacker's tool contains "Gold Boost III":
+			set {_gold.random} to {_gold.random} * 1.45
+
+		if lore of attacker's tool contains "XP Boost I&1":
+			set {_xp.random} to {_xp.random} * 1.10
+		if lore of attacker's tool contains "XP Boost III&2":
+			set {_xp.random} to {_xp.random} * 1.20
+		if lore of attacker's tool contains "XP Boost III":
+			set {_xp.random} to {_xp.random} * 1.30
+
+		if {renown::%attacker%::xpbump} is set:
+			add {renown::%attacker%::xpbump} to {_xp.random}
+
+		if {doublerewards} is set:
+			if "%region at attacker%" contains "2xrewards-%{doublerewards}%":
+				set {_gold.random} to {_gold.random} * 2
+				set {_xp.random} to {_xp.random} * 2
+
+		if {tier.perk::%attacker%::elgato} is set:
+			if {%attacker%.streak} is less or equal to {tier.perk::%attacker%::elgato}:
+				add 5 to {_gold.random}
+				add 5 to {_xp.random}
+
+		if {activatedperk1::%attacker%} or {activatedperk2::%attacker%} or {activatedperk3::%attacker%} or {activatedperk4::%attacker%} is "bountyhunter":
+			add 4 to {_gold.random}
+
+		if {double.spammer::%attacker%::%victim%} is set:
+			set {_gold.random} to {_gold.random} * 2
+			delete {double.spammer::%attacker%::%victim%}
+
+		if {activatedperk1::%attacker%} or {activatedperk2::%attacker%} or {activatedperk3::%attacker%} or {activatedperk4::%attacker%} is "streaker":
+			add 1 to {streaker.counter::%attacker%}
+			if {streaker.counter::%attacker%} is between 3 and 9:
+				add 2 to {_xp.random}
+			else if {streaker.counter::%attacker%} is between 10 and 19:
+				add 3 to {_xp.random}
+			else if {streaker.counter::%attacker%} is between 20 and 29:
+				add 4 to {_xp.random}
+			else if {streaker.counter::%attacker%} is between 30 and 39:
+				add 5 to {_xp.random}
+			else if {streaker.counter::%attacker%} is between 40 and 49:
+				add 6 to {_xp.random}
+			else if {streaker.counter::%attacker%} is between 50 and 59:
+				add 7 to {_xp.random}
+			else if {streaker.counter::%attacker%} is between 60 and 69:
+				add 8 to {_xp.random}
+			else if {streaker.counter::%attacker%} is between 70 and 79:
+				add 9 to {_xp.random}
+			else if {streaker.counter::%attacker%} is higher or equal to 80:
+				add 10 to {_xp.random}
+
+		set {_gold.random} to TierGBoost({_gold.random}, attacker)
+		set {_xp.random} to TierXPBoost({_xp.random}, attacker)
+
+		set {_gold.random} to GBooster({_gold.random}, attacker)
+		set {_xp.random} to XPBooster({_xp.random}, attacker)
+
+		Zlataky("add", {_gold.random}, attacker)
+		XP("remove", {_xp.random}, attacker)
+
+		send "&a&lZabil jsi %{prestigebrackets::%victim%}%[%{%victim%.level.color}%%{level::%victim%}%%{prestigebrackets::%victim%}%] %coloured victim's offline suffix%%victim%&a&l! &6+&e%{_gold.random}% Ⓩ &3+&b%{_xp.random}%xp" to attacker
+		play "ORB_PICKUP" to attacker
+		
+		wait 1 tick
+
+		LevelSystem(attacker)
+	delete {strknumb::%victim%}
+
+on death of a player:
+	{floor} is not set
+
+	attacker is a player
+	if {%attacker%.streak} is 5 or 10 or 15 or 20 or 25 or 30 or 35 or 40 or 45 or 50 or 55 or 60 or 65 or 70 or 75 or 80 or 85 or 90 or 95 or 100:
+		attacker is a player
+		add {%attacker%.streak} to {_xp.random}
+		replace all "." in {strknumb::%attacker%} with ""
+		set {strknumb::%attacker%} to {strknumb::%attacker%} parsed as number
+		set {strknumb::%attacker%} to {%attacker%.streak} * 10
+		set {strknumb::%attacker%} to splitCoins("%{strknumb::%attacker%}%")
+		loop all players:
+			{bounty.message::%loop-player%} is not set
+			send "&e&lBounty na %{prestigebrackets::%attacker%}%[%{%attacker%.level.color}%%{level::%attacker%}%%{prestigebrackets::%attacker%}%] %coloured attacker's offline suffix%%attacker%&e&l! &7ma streak &c%{%attacker%.streak}%&7. Odmena za zabiti &e%{strknumb::%attacker%}% Ⓩ&7." to loop-player
+		if {robbery} is not set:
+			set {%attacker%.bounty} to " &e%{strknumb::%attacker%}% Ⓩ"
+			if check [{floor} is not set]->[{ragepit} is not set]->[{picker} is not set]->[{raffle} is not set]->[{robbery} is not set]->[{strknumb::%victim%} is not set]:
+				set {status::%attacker%} to " &8▪ &f%{%attacker%.streak}% Streak &8┃ &e%{strknumb::%attacker%}% Ⓩ"
+
+		if {%attacker%.streak} is 5:
+			make attacker run command "/streakaround" as op
+
+
+command /streakaround:
+	permission: pit.admin
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.	
+	trigger:
+		while {strknumb::%player%} is set:
+			if player is a player:
+				wait 10 ticks
+				{strknumb::%player%} is set
+				bind hologram "&e%{strknumb::%player%}% Ⓩ" to player for 9 ticks offset by -0.3, 0.8, 0.3
+				wait 5 ticks
+				{strknumb::%player%} is set
+				bind hologram "&e%{strknumb::%player%}% Ⓩ" to player for 9 ticks offset by 0.3, 0.9, -0.3
+				wait 10 ticks
+				{strknumb::%player%} is set
+				bind hologram "&e%{strknumb::%player%}% Ⓩ" to player for 9 ticks offset by 0.3, 1.2, 0.3
+				wait 5 ticks
+				{strknumb::%player%} is set
+				bind hologram "&e%{strknumb::%player%}% Ⓩ" to player for 9 ticks offset by -0.3, 1.1, -0.3
+
+
+on death of a player:
+	if projectile exists:
+		projectile is arrow
+		set {projectile::%attacker%::%victim%} to 1
+		wait 1 second
+		delete {projectile::%attacker%::%victim%}
+
+on damage:
+	wait 1 tick
+	if {projectile::%attacker%::%victim%} is not set:
+		check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+		victim is player
+		attacker is player
+		attacker is not victim
+		projectile exists
+		projectile is arrow
+		if {picker} is set:
+			if {tdm::%attacker%} is "&c":
+				if {tdm::%victim%} is "&c":
+					stop
+			else if {tdm::%attacker%} is "&9":
+				if {tdm::%victim%} is "&9":
+					stop
+		message "&c&lZasahl jsi %{prestigebrackets::%victim%}%[%{%victim%.level.color}%%{level::%victim%}%%{prestigebrackets::%victim%}%] %coloured victim's offline suffix%%victim%&c&l! &7ze vzdalenosti &6%distance between victim and attacker% bloku&7, ma &c%round(victim's health * 2)%&4❤&7." to attacker
+
+
+on death of a player:
+	clear effects from victim
+
+	loop drops:
+		if loop-item is fishing rod:
+			name of loop-item contains "&cCatcher"
+			if line 1 of the loop-item's lore doesn't contain "1&8/":
+				set {_fishingrod} to loop-item
+				if line 1 of the loop-item's lore contains "2&8/":
+					set line 1 of {_fishingrod}'s lore to "&8 ➥ &7Zivotu&7: &c1&8/&f3"
+				if line 1 of the loop-item's lore contains "3&8/":
+					set line 1 of {_fishingrod}'s lore to "&8 ➥ &7Zivotu&7: &e2&8/&f3"
+				add {_fishingrod} to {drops::%victim%::*}
+
+		if loop-item is golden sword:
+			if line 1 of the loop-item's lore doesn't contain " &c1&8/":
+				set {_mysticsword} to loop-item
+				loop 30 times:
+					if line 1 of the loop-item's lore contains "&8/&f%loop-number%":
+						set {_maxzivotu} to loop-number
+				loop 30 times:
+					if line 1 of the loop-item's lore is "&7 ➥ &dZivotu&7: &a%loop-number%&8/&f%{_maxzivotu}%" or "&7 ➥ &dZivotu&7: &e%loop-number%&8/&f%{_maxzivotu}%" or "&7 ➥ &dZivotu&7: &c%loop-number%&8/&f%{_maxzivotu}%":
+						if (loop-number - 1) / {_maxzivotu} is higher than 0.6:
+							set line 1 of {_mysticsword}'s lore to "&7 ➥ &dZivotu&7: &a%loop-number - 1%&8/&f%{_maxzivotu}%"
+						if (loop-number - 1) / {_maxzivotu} is less or equal to 0.6:
+							set line 1 of {_mysticsword}'s lore to "&7 ➥ &dZivotu&7: &e%loop-number - 1%&8/&f%{_maxzivotu}%"
+						if (loop-number - 1) / {_maxzivotu} is less or equal to 0.35:
+							set line 1 of {_mysticsword}'s lore to "&7 ➥ &dZivotu&7: &c%loop-number - 1%&8/&f%{_maxzivotu}%"
+				add {_mysticsword} to {drops::%victim%::*}
+		if loop-item is player head:
+			name of loop-item contains "Maska"
+			if line 1 of the loop-item's lore doesn't contain "1&8/":
+				set {_dropmaska} to loop-item
+				if line 1 of the loop-item's lore contains "2&8/":
+					set line 1 of {_dropmaska}'s lore to "&8 ➥ &7Zivotu&7: &c1&8/&f2"
+
+				add {_dropmaska} to {drops::%victim%::*}
+
+		if loop-item is not snowball or ink sack or tnt or bricks or shears or clay_bricks stairs:
+			if lore of loop-item doesn't contain "box":
+				remove loop-item from drops
+
+	{floor::%victim%} is not set
+	# /// spawn
+	wait 75 ticks
+	if {staffmode::%victim%} is set:
+		set {staffmode.items::%victim%} to 1
+		stop
+	{floor::%victim%} is not set
+
+	set {_spawn} to random integer between 1 and 3
+	teleport victim to {spawn.loc::%{_spawn}%}
+
+	set gamemode of victim to survival
+
+# // items //
+
+# /// armor
+	if {picker} is not set:
+		if {renown::%victim%::nadhernahelma} is set:
+			set victim's helmet to unbreakable leather helmet dyed light blue named "&7Nadherná helma"
+	else:
+		if {tdm::%victim%} contains "&c":
+			set victim's helmet to red wool block named "&cCerveny tym!"
+		else if {tdm::%victim%} contains "&9":
+			set victim's helmet to blue wool block named "&9Modry tym!"
+		
+	wait 1 tick
+
+	set {_armor} to random integer between 1 and 3
+	if {_armor} is 1:
+		set victim's chestplate to unbreakable chain chestplate named "&7Krouzkovaná zbroj"
+		set victim's leggings to unbreakable chain leggings named "&7Krouzkované kalhoty"
+		set victim's boots to unbreakable iron boots named "&7Zelezné boty"
+	if {_armor} is 2:
+		set victim's chestplate to unbreakable chain chestplate named "&7Krouzkovaná zbroj"
+		set victim's leggings to unbreakable iron leggings named "&7Zelezné kalhoty"
+		set victim's boots to unbreakable chain boots named "&7Krouzkované boty"
+	if {_armor} is 3:
+		set victim's chestplate to unbreakable iron chestplate named "&7Zelezná zbroj"
+		set victim's leggings to unbreakable chain leggings named "&7Krouzkované kalhoty"
+		set victim's boots to unbreakable chain boots named "&7Krouzkované boty" #'
+
+
+
+	heal victim
+
+	if {activatedperk1::%victim%} or {activatedperk2::%victim%} or {activatedperk3::%victim%} or {activatedperk4::%victim%} is "lava":
+		set slot {inventoryslot::%victim%::lava} of victim to lava bucket named "&cLava"
+
+
+	if {activatedperk1::%victim%} or {activatedperk2::%victim%} or {activatedperk3::%victim%} or {activatedperk4::%victim%} is "fishingrod":
+		set slot {inventoryslot::%victim%::fishingrod} of victim to unbreakable fishing rod named "&bRybarsky Prut"
+
+
+# /// bow
+	if {%victim%.bow} is set:
+		if {%victim%.bow} is 1:
+			set slot {inventoryslot::%victim%::bow} of victim to unbreakable bow named "&aObycejny luk" with lore "||&5Vlastnosti &lluku&5!||&d&l ▶ &dBez vylepseni.||||&eKvalita zbrane &8[&6&l✩&7✩✩✩✩&8]||||&e&o,,Horsi luk nemel ani &a&oRobin Hood&e&o."""
+
+		if {%victim%.bow} is 2:
+			set slot {inventoryslot::%victim%::bow} of victim to unbreakable bow named "&dVzácny luk" with lore "||&5Vlastnosti &lluku&5!||&d&l ▶ &dPower I&a||||&eKvalita zbrane &8[&6&l✩&7✩✩✩✩&8]||||&e&o,,Tak jo, tohle uz je luk &a&oRobina Hooda&e&o."""
+
+		if {%victim%.bow} is 3:
+			set slot {inventoryslot::%victim%::bow} of victim to unbreakable bow named "&dVzácny lehky luk" with lore "||&5Vlastnosti &lluku&5!||&d&l ▶ &dPower II&b||||&eKvalita zbrane &8[&6&l✩✩&7✩✩✩&8]||||&e&o,,Davej si bacha, at s nim nekomu nevypichnes oko."""
+
+		if {%victim%.bow} is 4:
+			set slot {inventoryslot::%victim%::bow} of victim to unbreakable glowing bow named "&cLegendarní lovecky luk" with lore "||&5Vlastnosti &lluku&5!||&d&l ▶ &dPower III&c||||&eKvalita zbrane &8[&6&l✩✩✩&7✩✩&8]||||&e&o,,Jeste chvili a budes o sobe moct rikat,||&e&o ze s nim umis."""
+
+		if {%victim%.bow} is 5:
+			set slot {inventoryslot::%victim%::bow} of victim to unbreakable glowing bow named "&cLegendarní elfí luk" with lore "||&5Vlastnosti &lluku&5!||&d&l ▶ &dPower IV&d||&d&l ▶ &dExploze I||||&eKvalita zbrane &8[&6&l✩✩✩✩✩&8]||||&e&o,,Ted uz je z tebe doslova &b&oLegolas&e&o."""
+
+
+		set slot {inventoryslot::%victim%::arrow} of victim to glowing ("%{%victim%.arrow}% arrow" parsed as item) named "&7Síp"
+
+
+	if {%victim%.pickaxe} is 1:
+		set slot {inventoryslot::%victim%::pickaxe} of victim to unbreakable iron pickaxe named "&aObycejny krumpac" with lore "||&5Vlastnosti &lkrumpace&5!||&8&l ▶ &7Pri kazdem vykopani &eGold Ore||    &7dostanes &6+&e1 Ⓩ&7.||||&eKvalita zbrane &8[&6&l✩&7✩✩&8]||||&e&o,,Darek trpasliku &a&oSnehurce&e&o,||&e&oproto je tak spatny."""
+
+	if {%victim%.pickaxe} is 2:
+		set slot {inventoryslot::%victim%::pickaxe} of victim to unbreakable diamond pickaxe of efficiency 2 with no nbt named "&dVzácny krumpac" with lore "||&5Vlastnosti &lkrumpace&5!||&8&l ▶ &7Pri kazdem vykopani &eGold Ore||    &7dostanes &6+&e2 Ⓩ&7.||||&d&l ▶ &dUcinnost II||||&eKvalita zbrane &8[&6&l✩✩&7✩&8]||||&e&o,,Idealni krumpac pro &a&ozlatokopku&e&o."""
+
+	if {%victim%.pickaxe} is 3:
+		set slot {inventoryslot::%victim%::pickaxe} of victim to unbreakable diamond pickaxe of efficiency 5 with no nbt named "&dVelmi vzácny krumpac" with lore "||&5Vlastnosti &lkrumpace&5!||&8&l ▶ &7Pri kazdem vykopani &eGold Ore||    &7dostanes &6+&e2 Ⓩ&7.||||&d&l ▶ &dUcinnost V||||&eKvalita zbrane &8[&6&l✩✩✩&8]||||&e&o,,Davny krumpac &d&oThorina Paveze&e&o."""
+
+
+	if {activatedperk1::%victim%} or {activatedperk2::%victim%} or {activatedperk3::%victim%} or {activatedperk4::%victim%} is "barbarian":
+		set slot {inventoryslot::%victim%::sword} of victim to unbreakable iron axe with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:6,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "&7Zelezny mec"
+	else:
+		set slot {inventoryslot::%victim%::sword} of victim to unbreakable iron sword named "&7Zelezny mec"
+
+	if victim is online:
+		add {drops::%victim%::*} to victim's inventory
+		delete {drops::%victim%::*}
+
+
+on damage:
+	attacker is a player
+	projectile is an arrow
+	if check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]:
+		if {activatedperk1::%attacker%} or {activatedperk2::%attacker%} or {activatedperk3::%attacker%} or {activatedperk4::%attacker%} is "vampire":
+			damage is higher or equal to 3
+			heal attacker by 1 hearts	
+
+		loop all items in attacker's inventory:
+			loop-item is bow
+			if lore of loop-item doesn't contain "Power I&a" or "Power II&b" or "Power III&c" or "Power IV&d":
+				set damage to damage / 100 * (100 - 60)
+			if lore of loop-item contains "Power I&a":
+				set damage to damage / 100 * (100 - 50)
+			if lore of loop-item contains "Power II&b":
+				set damage to damage / 100 * (100 - 40)
+			if lore of loop-item contains "Power III&c":
+				set damage to damage / 100 * (100 - 35)
+			if lore of loop-item contains "Power IV&d":
+				set damage to damage / 100 * (100 - 20)
+
+		# // Exploze 
+			if lore of loop-item contains "Exploze I":
+				chance of 35%:
+					create a safe explosion of force 0 at victim
+					damage victim by 1 heart
+
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	set damage to damage / 100 * (100 - 20)
+
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	projectile doesn't exist
+	{strknumb::%victim%} is set
+	attacker's tool is diamond sword
+	set damage to damage / 100 * (100 + 20)
+
+
+on damage of a player:
+	attacker is a player
+	projectile doesn't exist
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	if {tdm::%attacker%} is "&c":
+		if {tdm::%victim%} is "&c":
+			stop
+	else if {tdm::%attacker%} is "&9":
+		if {tdm::%victim%} is "&9":
+			stop
+	if lore of attacker's tool contains "Slowness I&1":
+		chance of 0.25%:
+			apply slowness 1 to victim for 2 second
+	if lore of attacker's tool contains "Slowness II&2":
+		chance of 0.5%:
+			apply slowness 1 to the victim for 3 seconds
+	if lore of attacker's tool contains "Slowness III":
+		chance of 1%:
+			apply slowness 1 to the victim for 4 seconds
+
+
+on damage of a player:
+	attacker is a player
+	projectile doesn't exist	
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	if {tdm::%attacker%} is "&c":
+		if {tdm::%victim%} is "&c":
+			stop
+	else if {tdm::%attacker%} is "&9":
+		if {tdm::%victim%} is "&9":
+			stop
+	lore of victim's helmet doesn't contain "Anti-Blind"
+	if lore of attacker's tool contains "Blindness I&1":
+		chance of 0.25%:
+			apply blindness 1 to victim for 2 second
+	if lore of attacker's tool contains "Blindness II&2":
+		chance of 0.5%:
+			apply blindness 1 to the victim for 3 seconds
+	if lore of attacker's tool contains "Blindness III":
+		chance of 1%:
+			apply blindness 1 to the victim for 4 seconds
+
+on damage of a player:
+	attacker is a player	
+	projectile doesn't exist
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	if {tdm::%attacker%} is "&c":
+		if {tdm::%victim%} is "&c":
+			stop
+	else if {tdm::%attacker%} is "&9":
+		if {tdm::%victim%} is "&9":
+			stop
+	lore of victim's helmet doesn't contain "Anti-Poison"
+	if lore of attacker's tool contains "Poisonous I&1":
+		chance of 0.25%:
+			apply poison 1 to victim for 2 second
+	if lore of attacker's tool contains "Poisonous II&2":
+		chance of 0.5%:
+			apply poison 1 to the victim for 3 second
+	if lore of attacker's tool contains "Poisonous III":
+		chance of 1%:
+			apply poison 1 to the victim for 4 second
+
+
+
+# /// Rychlost ability
+on inventory click:
+	if clicked slot is 39:
+		if lore of player's helmet contains "Rychlost":
+			set {_tier} to tier of potion effect speed of player
+			if {_tier} is 1:
+				remove speed from player
+		if lore of player's helmet contains "Fire Resistence":
+			remove fire resistance from player
+		wait 1 tick
+		if name of player's helmet contains "Zlata Hlava":
+			delete player's helmet
+			give player 1 player head with custom nbt "{SkullOwner:{Id:""2dca1967-0d3e-4eb2-807b-daf8f735ad16"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGFiZDcwM2U1YjhjODhkNGIxZmNmYTk0YTkzNmEwZDZhNGY2YWJhNDQ1Njk2NjNkMzM5MWQ0ODgzMjIzYzUifX19""}]}}}" named "&6Zlata Hlava" with lore "||&5Bonusy &lzlate hlavy&5!||&8&l ▶ &9Regenerace II (0:10)||&8&l ▶ &9Absorpce I (0:10)||&r"
+			stop
+		if lore of player's helmet contains "Rychlost":
+			if player has speed:
+				set {_tier} to tier of potion effect speed of player
+				if {_tier} is 1:
+					apply potion of speed of tier 1 to the player for 999 days
+			else:
+				apply potion of speed of tier 1 to the player for 999 days
+		if lore of player's helmet contains "Fire Resistence":
+			apply potion of fire resistance of tier 1 to the player for 999 days
+
+
+
+
+
+# /// Ochrana ability
+on damage of a player:
+	attacker is a player	
+	if lore of victim's helmet contains "Ochrana":
+		if check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]:
+			chance of 3%:
+				apply absorption 2 to victim for 3 seconds
+
+
+# /// Kaktus ability
+on damage of a player:
+	attacker is a player	
+	if lore of victim's helmet contains "Kaktus":
+		if check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]:
+			chance of 5%:
+				damage attacker by 1
+
+
+# /// Anti-Poison ability
+on damage of a player:
+	if lore of victim's helmet contains "Anti-Poison":
+		if check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]:
+			if victim has poison:
+				wait 2 ticks
+				remove poison from the victim
+
+
+on join:
+	if player doesn't have night vision:
+		apply night vision 1  without any particles to player for 999 days
+	{vanish::%player%} is not set
+	if {floor} or {raffle} or {ragepit} or {picker} or {robbery} is set:
+		set {status::%player%} to " &8▪ &7Status: &6Event"
+	else:
+		set {status::%player%} to " &8▪ &7Status: &fNecinny"
+
+
+on damage:
+	victim is not attacker
+	victim is a player
+	attacker is a player
+	attacker's gamemode is not creative
+	victim's gamemode is not creative
+	{vanish::%victim%} is not set
+	{vanish::%attacker%} is not set
+	damage cause is not fall
+	if check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]:
+		set {combat.second::%attacker%} to 15
+		if check [{floor} is not set]->[{ragepit} is not set]->[{picker} is not set]->[{raffle} is not set]->[{robbery} is not set]:
+			if {strknumb::%attacker%} is not set:
+				set {status::%attacker%} to " &8▪ &7Combat: &c%{combat.second::%attacker%}%&cs"
+
+		if {combat.check::%attacker%} is not set:
+			set {combat.check::%attacker%} to true
+			while {combat.second::%attacker%} is set:
+				wait 1 second
+				{combat.second::%attacker%} is set
+				if {combat.second::%attacker%} is 1:
+					delete {combat.second::%attacker%}
+					delete {combat.check::%attacker%}
+					if check [{floor} is not set]->[{ragepit} is not set]->[{picker} is not set]->[{raffle} is not set]->[{robbery} is not set]->[{strknumb::%attacker%} is not set]->[{vanish::%attacker%} is not set]:
+						set {status::%attacker%} to " &8▪ &7Status: &fNecinny"
+				else:
+					remove 1 from {combat.second::%attacker%}
+					set {combat.second::%attacker%} to round({combat.second::%attacker%})
+					if check [{floor} is not set]->[{ragepit} is not set]->[{picker} is not set]->[{raffle} is not set]->[{robbery} is not set]->[{strknumb::%attacker%} is not set]->[{vanish::%attacker%} is not set]:
+						set {status::%attacker%} to " &8▪ &7Combat: &c%{combat.second::%attacker%}%&cs"
+
+on damage:
+	victim is not attacker
+	victim is a player
+	attacker is a player
+	attacker's gamemode is not creative
+	victim's gamemode is not creative
+	{vanish::%victim%} is not set
+	{vanish::%attacker%} is not set
+	damage cause is not fall
+	if check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]:
+		set {combat.second::%victim%} to 15
+		if check [{floor} is not set]->[{ragepit} is not set]->[{picker} is not set]->[{raffle} is not set]->[{robbery} is not set]:
+			if {strknumb::%victim%} is not set:
+				set {status::%victim%} to " &8▪ &7Combat: &c%{combat.second::%victim%}%&cs"
+
+		if {combat.check::%victim%} is not set:
+			set {combat.check::%victim%} to true
+			while {combat.second::%victim%} is set:
+				wait 1 second
+				{combat.second::%victim%} is set
+				if {combat.second::%victim%} is 1:
+					delete {combat.second::%victim%}
+					delete {combat.check::%victim%}
+					if check [{floor} is not set]->[{ragepit} is not set]->[{picker} is not set]->[{raffle} is not set]->[{robbery} is not set]->[{strknumb::%victim%} is not set]->[{vanish::%victim%} is not set]:
+						set {status::%victim%} to " &8▪ &7Status: &fNecinny"
+				else:
+					remove 1 from {combat.second::%victim%}
+					set {combat.second::%victim%} to round({combat.second::%victim%})
+					if check [{floor} is not set]->[{ragepit} is not set]->[{picker} is not set]->[{raffle} is not set]->[{robbery} is not set]->[{strknumb::%victim%} is not set]->[{vanish::%victim%} is not set]:
+						set {status::%victim%} to " &8▪ &7Combat: &c%{combat.second::%victim%}%&cs"
+
+on quit:
+	if {combat.second::%player%} is more than 0:
+		if {floor::%player%} is not set:
+			set {%player%.log.kazna} to true
+			kill player
+	delete {combat.second::%player%}
+	delete {combat.check::%player%}
+
+
+on quit:
+	{staffmode::%player%} is not set
+	if player's gamemode is spectator:
+		set {%player%.log.kazna} to true
+
+on join:
+	if {%player%.log.kazna} is true:
+		set {%player%.streak} to 0
+		if {robbery} is not set:
+			set {%player%.bounty} to ""
+		heal player
+		set player's gamemode to survival
+
+# /// armor
+		if {picker} is not set:
+			if {renown::%player%::nadhernahelma} is set:
+				set player's helmet to unbreakable leather helmet dyed light blue named "&7Nadherná helma"
+			wait 1 tick
+
+
+		set {_armor} to random integer between 1 and 3
+		if {_armor} is 1:
+			set player's chestplate to unbreakable chain chestplate named "&7Krouzkovaná zbroj"
+			set player's leggings to unbreakable chain leggings named "&7Krouzkované kalhoty"
+			set player's boots to unbreakable iron boots named "&7Zelezné boty"
+		if {_armor} is 2:
+			set player's chestplate to unbreakable chain chestplate named "&7Krouzkovaná zbroj"
+			set player's leggings to unbreakable iron leggings named "&7Zelezné kalhoty"
+			set player's boots to unbreakable chain boots named "&7Krouzkované boty"
+		if {_armor} is 3:
+			set player's chestplate to unbreakable iron chestplate named "&7Zelezná zbroj"
+			set player's leggings to unbreakable chain leggings named "&7Krouzkované kalhoty"
+			set player's boots to unbreakable chain boots named "&7Krouzkované boty" #'
+
+
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "lava":
+			set slot {inventoryslot::%player%::lava} of player to lava bucket named "&cLava"
+
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "fishingrod":
+			set slot {inventoryslot::%player%::fishingrod} of player to unbreakable fishing rod named "&bRybarsky Prut"
+
+
+	# /// 
+		if {%player%.bow} is set:
+
+			if {%player%.bow} is 1:
+				set slot {inventoryslot::%player%::bow} of player to unbreakable bow named "&aObycejny luk" with lore "||&5Vlastnosti &lluku&5!||&d&l ▶ &dBez vylepseni.||||&eKvalita zbrane &8[&6&l✩&7✩✩✩✩&8]||||&e&o,,Horsi luk nemel ani &a&oRobin Hood&e&o."""
+
+			if {%player%.bow} is 2:
+				set slot {inventoryslot::%player%::bow} of player to unbreakable bow named "&dVzácny luk" with lore "||&5Vlastnosti &lluku&5!||&d&l ▶ &dPower I&a||||&eKvalita zbrane &8[&6&l✩&7✩✩✩✩&8]||||&e&o,,Tak jo, tohle uz je luk &a&oRobina Hooda&e&o."""
+
+			if {%player%.bow} is 3:
+				set slot {inventoryslot::%player%::bow} of player to unbreakable glowing bow named "&dVzácny lehky luk" with lore "||&5Vlastnosti &lluku&5!||&d&l ▶ &dPower II&b||||&eKvalita zbrane &8[&6&l✩✩&7✩✩✩&8]||||&e&o,,Davej si bacha, at s nim nekomu nevypichnes oko."""
+
+			if {%player%.bow} is 4:
+				set slot {inventoryslot::%player%::bow} of player to unbreakable glowing bow named "&cLegendarní lovecky luk" with lore "||&5Vlastnosti &lluku&5!||&d&l ▶ &dPower III&c||||&eKvalita zbrane &8[&6&l✩✩✩&7✩✩&8]||||&e&o,,Jeste chvili a budes o sobe moct rikat,||&e&o ze s nim umis."""
+
+			if {%player%.bow} is 5:
+				set slot {inventoryslot::%player%::bow} of player to unbreakable glowing bow named "&cLegendarní elfí luk" with lore "||&5Vlastnosti &lluku&5!||&d&l ▶ &dPower IV&d||&d&l ▶ &dExploze I||||&eKvalita zbrane &8[&6&l✩✩✩✩✩&8]||||&e&o,,Ted uz je z tebe doslova &b&oLegolas&e&o."""
+
+
+			set slot {inventoryslot::%player%::arrow} of player to glowing ("%{%player%.arrow}% arrow" parsed as item) named "&7Síp"
+
+
+		if {%player%.pickaxe} is 1:
+			set slot {inventoryslot::%player%::pickaxe} of player to unbreakable iron pickaxe named "&aObycejny krumpac" with lore "||&5Vlastnosti &lkrumpace&5!||&8&l ▶ &7Pri kazdem vykopani &eGold Ore||    &7dostanes &6+&e1 Ⓩ&7.||||&eKvalita zbrane &8[&6&l✩&7✩✩&8]||||&e&o,,Darek trpasliku &a&oSnehurce&e&o,||&e&oproto je tak spatny."""
+
+		if {%player%.pickaxe} is 2:
+			set slot {inventoryslot::%player%::pickaxe} of player to unbreakable diamond pickaxe of efficiency 2 with no nbt named "&dVzácny krumpac" with lore "||&5Vlastnosti &lkrumpace&5!||&8&l ▶ &7Pri kazdem vykopani &eGold Ore||    &7dostanes &6+&e2 Ⓩ&7.||||&d&l ▶ &dUcinnost II||||&eKvalita zbrane &8[&6&l✩✩&7✩&8]||||&e&o,,Idealni krumpac pro &a&ozlatokopku&e&o."""
+
+		if {%player%.pickaxe} is 3:
+			set slot {inventoryslot::%player%::pickaxe} of player to unbreakable diamond pickaxe of efficiency 5 with no nbt named "&dVelmi vzácny krumpac" with lore "||&5Vlastnosti &lkrumpace&5!||&8&l ▶ &7Pri kazdem vykopani &eGold Ore||    &7dostanes &6+&e2 Ⓩ&7.||||&d&l ▶ &dUcinnost V||||&eKvalita zbrane &8[&6&l✩✩✩&8]||||&e&o,,Davny krumpac &d&oThorina Paveze&e&o."""
+
+
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "barbarian":
+			set slot {inventoryslot::%player%::sword} of player to unbreakable iron axe with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:7,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "&7Zelezny mec"
+		else:
+			set slot {inventoryslot::%player%::sword} of player to unbreakable iron sword named "&7Zelezny mec"
+
+
+		wait 1 tick
+		add {drops::%player%::*} to player's inventory
+		delete {drops::%player%::*}
+
+		delete {%player%.log.kazna}
+
+on skript start:
+	delete {combat.second::*}
+	delete {combat.check::*}
+
+command /ct:
+	aliases: /combattag
+	trigger:
+		if {combat.second::%player%} is not set:
+			message "&aNejsi v Combat tagu."
+			stop
+		if {combat.second::%player%} is more than 0:
+			message "&7Jsi v &cCombat tagu &7jeste &e%{combat.second::%player%}% sekund&7."
+
+
+
+command /spawn:
+	trigger:
+		if {combat.second::%player%} is more than 0:
+			message "&cJsi v Combat tagu!"
+			message "&3 * &d/ct &8- &7Zbyvajici cas combat tagu."
+			stop
+		else:
+			if check ["%region at player%" doesn't contain "nopvpzone"]:
+				{robbery} is set
+				if {robbery::%player%} is less or equal to 20:
+					set {_num} to 0
+					add {_num} to {robbery}
+
+					set {robbery::%player%} to 0
+					set {_stolen} to splitCoins("%{robbery}%")
+					set {bonussb} to " &8▪ &7Ukradeno: &e%{_stolen}% Ⓩ"
+				else:
+					set {_num} to {robbery::%player%} / 2
+
+					set {_num} to round({_num})
+					add {_num} to {robbery}
+					set {_stolen} to splitCoins("%{robbery}%")
+					set {bonussb} to " &8▪ &7Ukradeno: &e%{_stolen}% Ⓩ"
+
+					remove {_num} from {robbery::%player%}
+
+				set {_num} to splitCoins("%{_num}%")
+				message "&c&lOdebrano pri teleportu &c-&e%{_num}% Ⓩ &7(50%%)&c&l!" to player
+
+				set {_b.v} to splitCoins("%{robbery::%player%}%")
+				set {%player%.bounty} to " &e%{_b.v}% Ⓩ"
+
+				set {_toplist::*} to sorted {robbery::*} from highest to lowest with output "@index"
+				loop {_toplist::*}:
+					add 1 to {_x}
+					set {_num} to splitCoins("%{robbery::%loop-value%}%")
+					set {sbaddon::%loop-value%} to " &8▪ &7Ucet: &e%{_num}% Ⓩ &7(##%{_x}%)"
+
+
+
+			send "&aByl jsi teleportovan na spawn."
+			if check [{vanish::%player%} is not set]->[{floor} is not set]->[{ragepit} is not set]->[{picker} is not set]->[{raffle} is not set]->[{robbery} is not set]:
+				set {status::%player%} to " &8▪ &7Status: &fNecinny"
+			heal player
+
+			if "%player's vehicle%" is "pig":
+				set {vehicle::%player%} to 1
+				make player leave the vehicle
+				delete {vehicle::%player%}
+
+			set {_spawn} to random integer between 1 and 3
+			teleport player to {spawn.loc::%{_spawn}%}
+			play "ORB_PICKUP" to player
+
+			if {vanish::%player%} is not set:
+				if {robbery} is not set:
+					set {%player%.bounty} to ""
+
+			{staffmode::%player%} is not set
+
+			remove all player head with custom nbt "{SkullOwner:{Id:""2dca1967-0d3e-4eb2-807b-daf8f735ad16"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGFiZDcwM2U1YjhjODhkNGIxZmNmYTk0YTkzNmEwZDZhNGY2YWJhNDQ1Njk2NjNkMzM5MWQ0ODgzMjIzYzUifX19""}]}}}" named "&6Zlata Hlava" with lore "||&5Bonusy &lzlate hlavy&5!||&8&l ▶ &9Regenerace II (0:10)||&8&l ▶ &9Absorpce I (0:10)||&r" from player
+			remove all baked potato from player
+			remove all golden apple from player
+			remove all water_bottle:8203 from player
+			remove all name tag from player
+			set {%player%.streak} to 0	
+			delete {strknumb::%player%}
+
+			delete {totaldamage::%player%}
+			delete {assists::%player%::*}
+			delete {+1damage::%player%::*}
+			delete {assists::timer::%player%::*}
+			delete {assists::check::%player%::*}
+
+			if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "1ststrike":
+				delete {1ststrike::%player%::*}
+			if amount of lava bucket in player's inventory is less than 1:
+				if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "lava":
+					if slot 3 of player is air:
+						set slot 3 of player to lava bucket named "&cLava"
+					else:
+						give player lava bucket named "&cLava"
+
+			if {%player%.bow} is set:
+				if amount of glowing arrow named "&7Síp" in player's inventory is less than {%player%.arrow}:
+					set {_arrows} to amount of glowing arrow named "&7Síp" in player's inventory
+					set {_givearrows} to {%player%.arrow} - {_arrows}
+					if {_givearrows} is 50:
+						if slot {inventoryslot::%player%::arrow} of player is air:
+							set slot {inventoryslot::%player%::arrow} of player to glowing 50 arrow named "&7Síp"
+						else:
+							give player glowing 50 arrow named "&7Síp"
+					else:
+						if slot {inventoryslot::%player%::arrow} of player is air:
+							set slot {inventoryslot::%player%::arrow} of player to glowing ("%{_givearrows}% arrow" parsed as item) named "&7Síp"
+
+						else:
+							give player glowing ("%{_givearrows}% arrow" parsed as item) named "&7Síp"
+
+
+
+	
+on quit:
+	if {vanish::%player%} is not set:
+		set {%player%.bounty} to ""
+
+	{staffmode::%player%} is not set
+	set gamemode of player to survival
+	remove all player head with custom nbt "{SkullOwner:{Id:""2dca1967-0d3e-4eb2-807b-daf8f735ad16"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGFiZDcwM2U1YjhjODhkNGIxZmNmYTk0YTkzNmEwZDZhNGY2YWJhNDQ1Njk2NjNkMzM5MWQ0ODgzMjIzYzUifX19""}]}}}" named "&6Zlata Hlava" with lore "||&5Bonusy &lzlate hlavy&5!||&8&l ▶ &9Regenerace II (0:10)||&8&l ▶ &9Absorpce I (0:10)||&r" from player
+	remove all golden apple from player
+	remove all water_bottle:8203 from player
+	remove all baked potato from player
+	remove all name tag from player
+	set {%player%.streak} to 0	
+	delete {strknumb::%player%}
+	
+	if amount of lava bucket in player's inventory is less than 1:
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "lava":
+			if slot 3 of player is air:
+				set slot 3 of player to lava bucket named "&cLava"
+			else:
+				give player lava bucket named "&cLava"
+
+	if {%player%.bow} is set:
+		if amount of glowing arrow named "&7Síp" in player's inventory is less than {%player%.arrow}:
+			set {_arrows} to amount of glowing arrow named "&7Síp" in player's inventory
+			set {_givearrows} to {%player%.arrow} - {_arrows}
+			if {_givearrows} is 50:
+				if slot {inventoryslot::%player%::arrow} of player is air:
+					set slot {inventoryslot::%player%::arrow} of player to glowing 50 arrow named "&7Síp"
+				else:
+					give player glowing 50 arrow named "&7Síp"
+			else:
+				if slot {inventoryslot::%player%::arrow} of player is air:
+					set slot {inventoryslot::%player%::arrow} of player to glowing ("%{_givearrows}% arrow" parsed as item) named "&7Síp"
+
+				else:
+					give player glowing ("%{_givearrows}% arrow" parsed as item) named "&7Síp"

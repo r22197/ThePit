@@ -1,0 +1,1765 @@
+command /list:
+	aliases: /online
+	trigger:
+		loop all players:
+			{vanish::%loop-player%} is not set
+			if loop-player's offline prefix contains "Owner":
+				set {_1st.list::%loop-player%} to 100
+			else if loop-player's offline prefix contains "Admin":
+				set {_1st.list::%loop-player%} to 95
+			else if loop-player's offline prefix contains "Developer":
+				set {_1st.list::%loop-player%} to 85
+			else if loop-player's offline prefix contains "Media":
+				set {_1st.list::%loop-player%} to 50
+			else if loop-player's offline prefix contains "Eventer":
+				set {_1st.list::%loop-player%} to 25
+			else if loop-player's offline prefix contains "Builder":
+				set {_1st.list::%loop-player%} to 20
+			else if loop-player's offline prefix contains "Helper":
+				set {_1st.list::%loop-player%} to 15
+			else if loop-player's offline prefix contains ".Eventer":
+				set {_1st.list::%loop-player%} to 14
+			else if loop-player's offline prefix contains ".Builder":
+				set {_1st.list::%loop-player%} to 12
+			else if loop-player's offline prefix contains ".Helper":
+				set {_1st.list::%loop-player%} to 10
+			else if loop-player's offline prefix contains "Ultimate":
+				set {_1st.list::%loop-player%} to 8
+			else if loop-player's offline prefix contains "Mythical":
+				set {_1st.list::%loop-player%} to 7
+			else if loop-player's offline prefix contains "Legendary":
+				set {_1st.list::%loop-player%} to 6
+			else if loop-player's offline prefix contains "Immortal":
+				set {_1st.list::%loop-player%} to 5
+			else if loop-player's offline prefix contains "Exalted":
+				set {_1st.list::%loop-player%} to 4
+			else if loop-player's offline prefix contains "CheatHunter":
+				set {_1st.list::%loop-player%} to 3
+			else if loop-player's offline prefix contains "Heroic":
+				set {_1st.list::%loop-player%} to 3
+			else if loop-player's offline prefix contains "Mighty":
+				set {_1st.list::%loop-player%} to 2
+			else:
+				set {_1st.list::%loop-player%} to 1
+		set {_list::*} to sorted {_1st.list::*} from highest to lowest with output "@index"
+		loop {_list::*}:
+			set {_list::%loop-index%} to "%coloured ({_list::%loop-index%} parsed as offlineplayer)'s offline suffix%%({_list::%loop-index%} parsed as offlineplayer)%"
+		if {_list::*} is not set:
+			set {_list::*} to "&7Nikdo neni online"
+		set {_list::*} to "%{_list::*}%"
+		replace all " and " in {_list::*} with "&f, "
+		replace all ", " in {_list::*} with "&f, "
+		message "&eNa serveru se momentalne nachazi &a%number of all players%&7/&f100 &ehracu."
+		message "&7(&f%number of all players%/100&7): %{_list::*}%&f."
+
+
+
+
+
+command /napad [<text>]:
+	aliases: /idea, /navrh
+	trigger:
+		if arg-1 is not set:
+			send "&cZapomnel jsi uvest zpravu." to player
+			send "&3 * &d/napad &8<&fzprava&8>" to player
+			stop trigger
+		if {napady} is not set:
+			set {napady} to 0
+		add 1 to {napady}
+		set {napady::%{napady}%} to "&8[&f%{napady}%&8] %coloured player's offline prefix%%player%&7: &e%arg-1%"
+		message "&aUspesne jsi napsal napad. &7Napadem bylo &8""&f%arg-1%&8""&7."
+
+command /napady:
+	aliases: /ideas
+	permission: pit.admin
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.	
+	trigger:
+		if {napady::*} is not set:
+			message "&cZatim nikdo nenapsal napad."
+			stop
+		message "&7&m-------------------------------------------------"
+		loop {napady::*}:
+			message "%loop-value%"
+		message ""
+		message "&3 * &d/delnapad &8<&fcislo&8> &8- &7Odstraneni urciteho napadu."
+		message "&7&m-------------------------------------------------"
+
+command /delnapad [<integer>]:
+	aliases: /deletenapad, /delidea, /deleteidea
+	permission: pit.admin
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.	
+	trigger:
+		if arg-1 is not set:
+			send "&cZapomnel jsi uvest cislo napadu." to player
+			send "&3 * &d/delnapad &8<&fcislo&8>" to player
+			stop
+		if {napady::%arg 1%} is not set:
+			message "&cNapad s timto cislem neexistuje."
+			stop
+		else if {napady::%arg 1%} is set:
+			delete {napady::%arg 1%}
+			message "&eNapad &6##%arg 1% &7byl odstranen."
+			stop
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+command /bugreport [<text>]:
+	aliases: /bug
+	trigger:
+		if arg-1 is not set:
+			send "&cZapomnel jsi uvest zpravu." to player
+			send "&3 * &d/bugreport &8<&fzprava&8>" to player
+			stop trigger
+		if {reports} is not set:
+			set {reports} to 0
+		add 1 to {reports}
+		set {reports::%{reports}%} to "&8[&f%{reports}%&8] %coloured player's offline prefix%%player%&7: &e%arg-1%"
+		message "&aUspesne jsi nahlasil chybu. &7Duvodem bylo &8""&f%arg-1%&8""&7."
+
+command /bugreports:
+	permission: pit.admin
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.	
+	trigger:
+		if {reports::*} is not set:
+			message "&cZatim nikdo nenahlasil chybu."
+			stop
+		message "&7&m-------------------------------------------------"
+		loop {reports::*}:
+			message "%loop-value%"
+		message ""
+		message "&3 * &d/delbugreport &8<&fcislo&8> &8- &7Odstraneni urciteho nahlaseni."
+		message "&7&m-------------------------------------------------"
+
+command /delbugreport [<integer>]:
+	aliases: /deletebugreport
+	permission: pit.admin
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.	
+	trigger:
+		if arg-1 is not set:
+			send "&cZapomnel jsi uvest cislo reportu." to player
+			send "&3 * &d/delbugreport &8<&fcislo&8>" to player
+			stop
+		if {reports::%arg 1%} is not set:
+			message "&cNahlaseni bugu s timto cislem neexistuje."
+			stop
+		else if {reports::%arg 1%} is set:
+			delete {reports::%arg 1%}
+			message "&eBug Report &6##%arg 1% &7byl odstranen."
+			stop
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+command /drop:
+	permission: pit.admin
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.	
+	trigger:
+		if {drops} is not set:
+			set {drops} to 0
+		add 1 to {drops}
+		set {loc::%{drops}%} to player's location
+		add 1.5 to y-coordinate of {loc::%{drops}%}
+		set {drops::%{drops}%} to "&8[&f%{drops}%&8] %coloured player's offline prefix%%player%&7: &e%{loc::%{drops}%}%"
+		message "&7Uspesne jsi nastavil drop lokaci pro &6gold&7."
+
+command /drops:
+	permission: pit.admin
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.	
+	trigger:
+		if {drops::*} is not set:
+			message "&cZatim neni nastaven zadny drop."
+			stop
+		message "&7&m-------------------------------------------------"
+		loop {drops::*}:
+			message "%loop-value%"
+		message ""
+		message "&3 * &d/deldrop &8<&fcislo&8> &8- &7Odstraneni urciteho dropu."
+		message "&7&m-------------------------------------------------"
+
+command /deldrop [<integer>]:
+	aliases: /deletedrop
+	permission: pit.admin
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.	
+	trigger:
+		if arg-1 is not set:
+			send "&cZapomnel jsi uvest cislo dropu." to player
+			send "&3 * &d/deldrop &8<&fcislo&8>" to player
+			stop
+		if {drops::%arg 1%} is not set:
+			message "&cDrop s timto cislem neexistuje."
+			stop
+		else if {drops::%arg 1%} is set:
+			delete {drops::%arg-1%}
+			delete {loc::%arg-1%}
+			message "&eDrop &6##%arg 1% &7byl odstranen."
+			stop
+
+on right click with stick:
+	player has permission "pit.admin"
+	if name of held item is "&6Gold Setup":
+		if clicked block is set:
+			loop {golds::*}:
+				if location at block is {golds::%loop-index%}:
+					message "&cTento block je jiz v seznamu goldu."
+					stop
+			message "&aBlock byl uspesne pridan do goldu."
+			add 1 to {golds}
+			set {golds::%{golds}%} to location at block
+			set block at {golds::%{golds}%} to gold ore
+		else:
+			message "&cMusis kliknout na block."
+	if name of held item is "&bWater Setup":
+		if clicked block is set:
+			loop {water::*}:
+				if location at block is {water::%loop-index%}:
+					message "&cTento block je jiz v seznamu vody."
+					stop
+			message "&aBlock byl uspesne pridan do vody."
+			add 1 to {block}
+			set {water::%{block}%} to location at block
+			set block at {water::%{block}%} to water
+		else:
+			message "&cMusis kliknout na block."
+	if name of held item is "&cLava Setup":
+		if clicked block is set:
+			loop {lava::*}:
+				if location at block is {lava::%loop-index%}:
+					message "&cTento block je jiz v seznamu lavy."
+					stop
+			message "&aBlock byl uspesne pridan do lavy."
+			add 1 to {block}
+			set {lava::%{block}%} to location at block
+			set block at {lava::%{block}%} to lava
+		else:
+			message "&cMusis kliknout na block."
+	if name of held item is "&d&lDort Setup":
+		cancel event
+		if clicked block is set:
+			set {cake.loc::2} to block's location
+			message "&aRoh &f##&l2 &auspesne nastaven."
+		else:
+			message "&cMusis kliknout na block."
+	if name of held item is "&6&lRaffle Setup":
+		cancel event
+		if clicked block is set:
+			set {raffle.loc::2} to block's location
+			message "&aRoh &f##&l2 &auspesne nastaven."
+		else:
+			message "&cMusis kliknout na block."
+
+
+on left click with stick:
+	player has permission "pit.admin"
+	if name of held item is "&6Gold Setup":
+		cancel event
+		if clicked block is set:
+			loop {golds::*}:
+				if location at block is {golds::%loop-index%}:
+					message "&cBlock byl uspesne odstranen."
+					set block at {golds::%loop-index%} to stone
+					delete {golds::%loop-index%}
+					stop
+			message "&cTento block nepatri do goldu."
+		else:
+			message "&cMusis kliknout na block."
+	if name of held item is "&bWater Setup":
+		cancel event
+		if clicked block is set:
+			loop {water::*}:
+				if location at block is {water::%loop-index%}:
+					message "&cBlock byl uspesne odstranen."
+					set block at {water::%loop-index%} to air
+					delete {water::%loop-index%}
+					stop
+			message "&cTento block nepatri do vody."
+		else:
+			message "&cMusis kliknout na block."
+	if name of held item is "&cLava Setup":
+		cancel event
+		if clicked block is set:
+			loop {lava::*}:
+				if location at block is {lava::%loop-index%}:
+					message "&cBlock byl uspesne odstranen."
+					set block at {lava::%loop-index%} to air
+					delete {lava::%loop-index%}
+					stop
+			message "&cTento block nepatri do lavy."
+		else:
+			message "&cMusis kliknout na block."
+	if name of held item is "&d&lDort Setup":
+		cancel event
+		if clicked block is set:
+			set {cake.loc::1} to block's location
+			message "&aRoh &f##&l1 &auspesne nastaven."
+		else:
+			message "&cMusis kliknout na block."
+	if name of held item is "&6&lRaffle Setup":
+		cancel event
+		if clicked block is set:
+			set {raffle.loc::1} to block's location
+			message "&aRoh &f##&l1 &auspesne nastaven."
+		else:
+			message "&cMusis kliknout na block."
+
+
+on script load:
+	loop {golds::*}:
+		set block at {golds::%loop-index%} to gold ore
+	loop {water::*}:
+		set block at {water::%loop-index%} to water
+	loop {lava::*}:
+		set block at {lava::%loop-index%} to lava
+
+command /gold:
+	permission: pit.admin
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.
+	trigger:
+		give player 1 stick named "&6Gold Setup" with lore "||&7Klikni &fpravym &7pro nastaveni &6goldu&7.||&7Klikni &flevym &7pro &czruseni&7.||||&7&o(Vyhozenim predmetu zrusis nastavovani.)"
+
+command /water:
+	permission: pit.admin
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.
+	trigger:
+		give player 1 stick named "&bWater Setup" with lore "||&7Klikni &fpravym &7pro nastaveni &bvody&7.||&7Klikni &flevym &7pro &czruseni&7.||||&7&o(Vyhozenim predmetu zrusis nastavovani.)"
+
+command /lava:
+	permission: pit.admin
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.
+	trigger:
+		give player 1 stick named "&cLava Setup" with lore "||&7Klikni &fpravym &7pro nastaveni &clavy&7.||&7Klikni &flevym &7pro &czruseni&7.||||&7&o(Vyhozenim predmetu zrusis nastavovani.)"
+
+on drop of stick:
+	name of event-item is "&6Gold Setup" or "&bWater Setup" or "&cLava Setup" or "&d&lDort Setup" or "&6&lRaffle Setup"
+	delete item
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+on rightclick with player head:
+	if lore of event-item contains "box":
+		set {_random} to a random integer between 1 and 4
+		remove player head from the player's tool
+		remove skeleton head from the player's tool
+		play "NOTE_PLING" to player
+		message "&e5.."
+		wait 1 second
+		play "NOTE_PLING" to player
+		message "&e4.."
+		wait 1 second
+		play "NOTE_PLING" to player
+		message "&e3.."
+		wait 1 second
+		play "NOTE_PLING" to player
+		message "&e2.."
+		wait 1 second
+		play "NOTE_PLING" to player
+		message "&e1.."
+		wait 1 second
+		play "FIREWORK_TWINKLE" to player
+
+		if "%now%" contains "Thu":
+			Quest("thursday4",100, player)
+		if "%now%" contains "Sun":
+			Quest("sunday1",100, player)		
+
+		if {_random} is 1:
+			set {_random.mask} to a random integer between 1 and 9
+			add 1 to {maska}
+
+			if {_random.mask} is 1:
+				give player 1 player head with custom nbt "{antistack:%{maska}%,SkullOwner:{Id:""cdca4b84-3c2d-49e5-8752-b8903cbae26b"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmMzNzhiZGFmNDQ1ZTRjZGNlOGVlMzJjNDBjNjg5YTQ5YjJlOTEzZTgxZTllMWUxZTRlNGU1ZjU4ZTZhYzY2MCJ9fX0=""}]}}}" named "&aZelví Maska" with lore "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dAnti-Poison||||&eHodnoceni masky &8[&6&l✩&7✩✩✩✩&8]||||&eVyhrano uzivatelem &f%player%&e."
+				message "&aGratulace! &7Vyhral jsi &aZelví Masku&7!"
+
+			if {_random.mask} is 2:
+				give player 1 player head with custom nbt "{antistack:%{maska}%,SkullOwner:{Id:""f1598454-d04b-4449-925c-a6056efd9cc3"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODhjZjQ4NTZmOTdiNmViNDMxNzFlZDkxYTdkYTJjYTdlZjljOGQ0MTI5ZGFlNTQ3NTc2NzM1YzQ5OGM5ZTgifX19""}]}}}" named "&2Krokodylí Maska" with lore "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dGold Boost||&d&l ▶ &dAnti-Blind||&d&l ▶ &dAnti-Poison||||&eHodnoceni masky &8[&6&l✩✩&7✩✩✩&8]||||&eVyhrano uzivatelem &f%player%&e."
+				message "&aGratulace! &7Vyhral jsi &2Krokodylí Maska&7!"
+
+			if {_random.mask} is 3:
+				give player 1 player head with custom nbt "{antistack:%{maska}%,SkullOwner:{Id:""b37ecc95-54eb-482e-b0a3-8bde2c634452"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODE0Y2YyN2U5Y2Q0MDJiZWM0ZmI4Y2JhOTFhZjUwZWI5NzI2MmQ0ODU1MDYxMTk5NzBjZDhlZWQ0ZjdlY2VkZiJ9fX0=""}]}}}" named "&6Dynová Maska" with lore "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dGold Boost||&d&l ▶ &dAnti-Blind||||&eHodnoceni masky &8[&6&l✩&7✩✩✩✩&8]||||&eVyhrano uzivatelem &f%player%&e."
+				message "&aGratulace! &7Vyhral jsi Dynovou Masku&7!"
+
+			if {_random.mask} is 4:
+				give player 1 player head with custom nbt "{antistack:%{maska}%,SkullOwner:{Id:""3bcfeb02-2f3e-4ebe-965f-c599472ef095"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTc3ZTZmZDNiOTMxNzE5ZDQ0ZWYwZjU3MThhMGZlMzQ2NDg2YmQzZTVlOTgwMGRmYmZjMjQ4YThjZjE0MDBiZSJ9fX0=""}]}}}" named "&9Enderova Maska" with lore "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dGold Boost||&d&l ▶ &dAnti-Blind||&d&l ▶ &dAnti-Poison||&d&l ▶ &dOchrana||&d&l ▶ &dFire Resistence||&d&l ▶ &dRychlost||||&eHodnoceni masky &8[&6&l✩✩✩✩&7✩&8]||||&eVyhrano uzivatelem &f%player%&e."
+				message "&aGratulace! &7Vyhral jsi &9Enderovu Masku&7!"
+
+			if {_random.mask} is 5:
+				give player 1 player head with custom nbt "{antistack:%{maska}%,SkullOwner:{Id:""01ba5ea4-0a76-478e-8996-24e513c1d06c"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzc3Y2Q1ZWQzYWQwYjgwMDczODc1Y2ZjMmE2OTk1NDAyZWEwZTExNDVhNzg4YTVjYTY2NjZhNjZlZGE4ZGM4YyJ9fX0=""}]}}}" named "&4Démonická Maska" with lore "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dAnti-Blind||&d&l ▶ &dAnti-Poison||&d&l ▶ &dOchrana||&d&l ▶ &dKaktus||||&eHodnoceni masky &8[&6&l✩✩✩&7✩✩||||&eVyhrano uzivatelem &f%player%&e."
+				message "&aGratulace! &7Vyhral jsi &4Démonickou Masku&7!"
+
+			if {_random.mask} is 6:
+				give player 1 player head with custom nbt "{antistack:%{maska}%,SkullOwner:{Id:""9495ea2a-f3ad-4942-8527-c11389bad9df"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzg2NjYwYWQ3YmVmZWM2OGI1YmMzZWU2MjZlOGUyYjgzOTRhYmRmMjdkNmRjNGUxNmZlNGFlN2I0MWFiZmE0In19fQ==""}]}}}" named "&bOlihnová Maska" with lore "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dGold Boost||&d&l ▶ &dAnti-Blind||&d&l ▶ &dAnti-Poison||&d&l ▶ &dFire Resistence||&d&l ▶ &dRychlost||||&eHodnoceni masky &8[&6&l✩✩✩✩&7✩&8]||||&eVyhrano uzivatelem &f%player%&e."
+				message "&aGratulace! &7Vyhral jsi &bOlihnovou Masku&7!"
+
+			if {_random.mask} is 7:
+				give player 1 player head with custom nbt "{antistack:%{maska}%,SkullOwner:{Id:""c1d05a0c-824d-4145-8a2c-ad1d9d7c8442"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGNhMGNiNjE1OWQyMzUwZDcyMGEyYmMyMDlhMjk1NDkyZjM4MGM3ZmU3NzYzOTFiMjg0MTRhZTIyOTU4OSJ9fX0=""}]}}}" named "&eBycí Maska" with lore "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dGold Boost||&d&l ▶ &dOchrana||&d&l ▶ &dFire Resistence||||&eHodnoceni masky &8[&6&l✩✩✩&7✩✩&8]||||&eVyhrano uzivatelem &f%player%&e."
+				message "&aGratulace! &7Vyhral jsi &eBycí Masku&7!"
+
+			if {_random.mask} is 8:
+				give player 1 player head with custom nbt "{antistack:%{maska}%,SkullOwner:{Id:""d121a144-a2af-4376-ac3b-258644120706"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWE1NzMyN2JhYTE0YTNjMTI2YTQyNzdkMzAxZjc1MjJkMjI1MWEzMWFhNjlhZGViYmJmMTkxZmRiOGY1In19fQ==""}]}}}" named "&aBiohazard Maska" with lore "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dGold Boost||&d&l ▶ &dAnti-Blind||&d&l ▶ &dAnti-Poison||&d&l ▶ &dOchrana||&d&l ▶ &dRychlost||||&eHodnoceni masky &8[&6&l✩✩✩✩✩&8]||||&eVyhrano uzivatelem &f%player%&e."
+				message "&aGratulace! &7Vyhral jsi &aBiohazard Masku&7!"
+
+			if {_random.mask} is 9:
+				give player 1 player head with custom nbt "{antistack:%{maska}%,SkullOwner:{Id:""43395c-6db2-488e-8587-317532e8f9b4"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzJkNGI4MzM4MDE0MTk0MGQ2OTVjZTFkZmQ1NTUwNDk2YWY0ZmJjNGFlNGM1ZWZmOWM1ODUwMjgxODNlNDViNCJ9fX0=""}]}}}" named "&cLiscí Maska" with lore "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dGold Boost||&d&l ▶ &dAnti-Blind||&d&l ▶ &dAnti-Poison||&d&l ▶ &dOchrana||&d&l ▶ &dFire Resistence||&d&l ▶ &dKaktus||&d&l ▶ &dRychlost||||&eHodnoceni masky &8[&6&l✩✩✩✩✩&8]||||&eVyhrano uzivatelem &f%player%&e."
+				message "&aGratulace! &7Vyhral jsi &cLiscí Masku&7!"
+
+		if {_random} is 2:
+			if {level::%player%} is 120:
+				set {_random.mask} to a random integer between 1 and 9
+				add 1 to {maska}
+
+				if {_random.mask} is 1:
+					give player 1 player head with custom nbt "{antistack:%{maska}%,SkullOwner:{Id:""cdca4b84-3c2d-49e5-8752-b8903cbae26b"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmMzNzhiZGFmNDQ1ZTRjZGNlOGVlMzJjNDBjNjg5YTQ5YjJlOTEzZTgxZTllMWUxZTRlNGU1ZjU4ZTZhYzY2MCJ9fX0=""}]}}}" named "&aZelví Maska" with lore "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dAnti-Poison||||&eHodnoceni masky &8[&6&l✩&7✩✩✩✩&8]||||&eVyhrano uzivatelem &f%player%&e."
+					message "&aGratulace! &7Vyhral jsi &aZelví Masku&7!"
+
+				if {_random.mask} is 2:
+					give player 1 player head with custom nbt "{antistack:%{maska}%,SkullOwner:{Id:""f1598454-d04b-4449-925c-a6056efd9cc3"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODhjZjQ4NTZmOTdiNmViNDMxNzFlZDkxYTdkYTJjYTdlZjljOGQ0MTI5ZGFlNTQ3NTc2NzM1YzQ5OGM5ZTgifX19""}]}}}" named "&2Krokodylí Maska" with lore "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dGold Boost||&d&l ▶ &dAnti-Blind||&d&l ▶ &dAnti-Poison||||&eHodnoceni masky &8[&6&l✩✩&7✩✩✩&8]||||&eVyhrano uzivatelem &f%player%&e."
+					message "&aGratulace! &7Vyhral jsi &2Krokodylí Maska&7!"
+
+				if {_random.mask} is 3:
+					give player 1 player head with custom nbt "{antistack:%{maska}%,SkullOwner:{Id:""b37ecc95-54eb-482e-b0a3-8bde2c634452"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODE0Y2YyN2U5Y2Q0MDJiZWM0ZmI4Y2JhOTFhZjUwZWI5NzI2MmQ0ODU1MDYxMTk5NzBjZDhlZWQ0ZjdlY2VkZiJ9fX0=""}]}}}" named "&6Dynová Maska" with lore "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dGold Boost||&d&l ▶ &dAnti-Blind||||&eHodnoceni masky &8[&6&l✩&7✩✩✩✩&8]||||&eVyhrano uzivatelem &f%player%&e."
+					message "&aGratulace! &7Vyhral jsi Dynovou Masku&7!"
+
+				if {_random.mask} is 4:
+					give player 1 player head with custom nbt "{antistack:%{maska}%,SkullOwner:{Id:""3bcfeb02-2f3e-4ebe-965f-c599472ef095"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTc3ZTZmZDNiOTMxNzE5ZDQ0ZWYwZjU3MThhMGZlMzQ2NDg2YmQzZTVlOTgwMGRmYmZjMjQ4YThjZjE0MDBiZSJ9fX0=""}]}}}" named "&9Enderova Maska" with lore "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dGold Boost||&d&l ▶ &dAnti-Blind||&d&l ▶ &dAnti-Poison||&d&l ▶ &dOchrana||&d&l ▶ &dFire Resistence||&d&l ▶ &dRychlost||||&eHodnoceni masky &8[&6&l✩✩✩✩&7✩&8]||||&eVyhrano uzivatelem &f%player%&e."
+					message "&aGratulace! &7Vyhral jsi &9Enderovu Masku&7!"
+
+				if {_random.mask} is 5:
+					give player 1 player head with custom nbt "{antistack:%{maska}%,SkullOwner:{Id:""01ba5ea4-0a76-478e-8996-24e513c1d06c"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzc3Y2Q1ZWQzYWQwYjgwMDczODc1Y2ZjMmE2OTk1NDAyZWEwZTExNDVhNzg4YTVjYTY2NjZhNjZlZGE4ZGM4YyJ9fX0=""}]}}}" named "&4Démonická Maska" with lore "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dAnti-Blind||&d&l ▶ &dAnti-Poison||&d&l ▶ &dOchrana||&d&l ▶ &dKaktus||||&eHodnoceni masky &8[&6&l✩✩✩&7✩✩||||&eVyhrano uzivatelem &f%player%&e."
+					message "&aGratulace! &7Vyhral jsi &4Démonickou Masku&7!"
+
+				if {_random.mask} is 6:
+					give player 1 player head with custom nbt "{antistack:%{maska}%,SkullOwner:{Id:""9495ea2a-f3ad-4942-8527-c11389bad9df"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzg2NjYwYWQ3YmVmZWM2OGI1YmMzZWU2MjZlOGUyYjgzOTRhYmRmMjdkNmRjNGUxNmZlNGFlN2I0MWFiZmE0In19fQ==""}]}}}" named "&bOlihnová Maska" with lore "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dGold Boost||&d&l ▶ &dAnti-Blind||&d&l ▶ &dAnti-Poison||&d&l ▶ &dFire Resistence||&d&l ▶ &dRychlost||||&eHodnoceni masky &8[&6&l✩✩✩✩&7✩&8]||||&eVyhrano uzivatelem &f%player%&e."
+					message "&aGratulace! &7Vyhral jsi &bOlihnovou Masku&7!"
+
+				if {_random.mask} is 7:
+					give player 1 player head with custom nbt "{antistack:%{maska}%,SkullOwner:{Id:""c1d05a0c-824d-4145-8a2c-ad1d9d7c8442"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGNhMGNiNjE1OWQyMzUwZDcyMGEyYmMyMDlhMjk1NDkyZjM4MGM3ZmU3NzYzOTFiMjg0MTRhZTIyOTU4OSJ9fX0=""}]}}}" named "&eBycí Maska" with lore "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dGold Boost||&d&l ▶ &dOchrana||&d&l ▶ &dFire Resistence||||&eHodnoceni masky &8[&6&l✩✩✩&7✩✩&8]||||&eVyhrano uzivatelem &f%player%&e."
+					message "&aGratulace! &7Vyhral jsi &eBycí Masku&7!"
+
+				if {_random.mask} is 8:
+					give player 1 player head with custom nbt "{antistack:%{maska}%,SkullOwner:{Id:""d121a144-a2af-4376-ac3b-258644120706"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWE1NzMyN2JhYTE0YTNjMTI2YTQyNzdkMzAxZjc1MjJkMjI1MWEzMWFhNjlhZGViYmJmMTkxZmRiOGY1In19fQ==""}]}}}" named "&aBiohazard Maska" with lore "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dGold Boost||&d&l ▶ &dAnti-Blind||&d&l ▶ &dAnti-Poison||&d&l ▶ &dOchrana||&d&l ▶ &dRychlost||||&eHodnoceni masky &8[&6&l✩✩✩✩✩&8]||||&eVyhrano uzivatelem &f%player%&e."
+					message "&aGratulace! &7Vyhral jsi &aBiohazard Masku&7!"
+
+				if {_random.mask} is 9:
+					give player 1 player head with custom nbt "{antistack:%{maska}%,SkullOwner:{Id:""43395c-6db2-488e-8587-317532e8f9b4"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzJkNGI4MzM4MDE0MTk0MGQ2OTVjZTFkZmQ1NTUwNDk2YWY0ZmJjNGFlNGM1ZWZmOWM1ODUwMjgxODNlNDViNCJ9fX0=""}]}}}" named "&cLiscí Maska" with lore "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dGold Boost||&d&l ▶ &dAnti-Blind||&d&l ▶ &dAnti-Poison||&d&l ▶ &dOchrana||&d&l ▶ &dFire Resistence||&d&l ▶ &dKaktus||&d&l ▶ &dRychlost||||&eHodnoceni masky &8[&6&l✩✩✩✩✩&8]||||&eVyhrano uzivatelem &f%player%&e."
+					message "&aGratulace! &7Vyhral jsi &cLiscí Masku&7!"
+
+
+			else:
+				set {_u} to {needxp::%player%}
+				replace all "." in {_u} with ""
+				set {_u} to {_u} parsed as number
+				XP("remove", {_u}, player)
+				LevelSystem(player)
+		if {_random} is 3:
+			message "&r"
+			message "&r"
+			message "                             &8[&cNahodny Box&8]"
+			message "&r"
+			message "              &aGratulujeme! &7Vyhral jsi &6&lBooster Zlataku&7!"
+			message "        &7Ten mas na &e1 hodinu&7, tak rychle utikej zabijet."
+			message "&r"
+			message "              &e&o,,Kolik mi zbyva casu?"" &f➜ &d/booster"
+			message "&r"
+			message "&r"
+			add 60 to {%player%.gbooster}
+
+		if {_random} is 4:
+			message "&r"
+			message "&r"
+			message "                             &8[&cNahodny Box&8]"
+			message "&r"
+			message "              &aGratulujeme! &7Vyhral jsi &b&lXP Booster&7!"
+			message "        &7Ten mas na &e1 hodinu&7, tak rychle utikej zabijet."
+			message "&r"
+			message "              &e&o,,Kolik mi zbyva casu?"" &f➜ &d/booster"
+			message "&r"
+			message "&r"
+			add 60 to {%player%.xpbooster}
+
+
+on rightclick on a ender chest:
+	if "%region at player%" contains "nopvpzone":
+		if {level::%player%} is less than 10:
+			cancel event
+			send "&7Musis mit level &a+&910&7, aby jsi mel pristup do &d&lMagické bedny&7."
+		else:
+			play "CHEST_OPEN" to player
+			cancel event
+			if check [player has permission "pit.ec.1"]->[player has permission "pit.ec.2"]:
+				wait 2 ticks
+				open chest with 5 rows named "&eKoukás do magické bedny..&a" to player
+				set {_num} to 0			
+				loop 45 times:
+					set slot {_num} of player's current inventory to {enderchest::%{_num}%::%player%}
+					add 1 to {_num}
+				stop
+			if check [player has permission "pit.ec.1"]->[player doesn't have permission "pit.ec.2"]:
+				wait 2 ticks
+				open chest with 5 rows named "&eKoukás do magické bedny..&b" to player
+				set {_num} to 0			
+				loop 36 times:
+					set slot {_num} of player's current inventory to {enderchest::%{_num}%::%player%}
+					add 1 to {_num}
+				wait 1 tick
+				set {_num} to 36
+				loop 9 times:
+					format a gui slot {_num} of player with Orange Stained Glass Pane named "&aBonus radek ##2" with lore "||&8&l⚔ &7Dostupne pouze pro rank &a+&6Legendary&7. &8&l⚔||||&7Zakoupit si ho muzes &ezde&7!||&f ➥ &9&nobchod.pvpcraft.cz||&r" 
+					add 1 to {_num}		
+				stop		
+			if check [player doesn't have permission "pit.ec.1"]->[player doesn't have permission "pit.ec.2"]:
+				wait 2 ticks
+				open chest with 5 rows named "&eKoukás do magické bedny..&f" to player
+				set {_num} to 0	
+				loop 27 times:
+					set slot {_num} of player's current inventory to {enderchest::%{_num}%::%player%}
+					add 1 to {_num}	
+				wait 1 tick
+				set {_num} to 27
+				loop 9 times:
+					format a gui slot {_num} of player with Cyan Stained Glass Pane named "&aBonus radek ##1" with lore "||&8&l⚔ &7Dostupne pouze pro rank &a+&bExalted&7. &8&l⚔||||&7Zakoupit si ho muzes &ezde&7!||&f ➥ &9&nobchod.pvpcraft.cz||&r" 
+					add 1 to {_num}
+				wait 1 tick
+				set {_num} to 36	
+				loop 9 times:
+					format a gui slot {_num} of player with Orange Stained Glass Pane named "&aBonus radek ##2" with lore "||&8&l⚔ &7Dostupne pouze pro rank &a+&6Legendary&7. &8&l⚔||||&7Zakoupit si ho muzes &ezde&7!||&f ➥ &9&nobchod.pvpcraft.cz||&r" 
+					add 1 to {_num}	
+				stop		
+	else:
+		if player's gamemode is not creative:
+			cancel event	
+				
+	
+on inventory close:				
+	if inventory name of player's current inventory contains "&eKoukás do magické bedny..&a":
+		play "CHEST_CLOSE" to player
+		set {_num} to 0
+		loop 45 times:
+			if slot {_num} of player's current inventory is not air:
+				set {enderchest::%{_num}%::%player%} to slot {_num} of player's current inventory
+			else:
+				if {enderchest::%{_num}%::%player%} is set:
+					delete {enderchest::%{_num}%::%player%}
+			add 1 to {_num}
+		stop
+	else if inventory name of player's current inventory contains "&eKoukás do magické bedny..&b":
+		play "CHEST_CLOSE" to player
+		set {_num} to 0
+		loop 36 times:
+			if slot {_num} of player's current inventory is not air:
+				set {enderchest::%{_num}%::%player%} to slot {_num} of player's current inventory
+			else:
+				if {enderchest::%{_num}%::%player%} is set:
+					delete {enderchest::%{_num}%::%player%}
+			add 1 to {_num}
+		stop
+	else if inventory name of player's current inventory contains "&eKoukás do magické bedny..&f":
+		play "CHEST_CLOSE" to player
+		set {_num} to 0
+		loop 27 times:
+			if slot {_num} of player's current inventory is not air:
+				set {enderchest::%{_num}%::%player%} to slot {_num} of player's current inventory
+			else:
+				if {enderchest::%{_num}%::%player%} is set:
+					delete {enderchest::%{_num}%::%player%}
+			add 1 to {_num}
+		stop	
+
+
+on chest add:
+	if inventory name of player's current inventory contains "&eKoukás do magické bedny.." or "&fTy & &f%{tradePartner::%player%}%":
+		if item is stone sword or stone axe or iron sword or iron axe or bow or chain boots or chain leggings or chain chestplate or iron pickaxe or diamond pickaxe or golden apple or lava bucket:
+			cancel event
+			message "&cTento item nelze ulozit."
+			play "VILLAGER_NO" to player
+		else if item is player head:
+			if name of item is "&6Zlata Hlava":
+				cancel event
+				message "&cTento item nelze ulozit."
+				play "VILLAGER_NO" to player
+		else if item is fishing rod:
+			if name of item is not "&cCatcher":
+				cancel event
+				message "&cTento item nelze ulozit."
+				play "VILLAGER_NO" to player
+		else if item is arrow:
+			if name of item is "&7Síp":
+				cancel event
+				message "&cTento item nelze ulozit."
+				play "VILLAGER_NO" to player
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+options:
+	NoPermissions: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.
+	
+	ChangedGamemodeToSurvival: &7Tvuj gamemode byl zmenen uspesne na &aSurvival&7.
+	ChangedGamemodeToCreative: &7Tvuj gamemode byl zmenen uspesne na &dCreative&7.
+	ChangedGamemodeToSpectator: &7Tvuj gamemode byl zmenen uspesne na &eSpectator&7.
+	ChangedGamemodeToAdventure: &7Tvuj gamemode byl zmenen uspesne na &6Adventure&7.
+
+
+#==============================[Gamemode]==============================#
+command /gamemode [<text>] [<offlineplayer>]:
+	aliases: /gm
+	permission: pit.admin
+	permission message: {@NoPermissions}
+	trigger:
+		if player has permission "pit.admin":
+			if arg-2 is set:
+				if arg-2 is offline:
+					send "%arg 2% je offline." to player
+					stop
+				if arg-2 is online:
+					if arg 1 is "0" or "survival" or "s":
+						set arg-2's gamemode to survival
+						send "{@ChangedGamemodeToSurvival}" to arg-2
+						send "&7Gamemode hrace %coloured arg-2's offline prefix%%arg-2% &7byl zmenen uspesne na &aSurvival&7." to player
+						stop
+				if arg 1 is "1" or "c" or "creative":
+					set arg-2's gamemode to creative
+					send "&7Gamemode hrace %coloured arg-2's offline prefix%%arg-2% &7byl zmenen uspesne na &dCreative&7." to player
+					send "{@ChangedGamemodeToCreative}" to arg-2
+					stop
+				if arg 1 is "3" or "spectator":
+					set arg-2's gamemode to spectator
+					send "&7Gamemode hrace %coloured arg-2's offline prefix%%arg-2% &7byl zmenen uspesne na &eSpectator&7." to player
+					send "{@ChangedGamemodeToSpectator}" to arg-2				
+					stop
+			if arg-1 is not set:
+				send "&cZapomnel jsi uvest mod a hrace." to player
+				send "&3 * &d/gamemode &8<&fmod&8> <&fhrac&8>" to player
+				stop
+			if arg-1 is set: 
+				if arg 1 is "0" or "survival" or "s":
+					set player's gamemode to survival
+					send "{@ChangedGamemodeToSurvival}" to player
+				if arg 1 is "1" or "c" or "creative":
+					set player's gamemode to creative
+					send "{@ChangedGamemodeToCreative}" to player
+				if arg 1 is "3" or "spectator":
+					set player's gamemode to spectator
+					send "{@ChangedGamemodeToSpectator}" to player				
+		else:
+			if arg-2 is set:
+				send "Nemuzes zmenit gamemode ostatnim." to player
+				stop
+			if arg-1 is not set:
+				send "&cZapomnel jsi uvest mod." to player
+				send "&3 * &d/gamemode &8<&fmod&8>" to player
+			if arg-1 is set: 
+				if arg 1 is "0" or "survival" or "s":
+					set player's gamemode to survival
+					send "{@ChangedGamemodeToSurvival}" to player
+				if arg 1 is "1" or "c" or "creative":
+					set player's gamemode to creative
+					send "{@ChangedGamemodeToCreative}" to player
+				if arg 1 is "3" or "spectator":
+					set player's gamemode to spectator
+					send "{@ChangedGamemodeToSpectator}" to player				
+
+
+					
+command /gmc [<offlineplayer>]:
+	permission: pit.admin
+	permission message: {@NoPermissions}
+	trigger:
+		if arg-1 is not set:
+			set player's gamemode to creative
+			send "{@ChangedGamemodeToCreative}" to player
+		if arg-1 is set:
+			if player has permission "pit.admin":
+				if arg-1 is offline:
+					send "&c%arg-1% je offline." to player
+					stop trigger
+				if arg-1 is not set:
+					set player's gamemode to creative
+					send "{@ChangedGamemodeToCreative}" to player
+				if arg-1 is set:
+					set arg-1's gamemode to creative
+					send "&7Gamemode hrace %coloured arg-1's offline prefix%%arg-1% &7byl zmenen uspesne na &dCreative&7." to player
+					send "{@ChangedGamemodeToCreative}" to arg-1
+			else:
+				send "&cNemuzes zmenit gamemode ostatnim." to player
+				stop
+
+				
+				
+command /gms [<offlineplayer>]:
+	permission: pit.admin
+	permission message: {@NoPermissions}
+	trigger:
+		if arg-1 is not set:
+			set player's gamemode to survival
+			send "{@ChangedGamemodeToSurvival}" to player
+		if arg-1 is set:
+			if player has permission "pit.admin":
+				if arg-1 is offline:
+					send "&c%arg-1% je offline." to player
+					stop trigger
+				if arg-1 is not set:
+					set player's gamemode to survival
+					send "{@ChangedGamemodeToSurvival}" to player
+				if arg-1 is set:
+					set arg-1's gamemode to survival
+					send "&7Gamemode hrace %coloured arg-1's offline prefix%%arg-1% &7byl zmenen uspesne na &aSurvival&7." to player
+					send "{@ChangedGamemodeToSurvival}" to arg-1
+			else:
+				send "&cNemuzes nastavit zmenit gamemode ostatnim." to player
+				stop
+				
+				
+				
+					
+#==============================[Broadcast]==============================#		
+command /upozorneni [<text>]:
+	aliases: broadcast
+	permission: pit.upozorneni
+	permission message: {@NoPermissions}
+	trigger:
+		if arg 1 is not set:
+			send "&cZapomnel jsi uvest zpravu." to player
+			send "&3 * &d/upozorneni &8<&fzprava&8>" to player
+		else:
+			broadcast "&8[&4&l!&8] &a%coloured arg 1%"
+
+			
+
+
+
+#==============================[announce]==============================#				
+command /me [<text>]:
+	aliases: alert
+	permission: pit.me
+	permission message: {@NoPermissions}
+	trigger:
+		if arg-1 is not set:
+			send "&cZapomnel jsi uvest zpravu." to player
+			send "&3 * &d/me &8<&fzprava&8>" to player
+			stop
+		if arg-1 is set:
+			set {_wait} to difference between {announce.%player%.lastused} and now
+			if {_wait} is less than 600 seconds:
+				message "&7Musis pockat &e%difference between 600 seconds and {_wait}%&7, aby jsi mohl odeslat dalsi zpravu."
+				stop
+			broadcast "&8[&c&l!&8] %coloured player's offline prefix%%player%&7: &e%arg 1%"
+			set {announce.%player%.lastused} to now
+			
+
+			
+			
+			
+#==============================[reset]==============================#					
+command /reset:
+	permission: pit.admin
+	permission message: {@NoPermissions}
+	trigger:
+		broadcast "&8[&6Reset&8] &7Server bude restartovan za &d5 minut&7."
+		wait 1200 tick
+		broadcast "&8[&6Reset&8] &7Server bude restartovan za &d4 minuty&7."
+		wait 1200 tick
+		broadcast "&8[&6Reset&8] &7Server bude restartovan za &d3 minuty&7."
+		wait 1200 tick
+		broadcast "&8[&6Reset&8] &7Server bude restartovan za &d2 minuty&7."
+		wait 1200 tick
+		broadcast "&8[&6Reset&8] &7Server bude restartovan za &d1 minutu&7."
+		wait 600 tick
+		broadcast "&8[&6Reset&8] &7Server bude restartovan za &d30 sekund&7."
+		wait 200 tick
+		broadcast "&8[&6Reset&8] &7Server bude restartovan za &d20 sekund&7."
+		wait 200 tick
+		broadcast "&8[&6Reset&8] &7Server bude restartovan za &d10 sekund&7."
+		wait 100 tick
+		broadcast "&8[&6Reset&8] &7Server bude restartovan za &d5 sekund&7."
+		wait 20 tick
+		broadcast "&8[&6Reset&8] &7Server bude restartovan za &d4 sekundy&7."
+		wait 20 tick
+		broadcast "&8[&6Reset&8] &7Server bude restartovan za &d3 sekundy&7."
+		wait 20 tick
+		broadcast "&8[&6Reset&8] &7Server bude restartovan za &d2 sekundy&7."
+		wait 20 tick
+		broadcast "&8[&6Reset&8] &7Server bude restartovan za &d1 sekundu&7."
+		wait 10 tick
+		broadcast "&aServer bude za chvili online! &7Za chvili nezapomen prijit zpatky."
+		wait 10 tick
+		make console execute command "/save-all"
+		wait 1 tick
+		make console execute command "/restart"	
+
+
+
+
+		
+#==============================[Feed]==============================#
+command /feed [<offlineplayer>]:
+	permission: pit.admin
+	permission message: {@NoPermissions}
+	trigger:
+		if player has permission "pit.admin":
+			if arg-1 is not set:
+				set the food level of player to 10
+				send "&7Uspesne sis doplnil svuj hunger bar." to player
+			else:
+				if arg-1 is offline:
+					send "&c%arg-1% je offline." to player
+				else:
+					set the food level of arg-1 to 10
+					send "&7Doplnil jsi hunger bar pro %coloured arg-1's offline prefix%%arg-1%&7." to player
+					send "%coloured player's offline prefix%%player% &7ti doplnil hunger bar." to arg-1
+		else:
+			if arg-1 is not set:
+				set the food level of player to 10
+				send "&7Uspesne sis doplnil svuj hunger bar." to player
+			else:
+				send "&cNemuzes doplnit hunger bar ostatnim." to player
+				stop
+
+				
+								
+command /heal [<offlineplayer>]:
+	permission: pit.admin
+	permission message: {@NoPermissions}
+	trigger:
+		if player has permission "pit.admin":
+			if arg-1 is not set:
+				set the food level of player to 10
+				set the health of player to 20
+				send "&7Uspesne sis doplnil srdicka." to player
+				stop
+			else:
+				if arg-1 is offline:
+					send "&c%arg-1% je offline." to player
+				else:
+					set the food level of arg-1 to 10
+					set the health of arg-1 to 20
+					send "&7Doplnil jsi srdicka pro %coloured arg-1's offline prefix%%arg-1%&7." to player
+					send "%coloured player's offline prefix%%player% &7ti doplnil srdicka." to arg-1
+	
+		else:
+			if arg-1 is not set:
+				set the food level of player to 10
+				set the health of player to 20
+				send "&7Uspesne sis doplnil srdicka." to player
+			else:
+				send "&cNemuzes doplnit srdicka ostatnim." to player
+				stop
+
+
+
+
+		
+#==============================[More]==============================#				
+command /more:
+	permission: pit.admin
+	permission message: {@NoPermissions}
+	trigger:
+		if player's tool is air:
+			send "&cNedrzis zadny item." to player
+			stop
+		else:	
+			send "&7Obdrzel jsi stack." to player
+			set player's tool to 64 of player's tool
+			stop
+
+
+
+
+		
+#==============================[Teleport]==============================#	
+command /tp [<offlineplayer>]:
+	aliases: teleport
+	permission: pit.staff
+	permission message: {@NoPermissions}
+	trigger:
+		if {staffmode::%player%} is not set:
+			if player doesn't have permission "pit.admin":
+				message "&cTeleport nelze pouzit! &7Musis mit zapnuty Staff Mode."
+				stop
+		if arg-1 is set:
+			if arg-1 is player:
+				send "&cNemuzes se teleportovat sam na sebe." to player
+			if arg-1 is offline:
+				send "&c%arg 1% je offline." to player
+			else:
+				teleport player to arg-1
+				send "&7Byl jsi teleportovan k %coloured arg-1's offline prefix%%arg-1%&7." to player
+
+		else:
+			send "&cZapomnel jsi uvest hrace." to player
+			send "&3 * &d/tp &8<&fhrac&8>" to player
+
+			
+			
+			
+			
+#==============================[TPHere]==============================#	
+command /tphere [<offlineplayer>]:
+	aliases: teleporthere
+	permission: pit.staff
+	permission message: {@NoPermissions}
+	trigger:
+		if {staffmode::%player%} is not set:
+			if player doesn't have permission "pit.admin":
+				message "&cTeleport nelze pouzit! &7Musis mit zapnuty Staff Mode."
+				stop
+		if arg-1 is set:
+			if arg-1 is player:
+				send "&cNemuzes se teleportovat sam na sebe." to player
+			if arg-1 is offline:
+				send "&c%arg 1% je offline." to player
+			else:
+				teleport arg-1 to player
+				send "%coloured arg-1's offline prefix%%arg 1% &7byl teleportovan k tobe." to player
+				send "&7Byl jsi teleportovan k %coloured player's offline prefix%%player%&7." to arg-1
+		else:
+			send "&cZapomnel jsi uvest hrace." to player
+			send "&3 * &d/tphere &8<&fhrac&8>" to player
+
+
+
+
+			
+#==============================[Speed]==============================#
+command /speed [<text>] [<number>]:
+	Executable by: players
+	Permission: pit.admin
+	permission message: {@NoPermissions}
+	trigger:
+		if arg 1 is not set:
+			send "&cZapomnel jsi uvest zpusob a rychlost." to player
+			send "&3 * &d/speed &8<&fwalk|fly&8> <&f1/5&8>" to player
+			stop
+		if arg-2 is not set:
+			send "&cZapomnel jsi uvest rychlost." to player
+			send "&3 * &d/speed &8<&fwalk|fly&8> <&f1/5&8>" to player
+			stop
+		else:
+			if arg 1 is "walk":
+				if arg 2 is not set:
+					send "&cZapomnel jsi uvest rychlost." to player
+					send "&3 * &d/speed &8<&fwalk&8> <&f1/5&8>" to player
+				if arg 2 is 1:
+					set the player's walk speed to 0.2
+					send "&7Tvoje rychlost chuze byla nastavena na &bnormalni uroven&7." to player
+				if arg 2 is 2:
+					set the player's walk speed to 0.3
+					send "&7Tvoje rychlost chuze byla nastavena na &buroven 2&7." to player
+				if arg 2 is 3:
+					set the player's walk speed to 0.4
+					send "&7Tvoje rychlost chuze byla nastavena na &buroven 3&7." to player
+				if arg 2 is 4:
+					set the player's walk speed to 0.5
+					send "&7Tvoje rychlost chuze byla nastavena na &buroven 4&7." to player
+				if arg 2 is 5:
+					set the player's walk speed to 0.6
+					send "&7Tvoje rychlost chuze byla nastavena na &buroven 5&7." to player
+			if arg 1 is "fly":
+				if arg 2 is not set:
+					send "&cZapomnel jsi uvest rychlost." to player
+					send "&3 * &d/speed &8<&ffly&8> <&f1/5&8>" to player
+				if arg 2 is 1:
+					set the player's fly speed to 0.1
+					send "&7Tvoje rychlost letani byla nastavena na &bnormalni uroven&7." to player
+				if arg 2 is 2:
+					set the player's fly speed to 0.2
+					send "&7Tvoje rychlost letani byla nastavena na &buroven 2&7." to player
+				if arg 2 is 3:
+					set the player's fly speed to 0.3
+					send "&7Tvoje rychlost letani byla nastavena na &buroven 3&7." to player
+				if arg 2 is 4:
+					set the player's fly speed to 0.4
+					send "&7Tvoje rychlost letani byla nastavena na &buroven 4&7." to player
+				if arg 2 is 5:
+					set the player's fly speed to 0.5
+					send "&7Tvoje rychlost letani byla nastavena na &buroven 5&7." to player	
+
+		
+		
+		
+		
+#==============================[Flight]==============================#
+command /fly [<offlineplayer>]:
+	permission: pit.admin
+	permission message: {@NoPermissions}
+	trigger:
+		if player doesn't have permission "pit.admin":
+			if arg-1 is not set:
+				If {fly.%player%} is not set:
+					set player's flight mode to true
+					set {fly.%player%} to true
+					send "&7Letani bylo &apovoleno&7." to player
+					stop
+				else:
+					delete {fly.%player%}
+					set player's flight mode to false
+					send "&7Letani bylo &czakazano&7." to player
+					stop
+			else:
+				send "&cNemuzes nastavit letani ostatnim." to player
+				stop
+		else:
+			if arg-1 is not set:
+				If {fly.%player%} is not set:
+					set player's flight mode to true
+					set {fly.%player%} to true
+					send "&7Letani bylo &apovoleno&7." to player
+					stop
+				else:
+					delete {fly.%player%}
+					set player's flight mode to false
+					send "&7Letani bylo &czakazano&7." to player
+					stop
+			if arg-1 is set:
+				if arg-1 is offline:
+					send "&c%arg 1% je offline." to player
+					stop trigger
+				If {fly.%arg 1%} is not set:
+					set arg-1's flight mode to true
+					set {fly.%arg 1%} to true
+					send "&7Letani pro %coloured arg-1's offline prefix%%arg 1% &7bylo &apovoleno&7." to player
+					send "&7Letani bylo &apovoleno&7." to arg-1
+					stop
+				else:
+					delete {fly.%arg 1%}
+					set arg-1's flight mode to false
+					send "&7Letani pro %coloured arg-1's offline prefix%%arg 1% &7bylo &czakazano&7." to player
+					send "&7Letani bylo &czakazano&7." to arg-1
+					stop
+	
+
+
+#==============================[msg]==============================#	
+command /msg [<offlineplayer>] [<text>]:
+	aliases: /m, /t, /w, /message, /pm, /bukkit:msg
+	trigger:
+		if arg-1 is not set:
+			send "&cZapomnel jsi uvest hrace a zpravu." to player
+			send "&3 * &d/msg &8<&fhrac&8> <&fzprava&8>" to player
+			stop trigger
+		else:
+			if arg-2 is not set:
+				send "&cZapomnel jsi uvest zpravu." to player
+				send "&3 * &d/msg &8<&fhrac&8> <&fzprava&8>" to player
+				stop trigger
+			if player doesn't have permission "pit.tym":
+				if {vanish::%arg-1%} is set:
+					send "&c%arg-1% je offline." to player
+					stop trigger
+			if arg-1 is offline:
+				send "&c%arg-1% je offline." to player
+				stop trigger
+			if arg-1 is player:
+				send "&cNemuzes psat sam sobe." to player
+				stop trigger
+
+		if {ignore.%player%.%arg 1%} is true:
+			send "&c%coloured arg 1's offline prefix%%arg 1% &7je v seznamu hracu, ktere ignorujes."
+			stop
+		if {ignore.%arg 1%.%player%} is true:
+			send "&c%coloured arg 1's offline prefix%%arg 1% &7te ma v seznamu hrace, ktere ignoruje."	
+			stop
+
+		if {tgc.%arg 1%} is set:
+			send "&cMas vypnut globalni chat." to player
+			send "&c%coloured arg 1's offline prefix%%arg 1% &7ma vypnut globalni chat." to player
+			stop trigger
+
+
+		if {tgc.%player%} is set:
+			send "&cMas vypnut globalni chat." to player
+			send "&3 * &d/tgc &7- Zapnuti globalniho chatu." to player
+			stop trigger
+		else:
+			if player has permission "pit.staff":
+				if {sounds.%arg 1%} is not set:
+					set {chat.private.reply.%player%} to arg-1
+					set {chat.private.reply.%arg-1%} to player
+					loop all players:
+						{msgspy.%loop-player%} is set
+						send "&a[Spy] &7(%coloured player's offline suffix%%player% &7-> %coloured arg-1's offline suffix%%arg-1%&7) %arg 2%" to loop-player
+
+					if {msgcolor::%player%} is set:
+						send "%{msgcolor::%player%}%(To %coloured arg 1's offline suffix%%arg-1%%{msgcolor::%player%}%) %arg 2%" to player
+					else:
+						send "&7(To %coloured arg 1's offline suffix%%arg-1%&7) %arg 2%" to player
+					if {msgcolor::%arg-1%} is set:
+						send "%{msgcolor::%arg-1%}%(From %coloured player's offline suffix%%player%%{msgcolor::%arg-1%}%) %arg 2%" to arg-1
+					else:
+						send "&7(From %coloured player's offline suffix%%player%&7) %arg 2%" to arg-1
+
+					if {editsounds::%arg-1%} is not set:
+						play "NOTE_PLING" to arg-1
+					if {editsounds::%arg-1%} is "anvil":
+						play "ANVIL_BREAK" to arg-1
+					else if {editsounds::%arg-1%} is "poke":
+						play "NOTE_PLING" to arg-1
+					else if {editsounds::%arg-1%} is "cow":
+						play "COW_HURT" to arg-1
+					else if {editsounds::%arg-1%} is "chicken":
+						play "CHICKEN_HURT" to arg-1
+					else if {editsounds::%arg-1%} is "blaze":
+						play "BLAZE_DEATH" to arg-1						
+					else if {editsounds::%arg-1%} is "bat":
+						play "BAT_DEATH" to arg-1						
+					else if {editsounds::%arg-1%} is "arrow":
+						play "ARROW_HIT" to arg-1
+					if arg-2 contains "shit" or "fuck" or "gay" or "idiot" or "bitch" or "stupid" or "kurv" or "mrdk" or "zmrd" or "curak" or "čurak" or "cůrak" or "čůrák" or "čurák" or "curák" or "kokot" or "vole" or "zkurv" or "penis" or "vagin" or "vagín" or "pussy" or "slut" or "hack" or "cheat" or "toggle" or "nazi" or "hitler" or "nacek" or "hovado" or "mrcho" or "pako" or "buzik" or "buzík" or "buzerant" or "pyzdo" or "pizdo" or "píčus" or "pícus" or "picus" or "vyplodek" or "výplodek" or "vyplodku" or "výplodku" or "anal" or "anál" or "geno" or "geňo" or "špíno" or "spino" or "spíno" or "píčo" or "pico" or "pičo" or "píco":
+						if player doesn't have permission "pit.tym":
+							loop all players:
+								loop-player has permission "pit.tym"
+								send "&c[Filtered] &7(%coloured player's offline suffix%%player% &7-> %coloured arg-1's offline suffix%%arg-1%&7) %arg 2%" to loop-player
+					stop trigger
+				else:
+					set {chat.private.reply.%player%} to arg-1
+					set {chat.private.reply.%arg-1%} to player
+					loop all players:
+						{msgspy.%loop-player%} is set
+						send "&a[Spy] &7(%coloured player's offline suffix%%player% &7-> %coloured arg-1's offline suffix%%arg-1%&7) %arg 2%" to loop-player
+					if {msgcolor::%player%} is set:
+						send "%{msgcolor::%player%}%(To %coloured arg 1's offline suffix%%arg-1%%{msgcolor::%player%}%) %arg 2%" to player
+					else:
+						send "&7(To %coloured arg 1's offline suffix%%arg-1%&7) %arg 2%" to player
+					if {msgcolor::%arg-1%} is set:
+						send "%{msgcolor::%arg-1%}%(From %coloured player's offline suffix%%player%%{msgcolor::%arg-1%}%) %arg 2%" to arg-1
+					else:
+						send "&7(From %coloured player's offline suffix%%player%&7) %arg 2%" to arg-1
+
+					if arg-2 contains "shit" or "fuck" or "gay" or "idiot" or "bitch" or "stupid" or "kurv" or "mrdk" or "zmrd" or "curak" or "čurak" or "cůrak" or "čůrák" or "čurák" or "curák" or "kokot" or "vole" or "zkurv" or "penis" or "vagin" or "vagín" or "pussy" or "slut" or "hack" or "cheat" or "toggle" or "nazi" or "hitler" or "nacek" or "hovado" or "mrcho" or "pako" or "buzik" or "buzík" or "buzerant" or "pyzdo" or "pizdo" or "píčus" or "pícus" or "picus" or "vyplodek" or "výplodek" or "vyplodku" or "výplodku" or "anal" or "anál" or "geno" or "geňo" or "špíno" or "spino" or "spíno" or "píčo" or "pico" or "pičo" or "píco":
+						if player doesn't have permission "pit.tym":
+							loop all players:
+								loop-player has permission "pit.tym"
+								send "&c[Filtered] &7(%coloured player's offline suffix%%player% &7-> %coloured arg-1's offline suffix%%arg-1%&7) %arg 2%" to loop-player
+					stop trigger
+
+
+		if {messages.%player%} is set:
+			send "&cMas vypnute privatni zpravy." to player
+			send "&3 * &d/tpm &7- Zapnuti privatnich zprav." to player
+			stop trigger
+		else:
+			if player has permission "pit.staff":
+				if {sounds.%arg 1%} is not set:
+					set {chat.private.reply.%player%} to arg-1
+					set {chat.private.reply.%arg-1%} to player
+					loop all players:
+						{msgspy.%loop-player%} is set
+						send "&a[Spy] &7(%coloured player's offline suffix%%player% &7-> %coloured arg-1's offline suffix%%arg-1%&7) %arg 2%" to loop-player
+
+					if {msgcolor::%player%} is set:
+						send "%{msgcolor::%player%}%(To %coloured arg 1's offline suffix%%arg-1%%{msgcolor::%player%}%) %arg 2%" to player
+					else:
+						send "&7(To %coloured arg 1's offline suffix%%arg-1%&7) %arg 2%" to player
+					if {msgcolor::%arg-1%} is set:
+						send "%{msgcolor::%arg-1%}%(From %coloured player's offline suffix%%player%%{msgcolor::%arg-1%}%) %arg 2%" to arg-1
+					else:
+						send "&7(From %coloured player's offline suffix%%player%&7) %arg 2%" to arg-1
+
+					if {editsounds::%arg-1%} is not set:
+						play "NOTE_PLING" to arg-1
+					if {editsounds::%arg-1%} is "anvil":
+						play "ANVIL_BREAK" to arg-1
+					else if {editsounds::%arg-1%} is "poke":
+						play "NOTE_PLING" to arg-1
+					else if {editsounds::%arg-1%} is "cow":
+						play "COW_HURT" to arg-1
+					else if {editsounds::%arg-1%} is "chicken":
+						play "CHICKEN_HURT" to arg-1
+					else if {editsounds::%arg-1%} is "blaze":
+						play "BLAZE_DEATH" to arg-1						
+					else if {editsounds::%arg-1%} is "bat":
+						play "BAT_DEATH" to arg-1						
+					else if {editsounds::%arg-1%} is "arrow":
+						play "ARROW_HIT" to arg-1
+					if arg-2 contains "shit" or "fuck" or "gay" or "idiot" or "bitch" or "stupid" or "kurv" or "mrdk" or "zmrd" or "curak" or "čurak" or "cůrak" or "čůrák" or "čurák" or "curák" or "kokot" or "vole" or "zkurv" or "penis" or "vagin" or "vagín" or "pussy" or "slut" or "hack" or "cheat" or "toggle" or "nazi" or "hitler" or "nacek" or "hovado" or "mrcho" or "pako" or "buzik" or "buzík" or "buzerant" or "pyzdo" or "pizdo" or "píčus" or "pícus" or "picus" or "vyplodek" or "výplodek" or "vyplodku" or "výplodku" or "anal" or "anál" or "geno" or "geňo" or "špíno" or "spino" or "spíno" or "píčo" or "pico" or "pičo" or "píco":
+						if player doesn't have permission "pit.tym":
+							loop all players:
+								loop-player has permission "pit.tym"
+								send "&c[Filtered] &7(%coloured player's offline suffix%%player% &7-> %coloured arg-1's offline suffix%%arg-1%&7) %arg 2%" to loop-player
+					stop trigger
+				else:
+					set {chat.private.reply.%player%} to arg-1
+					set {chat.private.reply.%arg-1%} to player
+					loop all players:
+						{msgspy.%loop-player%} is set
+						send "&a[Spy] &7(%coloured player's offline suffix%%player% &7-> %coloured arg-1's offline suffix%%arg-1%&7) %arg 2%" to loop-player
+
+					if {msgcolor::%player%} is set:
+						send "%{msgcolor::%player%}%(To %coloured arg 1's offline suffix%%arg-1%%{msgcolor::%player%}%) %arg 2%" to player
+					else:
+						send "&7(To %coloured arg 1's offline suffix%%arg-1%&7) %arg 2%" to player
+					if {msgcolor::%arg-1%} is set:
+						send "%{msgcolor::%arg-1%}%(From %coloured player's offline suffix%%player%%{msgcolor::%arg-1%}%) %arg 2%" to arg-1
+					else:
+						send "&7(From %coloured player's offline suffix%%player%&7) %arg 2%" to arg-1
+
+					if arg-2 contains "shit" or "fuck" or "gay" or "idiot" or "bitch" or "stupid" or "kurv" or "mrdk" or "zmrd" or "curak" or "čurak" or "cůrak" or "čůrák" or "čurák" or "curák" or "kokot" or "vole" or "zkurv" or "penis" or "vagin" or "vagín" or "pussy" or "slut" or "hack" or "cheat" or "toggle" or "nazi" or "hitler" or "nacek" or "hovado" or "mrcho" or "pako" or "buzik" or "buzík" or "buzerant" or "pyzdo" or "pizdo" or "píčus" or "pícus" or "picus" or "vyplodek" or "výplodek" or "vyplodku" or "výplodku" or "anal" or "anál" or "geno" or "geňo" or "špíno" or "spino" or "spíno" or "píčo" or "pico" or "pičo" or "píco":
+						if player doesn't have permission "pit.tym":
+							loop all players:
+								loop-player has permission "pit.tym"
+								send "&c[Filtered] &7(%coloured player's offline suffix%%player% &7-> %coloured arg-1's offline suffix%%arg-1%&7) %arg 2%" to loop-player
+					stop trigger			
+			
+						
+		if {messages.%arg 1%} is not set:
+			if {sounds.%arg 1%} is not set:
+				set {chat.private.reply.%player%} to arg-1
+				set {chat.private.reply.%arg-1%} to player
+				loop all players:
+					{msgspy.%loop-player%} is set
+					send "&a[Spy] &7(%coloured player's offline suffix%%player% &7-> %coloured arg-1's offline suffix%%arg-1%&7) %arg 2%" to loop-player
+
+				if {msgcolor::%player%} is set:
+					send "%{msgcolor::%player%}%(To %coloured arg 1's offline suffix%%arg-1%%{msgcolor::%player%}%) %arg 2%" to player
+				else:
+					send "&7(To %coloured arg 1's offline suffix%%arg-1%&7) %arg 2%" to player
+				if {msgcolor::%arg-1%} is set:
+					send "%{msgcolor::%arg-1%}%(From %coloured player's offline suffix%%player%%{msgcolor::%arg-1%}%) %arg 2%" to arg-1
+				else:
+					send "&7(From %coloured player's offline suffix%%player%&7) %arg 2%" to arg-1
+
+				if {editsounds::%arg-1%} is not set:
+					play "NOTE_PLING" to arg-1
+				if {editsounds::%arg-1%} is "anvil":
+					play "ANVIL_BREAK" to arg-1
+				else if {editsounds::%arg-1%} is "poke":
+					play "NOTE_PLING" to arg-1
+				else if {editsounds::%arg-1%} is "cow":
+					play "COW_HURT" to arg-1
+				else if {editsounds::%arg-1%} is "chicken":
+					play "CHICKEN_HURT" to arg-1
+				else if {editsounds::%arg-1%} is "blaze":
+					play "BLAZE_DEATH" to arg-1						
+				else if {editsounds::%arg-1%} is "bat":
+					play "BAT_DEATH" to arg-1						
+				else if {editsounds::%arg-1%} is "arrow":
+					play "ARROW_HIT" to arg-1
+				if arg-2 contains "shit" or "fuck" or "gay" or "idiot" or "bitch" or "stupid" or "kurv" or "mrdk" or "zmrd" or "curak" or "čurak" or "cůrak" or "čůrák" or "čurák" or "curák" or "kokot" or "vole" or "zkurv" or "penis" or "vagin" or "vagín" or "pussy" or "slut" or "hack" or "cheat" or "toggle" or "nazi" or "hitler" or "nacek" or "hovado" or "mrcho" or "pako" or "buzik" or "buzík" or "buzerant" or "pyzdo" or "pizdo" or "píčus" or "pícus" or "picus" or "vyplodek" or "výplodek" or "vyplodku" or "výplodku" or "anal" or "anál" or "geno" or "geňo" or "špíno" or "spino" or "spíno" or "píčo" or "pico" or "pičo" or "píco":
+					if player doesn't have permission "pit.tym":
+						loop all players:
+							loop-player has permission "pit.tym"
+							send "&c[Filtered] &7(%coloured player's offline suffix%%player% &7-> %coloured arg-1's offline suffix%%arg-1%&7) %arg 2%" to loop-player					
+				stop trigger
+			else:
+				set {chat.private.reply.%player%} to arg-1
+				set {chat.private.reply.%arg-1%} to player
+				loop all players:
+					{msgspy.%loop-player%} is set
+					send "&a[Spy] &7(%coloured player's offline suffix%%player% &7-> %coloured arg-1's offline suffix%%arg-1%&7) %arg 2%" to loop-player	
+				if {msgcolor::%player%} is set:
+					send "%{msgcolor::%player%}%(To %coloured arg 1's offline suffix%%arg-1%%{msgcolor::%player%}%) %arg 2%" to player
+				else:
+					send "&7(To %coloured arg 1's offline suffix%%arg-1%&7) %arg 2%" to player
+				if {msgcolor::%arg-1%} is set:
+					send "%{msgcolor::%arg-1%}%(From %coloured player's offline suffix%%player%%{msgcolor::%arg-1%}%) %arg 2%" to arg-1
+				else:
+					send "&7(From %coloured player's offline suffix%%player%&7) %arg 2%" to arg-1
+				if arg-2 contains "shit" or "fuck" or "gay" or "idiot" or "bitch" or "stupid" or "kurv" or "mrdk" or "zmrd" or "curak" or "čurak" or "cůrak" or "čůrák" or "čurák" or "curák" or "kokot" or "vole" or "zkurv" or "penis" or "vagin" or "vagín" or "pussy" or "slut" or "hack" or "cheat" or "toggle" or "nazi" or "hitler" or "nacek" or "hovado" or "mrcho" or "pako" or "buzik" or "buzík" or "buzerant" or "pyzdo" or "pizdo" or "píčus" or "pícus" or "picus" or "vyplodek" or "výplodek" or "vyplodku" or "výplodku" or "anal" or "anál" or "geno" or "geňo" or "špíno" or "spino" or "spíno" or "píčo" or "pico" or "pičo" or "píco":
+					if player doesn't have permission "pit.tym":
+						loop all players:
+							loop-player has permission "pit.tym"
+							send "&c[Filtered] &7(%coloured player's offline suffix%%player% &7-> %coloured arg-1's offline suffix%%arg-1%&7) %arg 2%" to loop-player
+				stop trigger	                
+		else:
+			send "&c%coloured arg 1's offline prefix%%arg 1% &7ma vypnute privatni zpravy." to player
+			stop trigger
+
+
+
+
+
+command /tell [<offlineplayer>] [<text>]:
+	aliases: /bukkit:tell, /bukkit:w
+	trigger:
+		if arg-1 is not set:
+			send "&cZapomnel jsi uvest hrace a zpravu." to player
+			send "&3 * &d/msg &8<&fhrac&8> <&fzprava&8>" to player
+			stop trigger
+		else:
+			if arg-1 is offline:
+				send "&c%arg-1% je offline." to player
+				stop trigger
+			if arg-1 is player:
+				send "&cNemuzes psat sam sobe." to player
+				stop trigger
+			if arg-2 is not set:
+				send "&cZapomnel jsi uvest zpravu." to player
+				send "&3 * &d/msg &8<&fhrac&8> <&fzprava&8>" to player
+				stop trigger
+			else:
+				make player execute command "/msg %arg 1% %arg 2%"
+		
+		
+#==============================[reply]==============================#			
+command /r [<text>]:
+	aliases: /reply
+	trigger:
+		if {chat.private.reply.%player%} is not set:
+			send "&cZatim jsi nikomu nenapsal." to player
+			stop trigger
+		if arg-1 is not set:
+			send "&cZapomnel jsi uvest zpravu." to player
+			send "&3 * &d/r &8<&fzprava&8>" to player
+			stop trigger
+		if {chat.private.reply.%player%} is offline:
+			send "&c%{chat.private.reply.%player%}% je offline." to player
+			stop trigger
+		if {chat.private.reply.%player%} is set:
+			make player execute command "/msg %{chat.private.reply.%player%}% %arg 1%"
+			stop trigger
+
+			
+		
+
+
+#==============================[ignore]==============================#			
+command /ignore [<offlineplayer>]:
+	trigger:
+		if arg-1 is not set:
+			if size of {bchat::player::%uuid of player%::blocklist::*} is greater than 0:
+				message "&dMomentalne ignorujes&7:"
+				loop {bchat::player::%uuid of player%::blocklist::*}:
+					message "%loop-value%"
+			else:
+				message "&7Momentalne nikoho neignorujes."
+		else:
+			if player is online:
+				if {ignore.%player%.%arg 1%} is set:
+					set {_p} to arg 1
+					if {_p} is not set:
+						set {_p} to arg 1
+					set {_u} to uuid of {_p}	
+					delete {bchat::player::%uuid of player%::blocklist::%{_u}%}
+					delete {ignore.%player%.%arg 1%}
+					send "&7Prestal jsi ignorovat %coloured {_p}'s offline prefix%%{_p}%&7."
+				else:
+					if arg 1 is player:
+						message "&cNemuzes ignorovat sam sebe."
+						stop
+					if arg 1 has permission "pit.tym":
+						message "&cStaff nemuze by ignorovan."
+						stop
+					if player has permission "pit.tym":
+						message "&cJako staff nemuzes ignorovat ostatni."
+						stop
+					if arg 1 is set:
+						set {_p} to arg 1
+						if {_p} is not set:
+							set {_p} to arg 1
+						set {_u} to uuid of {_p}
+						set {bchat::player::%uuid of player%::blocklist::%{_u}%} to "&7 * %coloured {_p}'s offline prefix%%{_p}%"
+						message "&7Zacal jsi ignorovat %coloured {_p}'s offline prefix%%{_p}%&7."
+						set {ignore.%player%.%arg 1%} to true
+	
+		
+
+	
+	
+#==============================[togglepm]==============================#		
+command /togglepm:
+	aliases: /tpm
+	trigger:
+		if {messages.%player%} is set:
+			delete {messages.%player%}
+			send "&7Privatni zpravy byly &azapnuty&7." to player
+			stop
+		else:
+			set {messages.%player%} to false
+			send "&7Privatni zpravy byly &cvypnuty&7." to player
+			stop		
+		
+
+		
+		
+		
+#==============================[sounds]==============================#			
+command /sounds:
+	trigger:
+		if  {sounds.%player%} is set:
+			delete {sounds.%player%}
+			send "&7Zvuk privatnich zprav byl &azapnut&7." to player
+			stop
+		else:
+			set {sounds.%player%} to false
+			send "&7Zvuk privatnich zprav byl &cvypnut&7." to player
+			stop
+
+			
+			
+			
+			
+#==============================[tgc]==============================#			
+command /tgc:
+	aliases: /toggleglobalchat
+	trigger:
+		if  {tgc.%player%} is set:
+			delete {tgc.%player%}
+			send "&7Globalni chat byl &azapnut&7." to player
+			stop
+		else:
+			set {tgc.%player%} to false
+			send "&7Globalni chat byl &cvypnut&7." to player
+			stop	
+
+			
+			
+#==============================[msgspy]==============================#				
+command /msgspy:
+	permission: pit.admin
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.
+	aliases: /spy
+	trigger:
+		if  {msgspy.%player%} is not set:
+			set {msgspy.%player%} to 1
+			send "&7Viditelnost zprav byla &azapnuta&7." to player
+			stop
+		else:
+			delete {msgspy.%player%}
+			send "&7Viditelnost zprav byla &cvypnuta&7." to player
+			stop	
+	
+#==============================[mention]==============================#			
+command /mention:
+	trigger:
+		if  {mention.%player%} is set:
+			delete {mention.%player%}
+			send "&7Zvuk pri zmineni byl &azapnut&7." to player
+			stop
+		else:
+			set {mention.%player%} to false
+			send "&7Zvuk pri zmineni byl &cvypnut&7." to player
+			stop		
+
+#==============================[chat]==============================#	
+command /chat [<text>] [<number>]:
+	permission: pit.tym
+	permission message: §8[§c§l!§8] §7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera.
+	trigger:
+		if {chat::stop} is set:
+			set {_x} to " &a► &7Zapnuto"
+		else:
+			set {_x} to " &c► &7Vypnuto"
+		if {chat::delay} is set:
+			set {_y} to " &a► &7Zapnuto &8┃ &f%{chat::delay}% sekund"			
+		else:
+			set {_y} to " &c► &7Vypnuto"
+
+		if check [arg-1 is not set]->[arg-1 is not "stop" or "delay" or "clear"]:
+			message "&8[&4&l!&8] &cSpatne pouzity prikaz. &7arg-1 = &8""&ffunkce&8"" &7(stop, delay, clear), arg-2 = &8""&fcislo&8"" &7(pouze pro delay)."
+			message ""							
+			message "&6&lDelay status"	
+			message "%{_y}%"			
+			message "&6&lStopped status"
+			message "%{_x}%"			
+			message ""
+		if check [arg-1 is "delay"]->[arg-2 is not set]->[arg-2 is not number]:
+			message "&8[&4&l!&8] &cSpatne pouzity prikaz. &7arg-1 = &8""&ffunkce&8"" &7(stop, delay, clear), arg-2 = &8""&fcislo&8"" &7(pouze pro delay, max 60)."
+			message ""							
+			message "&6&lDelay status"	
+			message "%{_y}%"			
+			message "&6&lStopped status"
+			message "%{_x}%"			
+			message ""
+		if arg-1 is "clear":
+			loop all players:
+				if loop-player doesn't have permission "pit.tym":
+					add loop-player to {_players::*}
+			loop 300 times:
+				send "" to {_players::*}
+			broadcast "&8[&c&l!&8] %coloured player's offline prefix%%player%&7 vymazal chat."
+		if arg-1 is "stop":
+			if {chat::stop} is not set:
+				set {chat::stop} to 1
+				broadcast "&8[&c&l!&8] %coloured player's offline prefix%%player% se rozhodl &cvypnout &7chat."
+			else:
+				delete {chat::stop}
+				broadcast "&8[&c&l!&8] %coloured player's offline prefix%%player% se rozhodl &azapnout &7chat."
+		if arg-1 is "delay":
+			arg-2 is number
+			if arg-2 is higher than 60:
+				message "&8[&4&l!&8] &7Maximalni limit pro delay chatu je &f60 sekund&7."
+				stop
+			if {chat::delay} is not set:
+				set {chat::delay} to arg-2
+				broadcast "&8[&c&l!&8] %coloured player's offline prefix%%player% &7nastavil zpomaleni chatu na &f%arg-2% sekund&7."
+			else:
+				delete {chat::delay}
+				broadcast "&8[&c&l!&8] %coloured player's offline prefix%%player% zrusil zpomaleni chatu."
+
+
+#==============================[emojis]==============================#
+command /emojis [<number>]:
+	trigger:
+		if arg-1 is not set:
+			message ""
+			message "&8&8&m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯&r&8[ &e&l✌ Emojis ✌ &8]&8&8&m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯&r"
+			message "&f              :shrug: &d¯╲_(ツ)_╱¯&r"
+			message "&f                    o/ &e( ﾟ◡ﾟ)/&r"
+			message "&f                  :help: &f(´·_·`)&r"
+			message "&f                   :love: &c♥‿♥&r"
+			message "&f                 :kiss: &f( ˘ ³˘)&c♥&r"
+			message "&f                    :star: &6★&r"
+			message "&f                      <3 &c♥&r"
+			message "&f                    :cry: &bಥ⁔ಥ&r"
+			json("%player%", "&8&8&m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯&8[ &cZpět &8]||cmd:/emojis 3|| &f1&8/&73 ||&8[ &aDalší &8]&8&8&m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯&r||cmd:/emojis 2")
+		if arg-1 is 2:
+			message ""
+			message "&8&8&m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯&r&8[ &e&l✌ Emojis ✌ &8]&8&8&m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯&r"
+			message "&f                  :pepe: (°ʖ°)&r"
+			message "&f                 :bear: &fʕ• ᴥ •ʔ&r"
+			message "&f                  :angry: ಠ_ಠ&r"
+			message "&f                       :) ツ"
+			message "&f                   :baby: &f(·˳·)&r"
+			message "&f            :tableflip: &c(╯°□°）╯§f︵ §7┻━┻&r"
+			message "&f        :tablechill: &f┬─┬ §7ノ( ゜-゜ノ)&r"
+			message "&f       :angrytable: &f┻━┻ ︵§cヽ(`Д´)ﾉ§f︵ ┻━┻&r"
+			json("%player%", "&8&8&m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯&8[ &cZpět &8]||cmd:/emojis|| &f2&8/&73 ||&8[ &aDalší &8]&8&8&m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯&r||cmd:/emojis 3")
+		if arg-1 is 3:
+			message ""
+			message "&8&8&m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯&r&8[ &e&l✌ Emojis ✌ &8]&8&8&m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯&r"
+			message "&f                    :123: &a1&e2&c3&r"
+			message "&f                   :weird: §f⚆_⚆§r&r"
+			message "&f                     :wink: §fಠ‿↼&r"
+			message "&f                  :cute: &f(§d✿§f◠‿◠)&r"
+			message "&f                   :sad: §f(§9μ§f_§9μ§f)§r"
+			message "&f                   :yell: §c(§4＃§c`Д´)و§r"
+			message "&f                 :yawn: §f٩(ˊ〇ˋ§3*§f)و§r"
+			message "&f     :thuglife: §f(•_•) ( •_•)>§7⌐§8■§7-§8■ §f(§7⌐§8■§f_§8■§f)"
+			json("%player%", "&8&8&m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯&8[ &cZpět &8]||cmd:/emojis 2|| &f3&8/&73 ||&8[ &aDalší &8]&8&8&m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯&r||cmd:/emojis")
+	
+		
+#==============================[on events]==============================#
+on first join:
+	broadcast " &2+ &7%player%"
+	
+options:
+	chatformat-basic: %{prestigebrackets::%player%}%[%{%player%.level.color}%%{level::%player%}%%{prestigebrackets::%player%}%] %{tag::%player%}%%coloured player's offline prefix%%player% &8» &f%{_mess}%
+	chatformat-prestige: %{prestigebrackets::%player%}%[&6##&e%{prestige::%player%}% %{%player%.level.color}%%{level::%player%}%%{prestigebrackets::%player%}%] %{tag::%player%}%%coloured player's offline prefix%%player% &8» &f%{_mess}%
+
+on chat:
+	send "&c[CHAT] %coloured player's offline prefix%%player%&f: %message%" to console
+	if player doesn't have permission "pit.tym":
+		replace all "&" with "&&f" in message
+	replace all ":shrug:" with "&d¯╲_(ツ)_╱¯&r" in message
+	replace all "o/" with "&e( ﾟ◡ﾟ)/&r" in message
+	replace all ":help:" with "&f(´·_·`)&r" in message
+	replace all ":love:" with "&c♥‿♥&r" in message
+	replace all ":kiss:" with "&f( ˘ ³˘)&c♥&r" in message
+	replace all ":star:" with "&6★&r" in message
+	replace all "<3" with "&c♥&r" in message
+	replace all ":cry:" with "&bಥ⁔ಥ&r" in message
+
+	replace all ":pepe:" with "(°ʖ°)&r" in message
+	replace all ":bear:" with "&fʕ• ᴥ •ʔ&r" in message
+	replace all ":angry:" with "ಠ_ಠ&r" in message
+	replace all ":)" with "ツ" in message
+	replace all ":baby:" with "&f(·˳·)&r" in message
+	replace all ":tableflip:" with "&c(╯°□°）╯§f︵ §7┻━┻&r" in message
+	replace all ":tablechill:" with "&f┬─┬ §7ノ( ゜-゜ノ)&r" in message
+	replace all ":angrytable:" with "&f┻━┻ ︵§cヽ(`Д´)ﾉ§f︵ ┻━┻&r" in message
+
+	replace all ":123:" with "&a1&e2&c3&r" in message
+	replace all ":weird:" with "§f⚆_⚆§r&r" in message
+	replace all ":wink:" with "§fಠ‿↼&r" in message
+	replace all ":cute:" with "&f(§d✿§f◠‿◠)&r" in message
+	replace all ":sad:" with "§f(§9μ§f_§9μ§f)§r" in message
+	replace all ":yell:" with "§c(§4＃§c`Д´)و§r" in message
+	replace all ":yawn:" with "§f٩(ˊ〇ˋ§3*§f)و§r" in message
+	replace all ":thuglife:" with "§f(•_•) ( •_•)>§7⌐§8■§7-§8■ §f(§7⌐§8■§f_§8■§f)" in message
+
+	cancel event
+	set {_mess} to message
+
+	if {tgc.%player%} is set:
+		if player is sender:
+			message "&cTvuj globalni chat je vypnut."
+			send "&3 * &d/tgc &7- Zapnuti globalniho chatu." to player
+			stop
+			
+	else:
+		if {chat::stop} is set:
+			if player doesn't have permission "pit.mutedchat.access":
+				message "&8[&4&l!&8] &7Globalni chat je &cvypnut&7. Pro pomoc pouzij &d/discord&7." to player
+				stop
+			else:
+				if player doesn't have permission "pit.tym":
+					if {lastmessage::%player%::%message%} is message:
+						message "&cSpamovani neni povoleno."
+						stop
+			if player doesn't have permission "pit.tym":
+				set {lastmessage::%player%::%message%} to message
+			loop all players:
+				if loop-player is not player:
+					if message contains "%loop-player%":
+						{vanish::%loop-player%} is not set
+						if {ignore.%player%.%loop-player%} is not set:
+							if {ignore.%loop-player%.%player%} is not set:
+								if {tgc.%loop-player%} is not set:
+									replace all "%loop-player%" with "&a@%loop-player%&f" in {_mess}
+									if {mention.%loop-player%} is not set:
+										play "ORB_PICKUP" to loop-player
+								else:
+									message "&8[&4&l!&8] %coloured loop-player's offline prefix%%loop-player% &7ma vypnuty globalni chat."
+									replace all "%loop-player%" with "&e@%loop-player%&f" in {_mess}
+							else:
+								message "&8[&4&l!&8] %coloured loop-player's offline prefix%%loop-player% &7te ma v seznamu hracu, ktere ignoruje."
+								replace all "%loop-player%" with "&c@%loop-player%&f" in {_mess}
+						else:
+							message "&8[&4&l!&8] %coloured loop-player's offline prefix%%loop-player% &7je v seznamu hracu, ktere ignorujes."
+							replace all "%loop-player%" with "&c@%loop-player%&f" in {_mess}
+							if {mention.%loop-player%} is not set:
+								play "ORB_PICKUP" to loop-player
+
+			if message contains "shit" or "fuck" or "gay" or "idiot" or "bitch" or "stupid" or "kurv" or "mrdk" or "zmrd" or "curak" or "čurak" or "cůrak" or "čůrák" or "čurák" or "curák" or "kokot" or "vole" or "zkurv" or "penis" or "vagin" or "vagín" or "pussy" or "slut" or "hack" or "cheat" or "toggle" or "nazi" or "hitler" or "nacek" or "hovado" or "mrcho" or "pako" or "buzik" or "buzík" or "buzerant" or "pyzdo" or "pizdo" or "píčus" or "pícus" or "picus" or "vyplodek" or "výplodek" or "vyplodku" or "výplodku" or "anal" or "anál" or "geno" or "geňo" or "špíno" or "spino" or "spíno" or "píčo" or "pico" or "pičo" or "píco":
+				loop all players:
+					if {tgc.%loop-player%} is not set:
+						{ignore.%loop-player%.%player%} is not set
+						if loop-player has permission "pit.tym":
+							add loop-player to {_tgc-no-staff-permission::*}	
+						else:
+							add loop-player to {_tgc-no-permission::*}
+				if {prestige::%player%} is not set:									
+					message "{@chatformat-basic}" to {_tgc-no-permission::*}
+					message "&c[Filtered] {@chatformat-basic}" to {_tgc-no-staff-permission::*}
+				else:
+					message "{@chatformat-prestige}" to {_tgc-no-permission::*}
+					message "&c[Filtered] {@chatformat-prestige}" to {_tgc-no-staff-permission::*}
+			else:
+				loop all players:
+					if {tgc.%loop-player%} is not set:
+						{ignore.%loop-player%.%player%} is not set
+						add loop-player to {_tgc-alll-permission::*}
+
+				if {prestige::%player%} is not set:				
+					message "{@chatformat-basic}" to {_tgc-alll-permission::*}
+				else:
+					message "{@chatformat-prestige}" to {_tgc-alll-permission::*}
+
+			if player doesn't have permission "pit.tym":
+				wait 3 seconds
+				delete {lastmessage::%player%::%message%}
+				stop
+
+
+
+
+		else:
+			if {chat::delay} is set:
+				if {lastChat::%player%} is set:
+					message "&8[&4&l!&8] &cChat zpomalen! &7Musis pockat &f%{lastChat::%player%}% sekund&7."
+					stop
+				else:
+					if player doesn't have permission "pit.chatslow.access":
+						set {lastChat::%player%} to {chat::delay}
+				loop all players:
+					if {tgc.%loop-player%} is not set:
+						{ignore.%loop-player%.%player%} is not set
+						add loop-player to {_tgc-alll-permission::*}
+				loop all players:
+					if loop-player is not player:
+						if message contains "%loop-player%":
+							{vanish::%loop-player%} is not set
+							if {ignore.%player%.%loop-player%} is not set:
+								if {ignore.%loop-player%.%player%} is not set:
+									if {tgc.%loop-player%} is not set:
+										replace all "%loop-player%" with "&a@%loop-player%&f" in {_mess}
+										if {mention.%loop-player%} is not set:
+											play "ORB_PICKUP" to loop-player
+									else:
+										message "&8[&4&l!&8] %coloured loop-player's offline prefix%%loop-player% &7ma vypnuty globalni chat."
+										replace all "%loop-player%" with "&e@%loop-player%&f" in {_mess}
+								else:
+									message "&8[&4&l!&8] %coloured loop-player's offline prefix%%loop-player% &7te ma v seznamu hracu, ktere ignoruje."
+									replace all "%loop-player%" with "&c@%loop-player%&f" in {_mess}
+							else:
+								message "&8[&4&l!&8] %coloured loop-player's offline prefix%%loop-player% &7je v seznamu hracu, ktere ignorujes."
+								replace all "%loop-player%" with "&c@%loop-player%&f" in {_mess}
+								if {mention.%loop-player%} is not set:
+									play "ORB_PICKUP" to loop-player
+
+				loop all players:
+					if {ignore.%loop-player%.%player%} is true:
+						remove loop-player from {_tgc-no-permission::*}	
+				if message contains "shit" or "fuck" or "gay" or "idiot" or "bitch" or "stupid" or "kurv" or "mrdk" or "zmrd" or "curak" or "čurak" or "cůrak" or "čůrák" or "čurák" or "curák" or "kokot" or "vole" or "zkurv" or "penis" or "vagin" or "vagín" or "pussy" or "slut" or "hack" or "cheat" or "toggle" or "nazi" or "hitler" or "nacek" or "hovado" or "mrcho" or "pako" or "buzik" or "buzík" or "buzerant" or "pyzdo" or "pizdo" or "píčus" or "pícus" or "picus" or "vyplodek" or "výplodek" or "vyplodku" or "výplodku" or "anal" or "anál" or "geno" or "geňo" or "špíno" or "spino" or "spíno" or "píčo" or "pico" or "pičo" or "píco":
+					loop all players:
+						if {tgc.%loop-player%} is not set:
+							{ignore.%loop-player%.%player%} is not set
+							if loop-player has permission "pit.tym":
+								add loop-player to {_tgc-no-staff-permission::*}	
+							else:
+								add loop-player to {_tgc-no-permission::*}	
+					if {prestige::%player%} is not set:									
+						message "{@chatformat-basic}" to {_tgc-no-permission::*}
+						message "&c[Filtered] {@chatformat-basic}" to {_tgc-no-staff-permission::*}
+					else:
+						message "{@chatformat-prestige}" to {_tgc-no-permission::*}
+						message "&c[Filtered] {@chatformat-prestige}" to {_tgc-no-staff-permission::*}
+				else:
+					if {prestige::%player%} is not set:				
+						message "{@chatformat-basic}" to {_tgc-alll-permission::*}
+					else:
+						message "{@chatformat-prestige}" to {_tgc-alll-permission::*}
+				if player doesn't have permission "pit.chatslow.access":
+					loop {chat::delay} times:
+						wait 1 second
+						remove 1 from {lastChat::%player%}
+						if {lastChat::%player%} is 0:
+							delete {lastChat::%player%}
+							stop
+
+
+
+			else:
+				if player doesn't have permission "pit.tym":
+					if {lastmessage::%player%::%message%} is message:
+						message "&cSpamovani neni povoleno."
+						stop
+				if player doesn't have permission "pit.tym":
+					set {lastmessage::%player%::%message%} to message
+				loop all players:
+					if loop-player is not player:
+						if message contains "%loop-player%":
+							{vanish::%loop-player%} is not set
+							if {ignore.%player%.%loop-player%} is not set:
+								if {ignore.%loop-player%.%player%} is not set:
+									if {tgc.%loop-player%} is not set:
+										replace all "%loop-player%" with "&a@%loop-player%&f" in {_mess}
+										if {mention.%loop-player%} is not set:
+											play "ORB_PICKUP" to loop-player
+									else:
+										message "&8[&4&l!&8] %coloured loop-player's offline prefix%%loop-player% &7ma vypnuty globalni chat."
+										replace all "%loop-player%" with "&e@%loop-player%&f" in {_mess}
+								else:
+									message "&8[&4&l!&8] %coloured loop-player's offline prefix%%loop-player% &7te ma v seznamu hracu, ktere ignoruje."
+									replace all "%loop-player%" with "&c@%loop-player%&f" in {_mess}
+							else:
+								message "&8[&4&l!&8] %coloured loop-player's offline prefix%%loop-player% &7je v seznamu hracu, ktere ignorujes."
+								replace all "%loop-player%" with "&c@%loop-player%&f" in {_mess}
+								if {mention.%loop-player%} is not set:
+									play "ORB_PICKUP" to loop-player
+
+
+				if message contains "shit" or "fuck" or "gay" or "idiot" or "bitch" or "stupid" or "kurv" or "mrdk" or "zmrd" or "curak" or "čurak" or "cůrak" or "čůrák" or "čurák" or "curák" or "kokot" or "vole" or "zkurv" or "penis" or "vagin" or "vagín" or "pussy" or "slut" or "hack" or "cheat" or "toggle" or "nazi" or "hitler" or "nacek" or "hovado" or "mrcho" or "pako" or "buzik" or "buzík" or "buzerant" or "pyzdo" or "pizdo" or "píčus" or "pícus" or "picus" or "vyplodek" or "výplodek" or "vyplodku" or "výplodku" or "anal" or "anál" or "geno" or "geňo" or "špíno" or "spino" or "spíno" or "píčo" or "pico" or "pičo" or "píco":
+					loop all players:
+						if {tgc.%loop-player%} is not set:
+							{ignore.%loop-player%.%player%} is not set
+							if loop-player has permission "pit.tym":
+								add loop-player to {_tgc-no-staff-permission::*}	
+							else:
+								add loop-player to {_tgc-no-permission::*}
+					if {prestige::%player%} is not set:									
+						message "{@chatformat-basic}" to {_tgc-no-permission::*}
+						message "&c[Filtered] {@chatformat-basic}" to {_tgc-no-staff-permission::*}
+					else:
+						message "{@chatformat-prestige}" to {_tgc-no-permission::*}
+						message "&c[Filtered] {@chatformat-prestige}" to {_tgc-no-staff-permission::*}
+				else:
+					loop all players:
+						if {tgc.%loop-player%} is not set:
+							{ignore.%loop-player%.%player%} is not set
+							add loop-player to {_tgc-alll-permission::*}
+
+					if {prestige::%player%} is not set:				
+						message "{@chatformat-basic}" to {_tgc-alll-permission::*}
+					else:
+						message "{@chatformat-prestige}" to {_tgc-alll-permission::*}
+				if player doesn't have permission "pit.tym":
+					wait 3 seconds
+					delete {lastmessage::%player%::%message%}
+					stop
+
+
+on skript start:
+	delete {chat::*}
+	delete {lastmessage::*}
+
+on quit:
+	delete {lastmessage::%player%::*}

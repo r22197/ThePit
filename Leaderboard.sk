@@ -1,0 +1,123 @@
+on command "leaderboard":
+	cancel event
+	if {leaderboard.cooldown::%player%} is set:
+		message "&8[&4&l!&8] &cAnti Spam! &7Musis pockat &f%{leaderboard.cooldown::%player%}% sekund&7."
+		stop
+	set {leaderboard.cooldown::%player%} to 5
+	message "&8[&2&l!&8] &7Nacitani statistik.."
+	open chest with 6 rows named "&eProhlízís si statistiky.." to player
+	wait 2 ticks
+
+	set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52 and 53
+	format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+	
+	create a gui slot 0 of player with rose red named "&cOpustit menu" with lore "||&eKlikni zde pro opusteni menu!||&r" to close
+
+	loop {gold::*}:
+		set {_shop::%loop-index%} to {gold::%loop-index%}
+		replace all "." in {_shop::%loop-index%} with ""
+		set {_shop::%loop-index%} to {_shop::%loop-index%} parsed as number
+
+	set {_topgold::*} to sorted {_shop::*} from highest to lowest with output "@index"
+	loop {_topgold::*}:
+		add 1 to {_gold}
+		if loop-value contains "%player%":
+			stop loop
+	loop 10 times:
+		set {_topgold::%loop-value%} to {_topgold::%loop-value%} parsed as offline player
+
+	message "&8[&2&l!&8] &7Nacita se.. &a25%%"
+
+	create a gui slot 29 of player with gold ingot named "&6Top Goldy" with lore "&7&m------------------||&7##1. &f%{_topgold::1}% &7┃ &e%{gold::%{_topgold::1}%}% Ⓩ||&7##2. &f%{_topgold::2}% &7┃ &e%{gold::%{_topgold::2}%}% Ⓩ||&7##3. &f%{_topgold::3}% &7┃ &e%{gold::%{_topgold::3}%}% Ⓩ||&7&m------------------||&7##4. %{_topgold::4}% &7┃ &e%{gold::%{_topgold::4}%}% Ⓩ||&7##5. %{_topgold::5}% &7┃ &e%{gold::%{_topgold::5}%}% Ⓩ||&7##6. %{_topgold::6}% &7┃ &e%{gold::%{_topgold::6}%}% Ⓩ||&7##7. %{_topgold::7}% &7┃ &e%{gold::%{_topgold::7}%}% Ⓩ||&7##8. %{_topgold::8}% &7┃ &e%{gold::%{_topgold::8}%}% Ⓩ||&7##9. %{_topgold::9}% &7┃ &e%{gold::%{_topgold::9}%}% Ⓩ||&7##10. %{_topgold::10}% &7┃ &e%{gold::%{_topgold::10}%}% Ⓩ||&7&m------------------"
+
+	set {_topkills::*} to sorted {kills::*} from highest to lowest with output "@index"
+	loop {_topkills::*}:
+		add 1 to {_kills}
+		if loop-value contains "%player%":
+			stop loop
+	loop 10 times:
+		set {_topkills::%loop-value%} to {_topkills::%loop-value%} parsed as offline player
+
+	message "&8[&2&l!&8] &7Nacita se.. &a50%%"
+
+	create a gui slot 30 of player with diamond sword with no nbt named "&cTop Zabiti" with lore "&7&m------------------||&7##1. &f%{_topkills::1}% &7┃ &c%{kills::%{_topkills::1}%}%||&7##2. &f%{_topkills::2}% &7┃ &c%{kills::%{_topkills::2}%}%||&7##3. &f%{_topkills::3}% &7┃ &c%{kills::%{_topkills::3}%}%||&7&m------------------||&7##4. %{_topkills::4}% &7┃ &c%{kills::%{_topkills::4}%}%||&7##5. %{_topkills::5}% &7┃ &c%{kills::%{_topkills::5}%}%||&7##6. %{_topkills::6}% &7┃ &c%{kills::%{_topkills::6}%}%||&7##7. %{_topkills::7}% &7┃ &c%{kills::%{_topkills::7}%}%||&7##8. %{_topkills::8}% &7┃ &c%{kills::%{_topkills::8}%}%||&7##9. %{_topkills::9}% &7┃ &c%{kills::%{_topkills::9}%}%||&7##10. %{_topkills::10}% &7┃ &c%{kills::%{_topkills::10}%}%||&7&m------------------"
+
+	loop {level::*}:
+		set {_best::%loop-index%} to {level::%loop-index%}
+		if {prestige::%loop-index%} is "I":
+			add 120 to {_best::%loop-index%}
+		if {prestige::%loop-index%} is "II":
+			add 240 to {_best::%loop-index%}
+		if {prestige::%loop-index%} is "III":
+			add 360 to {_best::%loop-index%}
+		if {prestige::%loop-index%} is "IV":
+			add 480 to {_best::%loop-index%}
+		if {prestige::%loop-index%} is "V":
+			add 600 to {_best::%loop-index%}
+		if {prestige::%loop-index%} is "VI":
+			add 720 to {_best::%loop-index%}
+		if {prestige::%loop-index%} is "VII":
+			add 840 to {_best::%loop-index%}
+		if {prestige::%loop-index%} is "VIII":
+			add 960 to {_best::%loop-index%}
+		if {prestige::%loop-index%} is "IX":
+			add 1080 to {_best::%loop-index%}
+		if {prestige::%loop-index%} is "X":
+			add 1200 to {_best::%loop-index%}
+
+	set {_toplevel::*} to sorted {_best::*} from highest to lowest with output "@index"
+	loop {_toplevel::*}:
+		add 1 to {_level}
+		if loop-value contains "%player%":
+			stop loop
+
+
+	loop 10 times:
+		set {_toplevel::%loop-value%} to {_toplevel::%loop-value%} parsed as offline player
+		if {prestige::%{_toplevel::%loop-value%}%} is set:
+			set {_prestige} to "&6##&e%{prestige::%{_toplevel::%loop-value%}%}% &7& "
+		else:
+			set {_prestige} to ""
+		set {_p::%loop-number%} to "%{_prestige}%%{%{_toplevel::%loop-value%}%.level.color}%%{level::%{_toplevel::%loop-value%}%}%"
+
+	create a gui slot 31 of player with bottle o' enchanting named "&dTop Level" with lore "&7&m------------------||&7##1. &f%{_toplevel::1}% &7┃ %{_p::1}%||&7##2. &f%{_toplevel::2}% &7┃ %{_p::2}%||&7##3. &f%{_toplevel::3}% &7┃ %{_p::3}%||&7&m------------------||&7##4. %{_toplevel::4}% &7┃ %{_p::4}%||&7##5. %{_toplevel::5}% &7┃ %{_p::5}%||&7##6. %{_toplevel::6}% &7┃ %{_p::6}%||&7##7. %{_toplevel::7}% &7┃ %{_p::7}%||&7##8. %{_toplevel::8}% &7┃ %{_p::8}%||&7##9. %{_toplevel::9}% &7┃ %{_p::9}%||&7##10. %{_toplevel::10}% &7┃ %{_p::10}%||&7&m------------------"
+
+	set {_topstreak::*} to sorted {leaderboard.streak::*} from highest to lowest with output "@index"
+	loop {_topstreak::*}:
+		add 1 to {_streak}
+		if loop-value contains "%player%":
+			stop loop
+	loop 10 times:
+		set {_topstreak::%loop-value%} to {_topstreak::%loop-value%} parsed as offline player
+
+	message "&8[&2&l!&8] &7Nacita se.. &a75%%"
+
+	create a gui slot 32 of player with ender pearl named "&aTop Streak" with lore "&7&m------------------||&7##1. &f%{_topstreak::1}% &7┃ &a%{leaderboard.streak::%{_topstreak::1}%}%||&7##2. &f%{_topstreak::2}% &7┃ &a%{leaderboard.streak::%{_topstreak::2}%}%||&7##3. &f%{_topstreak::3}% &7┃ &a%{leaderboard.streak::%{_topstreak::3}%}%||&7&m------------------||&7##4. %{_topstreak::4}% &7┃ &a%{leaderboard.streak::%{_topstreak::4}%}%||&7##5. %{_topstreak::5}% &7┃ &a%{leaderboard.streak::%{_topstreak::5}%}%||&7##6. %{_topstreak::6}% &7┃ &a%{leaderboard.streak::%{_topstreak::6}%}%||&7##7. %{_topstreak::7}% &7┃ &a%{leaderboard.streak::%{_topstreak::7}%}%||&7##8. %{_topstreak::8}% &7┃ &a%{leaderboard.streak::%{_topstreak::8}%}%||&7##9. %{_topstreak::9}% &7┃ &a%{leaderboard.streak::%{_topstreak::9}%}%||&7##10. %{_topstreak::10}% &7┃ &a%{leaderboard.streak::%{_topstreak::10}%}%||&7&m------------------"
+
+	set {_topplaytime::*} to sorted {leaderboard::playtime::*} from highest to lowest with output "@index"
+	loop {_topplaytime::*}:
+		add 1 to {_time.played}
+		if loop-value contains "%player%":
+			stop loop
+	loop 10 times:
+		set {_topplaytime::%loop-value%} to {_topplaytime::%loop-value%} parsed as offline player
+
+
+	create a gui slot 34 of player with clock named "&6Top Odehraneho casu" with lore "&7&m------------------||&7##1. &f%{_topplaytime::1}% &7┃ %{playtime::%{_topplaytime::1}%}%||&7##2. &f%{_topplaytime::2}% &7┃ %{playtime::%{_topplaytime::2}%}%||&7##3. &f%{_topplaytime::3}% &7┃ %{playtime::%{_topplaytime::3}%}%||&7&m------------------||&7##4. %{_topplaytime::4}% &7┃ %{playtime::%{_topplaytime::4}%}%||&7##5. %{_topplaytime::5}% &7┃ %{playtime::%{_topplaytime::5}%}%||&7##6. %{_topplaytime::6}% &7┃ %{playtime::%{_topplaytime::6}%}%||&7##7. %{_topplaytime::7}% &7┃ %{playtime::%{_topplaytime::7}%}%||&7##8. %{_topplaytime::8}% &7┃ %{playtime::%{_topplaytime::8}%}%||&7##9. %{_topplaytime::9}% &7┃ %{playtime::%{_topplaytime::9}%}%||&7##10. %{_topplaytime::10}% &7┃ %{playtime::%{_topplaytime::10}%}%||&7&m------------------"
+
+	if {prestige::%player%} is set:
+		set {_prestige} to "&6##&e%{prestige::%player%}% &7& "
+	else:
+		set {_prestige} to ""
+	if {leaderboard.streak::%player%} is set:
+		set {_streak.top} to "%{leaderboard.streak::%player%}%"
+	else:
+		set {_streak.top} to "0"
+	create a gui slot 4 of player with skull of ("%player%" parsed as an offline player) named "&6Postava" with lore "||&8&l ▶ &7Level: %{_prestige}%%{%player%.level.color}%%{level::%player%}% &7(##%{_level}%)||&8&l ▶ &7Zlataky: &e%{gold::%player%}% Ⓩ &7(##%{_gold}%)||&8&l ▶ &7Zabiti: &c%{kills::%player%}% &7(##%{_kills}%)||&8&l ▶ &7Top Streak: &a%{_streak.top}% &7(##%{_streak}%)||||&8&l ▶ &7Odehrano: %{playtime::%player%}% &7(##%{_time.played}%)||&r"
+	message "&8[&2&l!&8] &aNacteno!"
+
+	while {leaderboard.cooldown::%player%} is set:
+		wait 1 second
+		remove 1 from {leaderboard.cooldown::%player%}
+		if {leaderboard.cooldown::%player%} is 0:
+			delete {leaderboard.cooldown::%player%}

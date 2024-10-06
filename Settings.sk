@@ -1,0 +1,269 @@
+function JoinMenu(s: number, t: text, p: player):
+	if {custom.message::%{_p}%} is "%{_t}%":
+		set {brm::%{_p}%} to {_s}
+	if {custom.message::%{_p}%} is not "%{_t}%":
+		create a gui slot {_s} of {_p} with paper named "&aPripojovaci zprava" with lore "|| &a»| %{_t}%||||&aKlikni sem pro nastaveni." to run:
+			JoinMenu({brm::%{_p}%}, "%{_t}%", {_p})
+			set {custom.message::%{_p}%} to "%{_t}%"
+			JoinMenu(19, "&7potlesk prosím, &a%player%&7 se pripojil!", {_p})
+			JoinMenu(20, "&7Kde je &a%{_p}%? &7Na serveru!", {_p})
+			JoinMenu(21, "&7zajímá nekoho, ze se pripojil &a%{_p}%?", {_p})
+			JoinMenu(22, "&a%{_p}% &7zacouval/a na server.", {_p})
+			JoinMenu(23, "&a%{_p}% &7se připojil, ale nikoho to nezajímá.", {_p})
+			JoinMenu(24, "&a%{_p}% &7se probudil/a.", {_p})
+			JoinMenu(25, "&a%{_p}%&7 se pripojil, uz zase... proc?", {_p})
+			JoinMenu(28, "&a%{_p}% &7se pripojil a donesl pizzu.", {_p})
+			JoinMenu(29, "&a%{_p}% &7práve proklouznul/a na server.", {_p})
+			JoinMenu(30, "&a%{_p}% &7práve pristál/a.", {_p})
+			JoinMenu(31, "&a%{_p}% &7alias divocák je tady.", {_p})
+			JoinMenu(32, "&a%{_p}% &7se ukázal/a!", {_p})
+			JoinMenu(33, "&a%{_p}% &7si prisel zahrát pit!", {_p})
+			JoinMenu(34, "&a%{_p}% &7naskocil/a na server.", {_p})
+			JoinMenu(37, "&a%{_p}% &7/cti legenda/ se pripojil.", {_p})
+			JoinMenu(38, "&7Legenda &a%{_p}%&7 si to cválá na server.", {_p})
+			JoinMenu(39, "&7tuk tuk, kdo tam? &a%{_p}%", {_p})
+			if {custom.message::%{_p}%} is not set:
+				create a gui slot 40 of {_p} with slimeball named "&aPripojovaci zprava" with lore "|| &a»| &7%{_p}%||||&aTuhle pripojovaci zpravu mas nastavenou."
+			else:
+				JoinMenu(40, "&7%{_p}%", {_p})
+			JoinMenu(41, "&7Alkoholik &a%{_p}%&7 se pripojil. Schovte alkohol!", {_p})
+			JoinMenu(42, "&a%{_p}%&7 se pripojil. Pozdravte ho!", {_p})
+			JoinMenu(43, "&7Pozor! Zabiják &a%{_p}%&7 se zrovna pripojil!", {_p})
+			create a gui slot {_s} of {_p} with slimeball named "&aPripojovaci zprava" with lore "|| &a»| %{_t}%||||&aTuhle pripojovaci zpravu mas nastavenou."
+
+	else:
+		create a gui slot {_s} of {_p} with slimeball named "&aPripojovaci zprava" with lore "|| &a»| %{_t}%||||&aTuhle pripojovaci zpravu mas nastavenou."
+
+function EditMsg(s: number, i: item, c: text, m: text, p: player):	
+	create a gui slot {_s} of {_p} with {_i} named " " with lore "&5Ukazka teto &lbarvy&5!||&8&l ▶ %{_c}%(From %coloured {_p}'s offline suffix%%{_p}%%{_c}%) Text!||&8&l ▶ %{_c}%(To %coloured {_p}'s offline suffix%%{_p}%%{_c}%) Text!||&r" to run:
+		close {_p}'s inventory
+		if "%{_c}%" is "&7":
+			delete {msgcolor::%{_p}%}
+		else:
+			set {msgcolor::%{_p}%} to "%{_c}%"
+		message "&8[&a&l!&8] &7Barva privatnich zprav zmenena na %{_m}%&7."
+
+function EditSounds(s: number, i: item, c: text, m: text, p: player):	
+	create a gui slot {_s} of {_p} with {_i} with no nbt named " " with lore "&5Typ &lzvuku&5!||&8&l ▶ %{_m}%||&7&o(Po aktivaci zvuk uslysis.)||&r" to run:
+		close {_p}'s inventory
+		if "%{_c}%" is "delete":
+			delete {editsounds::%player%}
+		else:
+			set {editsounds::%player%} to "%{_c}%"
+		message "&8[&a&l!&8] &7Zvuk privatnich zprav byl zmenen na %{_m}%&7."
+		if {editsounds::%{_p}%} is not set:
+			play "NOTE_PLING" to {_p}
+		if {editsounds::%{_p}%} is "anvil":
+			play "ANVIL_BREAK" to {_p}
+		else if {editsounds::%{_p}%} is "poke":
+			play "NOTE_PLING" to {_p}
+		else if {editsounds::%{_p}%} is "cow":
+			play "COW_HURT" to {_p}
+		else if {editsounds::%{_p}%} is "chicken":
+			play "CHICKEN_HURT" to {_p}
+		else if {editsounds::%{_p}%} is "blaze":
+			play "BLAZE_DEATH" to {_p}						
+		else if {editsounds::%{_p}%} is "bat":
+			play "BAT_DEATH" to {_p}						
+		else if {editsounds::%{_p}%} is "arrow":
+			play "ARROW_HIT" to {_p}
+
+options:
+	shop: &9&nobchod.pvpcraft.cz
+
+command /day:
+	aliases: /den
+	trigger:
+		set player's time to 7:00
+		send "&7Casove obdobi bylo nastaveno na &fden&7." to player
+
+command /night:
+	aliases: /noc
+	trigger:
+		set player's time to 1:00
+		send "&7Casove obdobi bylo nastaveno na &8noc&7." to player
+
+command /bounty:
+	trigger:
+		if {bounty.message::%player%} is set:
+			delete {bounty.message::%player%}
+			send "&7Viditelnost bounty byla &azapnuta&7." to player
+			stop
+		else:
+			set {bounty.message::%player%} to false
+			send "&7Viditelnost bounty byla &cvypnuta&7." to player
+			stop	
+command /settings:
+	aliases: /menu, /nastaveni
+	trigger:
+		if {messages.%player%} is not set:
+			set {_ToggleMessages} to " &a► &7Zapnuto||    &7Vypnuto"
+		else:
+			set {_ToggleMessages} to "  &7Zapnuto|| &c► &7Vypnuto"
+		
+		if {sounds.%player%} is not set:
+			set {_Sounds} to " &a► &7Zapnuto||    &7Vypnuto"
+		else:
+			set {_Sounds} to "  &7Zapnuto|| &c► &7Vypnuto"
+		
+		if {tgc.%player%} is not set:
+			set {_globalchat} to " &a► &7Zapnuto||    &7Vypnuto"
+		else:
+			set {_globalchat} to "  &7Zapnuto|| &c► &7Vypnuto"
+
+		if {mention.%player%} is not set:
+			set {_mention} to " &a► &7Zapnuto||    &7Vypnuto"
+		else:
+			set {_mention} to "  &7Zapnuto|| &c► &7Vypnuto"
+		if {bounty.message::%player%} is not set:
+			set {_bounty} to " &a► &7Zapnuto||    &7Vypnuto"
+		else:
+			set {_bounty} to "  &7Zapnuto|| &c► &7Vypnuto"
+
+		open chest with 6 rows named "&eUpravujes si nastaveni.." to player
+		wait 2 ticks
+		create a gui slot 0 of player with rose red named "&cOpustit menu" with lore "||&eKlikni zde pro opusteni menu!||&r" to close
+
+		set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 22, 31, 40, 45, 46, 47, 48, 49, 50, 51, 52 and 53
+		format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+		create a gui slot 20 of player with Book And Quill named "&6Privatni zpravy" with lore "||&3» &7Vypnutim zprav ti ostatni||   &7nebudou moct psat.|||| %{_ToggleMessages}%||||&aKlikni zde pro prenastaveni." to run:
+			close player's inventory
+			make player execute command "/togglepm"
+		create a gui slot 38 of player with Gold Music Disc named "&eZvuk privatnich zprav" with lore "||&3» &7Vypnutim zvuku zprav te||   &7ostatni nebudou rusit.|||| %{_Sounds}%||||&aKlikni zde pro prenastaveni." to run:
+			close player's inventory
+			make player execute command "/sounds"
+		create a gui slot 36 of player with Paper named "&aGlobalni chat" with lore "||&3» &7Vypnutim globalniho chatu||   &7neuvidis zadne zpravy.|||| %{_globalchat}%||||&aKlikni zde pro prenastaveni." to run:
+			close player's inventory
+			make player execute command "/tgc"
+		create a gui slot 41 of player with Green Music Disc named "&5Typ zvuku privatnich zprav" with lore "||&3» &7Moznost zmenit zvuk zprav.||||&dKlikni zde pro otevreni menu." to run:
+			close player's inventory
+			make player execute command "/editsounds"
+		create a gui slot 42 of player with Book named "&aBar&bva p&criv&dat&eni&fch z&3pr&2av" with lore "||&3» &7Moznost zmenit barvu zprav.||||&dKlikni zde pro otevreni menu." to run:
+			close player's inventory
+			make player execute command "/editmsg"
+		create a gui slot 39 of player with Ward Disc named "&9Zvuk pri zmineni" with lore "||&3» &7Vypnutim zmineni te ostatni||   &7nebudou moct rusit.|||| %{_mention}%||||&aKlikni zde pro prenastaveni." to run:
+			close player's inventory
+			make player execute command "/mention"
+		create a gui slot 33 of player with bottle_o'_enchanting named "&6Booster" with lore "||&3» &7Rychlejsi ziskani zlataku a XP.||||&dKlikni zde pro otevreni menu." to run:
+			close player's inventory
+			make player execute command "/booster"
+		create a gui slot 24 of player with chest named "&6Inventar" with lore "||&3» &7Upraveni itemu v inventari.||||&dKlikni zde pro otevreni menu." to run:
+			close player's inventory
+			make player execute command "/inventar"
+		create a gui slot 34 of player with Name Tag named "&9Tagy" with lore "||&3» &7Zmena tagu pred jmenem.||||&dKlikni zde pro otevreni menu." to run:
+			close player's inventory
+			make player execute command "/tag"
+		create a gui slot 29 of player with gold ingot named "&eBounty" with lore "||&3» &7Vypnutim neuvidis zadne||   &7oznameni tykajici se bounty.|||| %{_bounty}%||||&aKlikni zde pro prenastaveni." to run:
+			close player's inventory
+			make player execute command "/bounty"
+		create a gui slot 44 of player with player head with custom nbt "{SkullOwner:{Id:""15e6dd19-6221-4aba-a9bc-45a110f8b6ca"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWEyNmM0NWQ0MDk0MjY4YTUzNGQ0YzNjNWExNzIyZTQ0OWFlZjNlYTVkYmM4MDI1MTc1MWE4ZGU4MzllYjUwIn19fQ==""}]}}}" named "&aZpravy pripojeni" with lore "||&3» &7Vyber si zpravu pri pripojeni,||   &7pouze pro rank &a+&eMighty&7.||||&dKlikni zde pro otevreni menu." to run:
+			close player's inventory
+			make player execute command "/joinzpravy"
+		if player's time is 7:00:
+			create a gui slot 28 of player with clock named "&7Casove obdobi" with lore "||&3» &7Prenastav si casove||   &7obdobi na &fden&7/&8noc&7.||||  &f► &7Den||    &7Noc||||&aKlikni zde pro prenastaveni." to run:
+				close player's inventory
+				make player execute command "/night"
+
+		else:
+			create a gui slot 28 of player with clock named "&7Casove obdobi" with lore "||&3» &7Prenastav si casove||   &7obdobi na &fden&7/&8noc&7.||||   &7Den|| &8► &7Noc||||&aKlikni zde pro prenastaveni." to run:
+				close player's inventory
+				make player execute command "/day"
+
+command /cm:
+	aliases: /joinzpravy
+	permission: pit.battlepass.2
+	permission message: §8[§c§l!§8] §7Tenhle príkaz je pouze pro §a+§eMighty§7.
+	trigger:
+		close player's inventory
+		wait 2 ticks	
+		open chest with 6 rows named "&eUpravujes barvu zprav.." to player
+		wait 1 tick
+		create a gui slot 0 of player with rose red named "&cJit zpatky" with lore "||&eKlikni zde pro hlavni menu!||&r" to run:
+			make player execute command "/menu"
+
+		set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52 and 53
+		format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+		JoinMenu(19, "&7potlesk prosím, &a%player%&7 se pripojil!", player)
+		JoinMenu(20, "&7Kde je &a%player%? &7Na serveru!", player)
+		JoinMenu(21, "&7zajímá nekoho, ze se pripojil &a%player%?", player)
+		JoinMenu(22, "&a%player% &7zacouval/a na server.", player)
+		JoinMenu(23, "&a%player% &7se připojil, ale nikoho to nezajímá.", player)
+		JoinMenu(24, "&a%player% &7se probudil/a.", player)
+		JoinMenu(25, "&a%player%&7 se pripojil, uz zase... proc?", player)
+		JoinMenu(28, "&a%player% &7se pripojil a donesl pizzu.", player)
+		JoinMenu(29, "&a%player% &7práve proklouznul/a na server.", player)
+		JoinMenu(30, "&a%player% &7práve pristál/a.", player)
+		JoinMenu(31, "&a%player% &7alias divocák je tady.", player)
+		JoinMenu(32, "&a%player% &7se ukázal/a!", player)
+		JoinMenu(33, "&a%player% &7si prisel zahrát pit!", player)
+		JoinMenu(34, "&a%player% &7naskocil/a na server.", player)
+		JoinMenu(37, "&a%player% &7/cti legenda/ se pripojil.", player)
+		JoinMenu(38, "&7Legenda &a%player%&7 si to cválá na server.", player)
+		JoinMenu(39, "&7tuk tuk, kdo tam? &a%player%", player)
+		if {custom.message::%player%} is not set:
+			create a gui slot 40 of player with slimeball named "&aPripojovaci zprava" with lore "|| &a»| &7%player%||||&aTuhle pripojovaci zpravu mas nastavenou."
+		else:
+			JoinMenu(40, "&7%player%", player)
+		JoinMenu(41, "&7Alkoholik &a%player%&7 se pripojil. Schovte alkohol!", player)
+		JoinMenu(42, "&a%player%&7 se pripojil. Pozdravte ho!", player)
+		JoinMenu(43, "&7Pozor! Zabiják &a%player%&7 se zrovna pripojil!", player)
+
+command /editmsg [<text>]:
+	aliases: /color
+	trigger:
+		close player's inventory
+		wait 2 ticks	
+		open chest with 6 rows named "&eUpravujes barvu zprav.." to player
+		wait 1 tick
+		create a gui slot 0 of player with rose red named "&cJit zpatky" with lore "||&eKlikni zde pro hlavni menu!||&r" to run:
+			make player execute command "/menu"
+
+		set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52 and 53
+		format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+		EditMsg(19, Green glass block, "&2", "&2tmave zelenou", player)
+		EditMsg(20, Light green glass block, "&a", "&asvetle zelenou", player)
+		EditMsg(21, Blue glass block, "&9", "&9tmave modrou", player)
+		EditMsg(22, Cyan glass block, "&3", "&3cyan", player)
+		EditMsg(23, Light blue glass block, "&b", "&bsvetle modrou", player)
+		EditMsg(24, Red glass block, "&4", "&4tmave cervenou", player)
+		EditMsg(25, Red glass block, "&c", "&csvetle cervenou", player)
+		EditMsg(28, Gray glass block, "&8", "&8tmave sedou", player)
+		EditMsg(29, Light gray glass block, "&7", "&7svetle sedou", player)
+		EditMsg(30, Yellow glass block, "&e", "&esvetle zlutou", player)
+		EditMsg(31, Orange glass block, "&6", "&6tmave zlutou", player)
+		EditMsg(32, Purple glass block, "&5", "&5tmave fialovou", player)
+		EditMsg(33, Pink glass block, "&d", "&dsvetle fialovou", player)
+
+		create a gui slot 4 of player with Clock named "&fResetovat" to run:
+			close player's inventory
+			delete {msgcolor::%player%}
+			message "&7Tva barva privatnich zprav byla zresetovana."		
+
+command /editsounds [<text>]:
+	trigger:
+		close player's inventory
+		wait 2 ticks
+		open chest with 6 rows named "&eUpravujes zvuk zprav.." to player
+		wait 1 tick
+		create a gui slot 0 of player with rose red named "&cJit zpatky" with lore "||&eKlikni zde pro hlavni menu!||&r" to run:
+			make player execute command "/menu"
+
+		set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52 and 53
+		format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+		EditSounds(28, Anvil, "anvil", "&8Anvil", player)
+		EditSounds(29, Blocks Disc, "delete", "&cPoke", player)
+		EditSounds(30, spawn_egg:92, "cow", "&6Cow", player)
+		EditSounds(31, spawn_egg:93, "chicken", "&bChicken", player)
+		EditSounds(32, spawn_egg:61, "blaze", "&eBlaze", player)
+		EditSounds(33, spawn_egg:65, "bat", "&dBat", player)
+		EditSounds(34, Arrow, "arrow", "&3Arrow", player)
+
+		create a gui slot 4 of player with Clock named "&fResetovat" to run:
+			close player's inventory
+			delete {editsounds::%player%}
+			message "&7Zvuk privatnich zprav byl zresetovan."
+			play "NOTE_PLING" to player	

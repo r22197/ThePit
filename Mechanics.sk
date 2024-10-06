@@ -1,0 +1,703 @@
+function TierGBoost(x: number, p: player) :: number:
+	set {_add} to "0.%{tier.perk::%{_p}%::goldboost}%" parsed as number
+	add {_x} * {_add} to {_x}
+	return round({_x})
+
+function TierXPBoost(x: number, p: player) :: number:
+	set {_add} to "0.%{tier.perk::%{_p}%::xpboost}%" parsed as number
+	add {_x} * {_add} to {_x}
+	return round({_x})
+
+function GBooster(x: number, p: player) :: number:
+	if {%{_p}%.gbooster} is more than 0:
+		add {_x} * 0.2 to {_x}
+	if lore of {_p}'s helmet contains "Gold Boost":
+		add {_x} * 0.2 to {_x}
+	return round({_x})
+
+function XPBooster(x: number, p: player) :: number:
+	if {%{_p}%.xpbooster} is more than 0:
+		add {_x} * 0.3 to {_x}
+	if lore of {_p}'s helmet contains "XP Boost":
+		add {_x} * 0.3 to {_x}
+	return round({_x})
+
+function Zlataky(t: text, num: number, p: player):
+	set {_io} to {gold::%{_p}%}
+	replace all "." in {_io} with ""
+	set {_io} to {_io} parsed as number
+	if {_t} is "add":
+		add {_num} to {_io}
+	else if {_t} is "remove":
+		remove {_num} from {_io}
+	else if {_t} is "set":
+		set {_io} to {_num}
+	set {_io} to round({_io})
+	set {gold::%{_p}%} to splitCoins("%{_io}%")
+
+function XP(t: text, num: number, p: player):
+	if {level::%{_p}%} is not 120:
+		set {_io} to {needxp::%{_p}%}
+		replace all "." in {_io} with ""
+		set {_io} to {_io} parsed as number
+		if {_t} is "remove":
+			remove {_num} from {_io}
+		else if {_t} is "set":
+			set {_io} to {_num}
+		set {_io} to round({_io})
+		set {needxp::%{_p}%} to splitCoins("%{_io}%")
+
+function LevelSystem(p: player):
+	set {_neededxp} to {needxp::%{_p}%}
+	replace all "." in {_neededxp} with ""
+	set {_neededxp} to {_neededxp} parsed as number
+
+	while {_neededxp} is less or equal to 0:
+		set {_removexps} to {_neededxp} * -1
+
+		add 1 to {level::%{_p}%}
+
+		if {level::%{_p}%} is between 1 and 9:
+			set {_neededxp} to 15 + 15 * {bonusxpprestige::%{_p}%}
+			set {%{_p}%.level.color} to "&7"
+			set {_goldrandom} to a random integer between 30 and 50
+		if {level::%{_p}%} is between 10 and 19:
+			set {_neededxp} to 30 + 30 * {bonusxpprestige::%{_p}%}
+			set {%{_p}%.level.color} to "&9"
+			set {_goldrandom} to a random integer between 30 and 100
+		if {level::%{_p}%} is between 20 and 29:
+			set {_neededxp} to 50 + 50 * {bonusxpprestige::%{_p}%}
+			set {%{_p}%.level.color} to "&3"
+			set {_goldrandom} to a random integer between 50 and 250
+		if {level::%{_p}%} is between 30 and 39:
+			set {_neededxp} to 75 + 75 * {bonusxpprestige::%{_p}%}
+			set {%{_p}%.level.color} to "&2"
+			set {_goldrandom} to a random integer between 50 and 300
+		if {level::%{_p}%} is between 40 and 49:
+			set {_neededxp} to 125 + 125 * {bonusxpprestige::%{_p}%}
+			set {%{_p}%.level.color} to "&a"
+			set {_goldrandom} to a random integer between 100 and 350
+		if {level::%{_p}%} is between 50 and 59:
+			set {_neededxp} to 300 + 300 * {bonusxpprestige::%{_p}%}
+			set {%{_p}%.level.color} to "&e"
+			set {_goldrandom} to a random integer between 100 and 400
+		if {level::%{_p}%} is between 60 and 69:
+			set {_neededxp} to 600 + 600 * {bonusxpprestige::%{_p}%}
+			set {%{_p}%.level.color} to "&6&l"
+			set {_goldrandom} to a random integer between 150 and 450
+		if {level::%{_p}%} is between 70 and 79:
+			set {_neededxp} to 800 + 800 * {bonusxpprestige::%{_p}%}
+			set {%{_p}%.level.color} to "&c&l"
+			set {_goldrandom} to a random integer between 150 and 500
+		if {level::%{_p}%} is between 80 and 89:
+			set {_neededxp} to 900 + 900 * {bonusxpprestige::%{_p}%}
+			set {%{_p}%.level.color} to "&4&l"
+			set {_goldrandom} to a random integer between 200 and 550
+		if {level::%{_p}%} is between 90 and 99:
+			set {_neededxp} to 1000 + 1000 * {bonusxpprestige::%{_p}%}
+			set {%{_p}%.level.color} to "&5&l"
+			set {_goldrandom} to a random integer between 200 and 600
+		if {level::%{_p}%} is between 100 and 109:
+			set {_neededxp} to 1200 + 1200 * {bonusxpprestige::%{_p}%}
+			set {%{_p}%.level.color} to "&d&l"
+			set {_goldrandom} to a random integer between 250 and 650
+		if {level::%{_p}%} is between 110 and 119:
+			set {_neededxp} to 1500 + 1500 * {bonusxpprestige::%{_p}%}
+			set {%{_p}%.level.color} to "&f&l"
+			set {_goldrandom} to a random integer between 250 and 700
+		if {level::%{_p}%} is 120:
+			set {needxp::%{_p}%} to "MAX!"
+			set {_neededxp} to "MAX!"
+			set {%{_p}%.level.color} to "&b&l"
+			set {_goldrandom} to a random integer between 300 and 750
+		set {_goldrandom} to TierGBoost({_goldrandom}, {_p})
+		Zlataky("add", {_goldrandom}, {_p})
+		if {level::%{_p}%} - 1 is between 0 and 9:
+			set {_color} to "&7"
+		if {level::%{_p}%} - 1 is between 10 and 19:
+			set {_color} to "&9"
+		if {level::%{_p}%} - 1 is between 20 and 29:
+			set {_color} to "&3"
+		if {level::%{_p}%} - 1 is between 30 and 39:
+			set {_color} to "&2"
+		if {level::%{_p}%} - 1 is between 40 and 59:
+			set {_color} to "&a"
+		if {level::%{_p}%} - 1 is between 50 and 59:
+			set {_color} to "&e"
+		if {level::%{_p}%} - 1 is between 60 and 69:
+			set {_color} to "&6&l"
+		if {level::%{_p}%} - 1 is between 70 and 79:
+			set {_color} to "&c&l"
+		if {level::%{_p}%} - 1 is between 80 and 89:
+			set {_color} to "&4&l"
+		if {level::%{_p}%} - 1 is between 90 and 99:
+			set {_color} to "&5&l"
+		if {level::%{_p}%} - 1 is between 100 and 109:
+			set {_color} to "&d&l"
+		if {level::%{_p}%} - 1 is between 110 and 119:
+			set {_color} to "&f&l"
+
+		message "&b&lNovy level %{prestigebrackets::%{_p}%}%[%{_color}%%{level::%{_p}%} - 1%%{prestigebrackets::%{_p}%}%] &7➠ %{prestigebrackets::%{_p}%}%[%{%{_p}%.level.color}%%{level::%{_p}%}%%{prestigebrackets::%{_p}%}%]&b&l! &7Jako odmenu jsi obdrzel &6+&e%{_goldrandom}% Ⓩ&7." to {_p}
+		send {_p} title "&b&lNovy Level!" with subtitle "%{prestigebrackets::%{_p}%}%[%{_color}%%{level::%{_p}%} - 1%%{prestigebrackets::%{_p}%}%] &7➠ %{prestigebrackets::%{_p}%}%[%{%{_p}%.level.color}%%{level::%{_p}%}%%{prestigebrackets::%{_p}%}%]" for 4 seconds
+
+		remove {_removexps} from {_neededxp}
+		play "LEVEL_UP" to {_p}
+
+	XP("set", {_neededxp}, {_p})
+	if {level::%{_p}%} is between 1 and 9:
+		set {_p}'s xp to round((({_neededxp} / (15 + 15 * {bonusxpprestige::%{_p}%}) - 1) * -1 * 147) + 1897)
+	if {level::%{_p}%} is between 10 and 19:
+		set {_p}'s xp to round((({_neededxp} / (30 + 30 * {bonusxpprestige::%{_p}%}) - 1) * -1 * 147) + 1897)
+	if {level::%{_p}%} is between 20 and 29:
+		set {_p}'s xp to round((({_neededxp} / (50 + 50 * {bonusxpprestige::%{_p}%}) - 1) * -1 * 147) + 1897)
+	if {level::%{_p}%} is between 30 and 39:
+		set {_p}'s xp to round((({_neededxp} / (75 + 75 * {bonusxpprestige::%{_p}%}) - 1) * -1 * 147) + 1897)
+	if {level::%{_p}%} is between 40 and 49:
+		set {_p}'s xp to round((({_neededxp} / (125 + 125 * {bonusxpprestige::%{_p}%}) - 1) * -1 * 147) + 1897)
+	if {level::%{_p}%} is between 50 and 59:
+		set {_p}'s xp to round((({_neededxp} / (300 + 300 * {bonusxpprestige::%{_p}%}) - 1) * -1 * 147) + 1897)
+	if {level::%{_p}%} is between 60 and 69:
+		set {_p}'s xp to round((({_neededxp} / (600 + 600 * {bonusxpprestige::%{_p}%}) - 1) * -1 * 147) + 1897)
+	if {level::%{_p}%} is between 70 and 79:
+		set {_p}'s xp to round((({_neededxp} / (800 + 800 * {bonusxpprestige::%{_p}%}) - 1) * -1 * 147) + 1897)
+	if {level::%{_p}%} is between 80 and 89:
+		set {_p}'s xp to round((({_neededxp} / (900 + 900 * {bonusxpprestige::%{_p}%}) - 1) * -1 * 147) + 1897)
+	if {level::%{_p}%} is between 90 and 99:
+		set {_p}'s xp to round((({_neededxp} / (1000 + 1000 * {bonusxpprestige::%{_p}%}) - 1) * -1 * 147) + 1897)
+	if {level::%{_p}%} is between 100 and 109:
+		set {_p}'s xp to round((({_neededxp} / (1200 + 1200 * {bonusxpprestige::%{_p}%}) - 1) * -1 * 147) + 1897)
+	if {level::%{_p}%} is between 110 and 119:
+		set {_p}'s xp to round((({_neededxp} / (1500 + 1500 * {bonusxpprestige::%{_p}%}) - 1) * -1 * 147) + 1897)
+	if {level::%{_p}%} is 120:
+		set {_p}'s xp to 2044
+	set {_p}'s level to {level::%{_p}%}
+
+on fishing:
+	check ["%region at player%" doesn't contain "nopvpzone"]->["%region at caught entity%" doesn't contain "nopvpzone"]
+	name of player's held item is "&cCatcher"
+	fishing state is "CAUGHT_ENTITY"
+	if caught entity is player:
+		stop
+
+	set {_x} to caught entity
+	set {_x} to {_x} parsed as offline player
+	if {fisher::%player%} is set:
+		message "&8[&4&l!&8] &7Musis pockat &f%{fisher::%player%}% sekund&7."
+		stop
+	set {fisher::%player%} to 10
+	push caught entity (direction from caught entity to location of player) at speed 0.85
+	while {fisher::%player%} is set:
+		if {fisher::%player%} is 1:
+			delete {fisher::%player%}
+			message "&8[&2&l!&8] &7Cooldown pro &cCatcher &7skoncil."
+			stop
+		remove 1 from {fisher::%player%}
+		wait 1 seconds
+
+on quit:
+	delete {fisher::%player%}
+
+on skript start:
+	delete {fisher::*}
+
+on command "/skript":
+	if player doesn't have permission "skript.":
+		cancel event
+		message "&8[&c&l!&8] &7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera."
+
+on command "/sk":
+	if player doesn't have permission "skript.":
+		cancel event
+		message "&8[&c&l!&8] &7Tenhle príkaz nebyl bohuzel nalezen, pokud potrebujes poradit, neváhej se obrátit na helpera."
+
+
+command /offlinehlasy:
+	trigger:
+		make player execute command "/sv claim"
+
+on weather change to rain or thunder:
+	cancel event
+on burn:
+	cancel event
+On Ignition:
+	cancel event
+
+at 17:00 in "world":
+   set time in "world" to 09:00
+
+on region enter:
+	player's gamemode is not spectator
+	if "%region%" contains "2xrewards-1":
+		send player title "" with subtitle "&7Vchazis do &6&lcasti Hradu&7." for 0.8 seconds
+	if "%region%" contains "2xrewards-2":
+		send player title "" with subtitle "&7Vchazis do &6&lcasti Chramu&7." for 0.8 seconds
+	if "%region%" contains "2xrewards-3":
+		send player title "" with subtitle "&7Vchazis do &6&lcasti Lesu&7." for 0.8 seconds
+	if "%region%" contains "2xrewards-4":
+		send player title "" with subtitle "&7Vchazis do &6&lcasti Vesnice&7." for 0.8 seconds
+
+on build:
+	if "%region at event-block%" doesn't contain "nopvpzone":
+		wait 1 tick
+		remove all buckets from player's inventory
+
+on rightclick with bow:
+	if "%region at player%" contains "nopvpzone":
+		cancel event
+
+on rightclick:
+	"%region at player%" contains "nopvpzone"
+	event-item is water_bottle:16388 or water_bottle:16453
+	cancel event
+
+on region enter:
+	if "%event-region%" contains "1st" or "2nd" or "3rd" or "4th":
+		if check [{floor} is not set]->[{ragepit} is not set]:
+			if player's gamemode is spectator:
+				stop
+			if player's gamemode is creative:
+				message "&8[&4&l!&8] &7Pokud mas &dcreative&7, nemuzes byt &fteleportovan&7."
+				stop
+			spawn an pig at {boost.%event-region%::0}
+			set {_boost} to spawned entity
+			apply invisibility without any particles to {_boost} for 1 minute
+			make the player ride {_boost}
+
+			wait 10 ticks
+
+			set {_x} to random integer between 1 and 3
+			push {_boost} upwards at speed 2.5
+			loop 5 times:
+				push {_boost} (direction from {_boost} to {boost.%event-region%::%{_x}%}) at speed 1.9
+				push {_boost} upwards at speed 0.2
+				wait 6 ticks
+
+on vehicle exit:
+	{vehicle::%player%} is not set
+	cancel event
+
+on damage:
+	victim is pig
+	cancel event
+	"%damage cause%" is "fall"
+	delete victim
+
+on spawn of an endermite:
+	cancel event
+
+on right click on trapdoor or doors:
+	if player's gamemode is not creative:
+		cancel event
+
+on burn:
+	if event-item is block:
+		cancel event
+
+on right click on chest or trapped chest or enchantment table or crafting table or furnace or hopper or dropper or 145:
+	if player's gamemode is not creative:
+		if "%region at player%" doesn't contain "nopvpzone":
+			cancel event
+
+on drop:
+	if event-item is glass bottle:
+		wait 4 ticks
+		delete item
+
+function JoinMenu(s: number, t: text, p: player):	
+	if {custom.message::%{_p}%} is not "%{_t}%":
+		create a gui slot {_s} of {_p} with paper named "&aPripojovaci zprava" with lore "|| &a»| %{_t}%||||&aKlikni sem pro nastaveni." to run:
+			close player's inventory
+			make player execute "/cm"
+			set {custom.message::%player%} to "%{_t}%"
+			create a gui slot {_s} of {_p} with slimeball named "&aPripojovaci zprava" with lore "|| &a»| %{_t}%||||&aTuhle pripojovaci zpravu mas nastavenou."
+	else:
+		create a gui slot {_s} of {_p} with slimeball named "&aPripojovaci zprava" with lore "|| &a»| %{_t}%||||&aTuhle pripojovaci zpravu mas nastavenou."
+
+on quit:
+	if player has permission "pit.battlepass.2":
+		player doesn't have permission "pit.staff"
+		{vanish::%player%} is not set
+		broadcast " &c|« &7%player%"
+
+on join:
+	set join message to ""
+	if player has permission "pit.tym":
+		loop all players:
+			loop-player has permission "pit.tym"
+			send "&9[Staff] %coloured player's offline suffix%%player% &7se &apripojil&7." to loop-player
+
+	loop 50 times:
+		message ""
+	message "&6 ▊▊▊▊▊▌"
+	message "&6   ▊     ▊▌"
+	message "&6   ▊     ▊▌             &6&lTHE PIT"
+	message "&6   ▊     ▊▌     &7Doporucená verze &e1.8"
+	message "&6 ▊▊▊▊▊▌"
+	message "&6   ▊           &6| &fHerní menu &6/menu"
+	message "&6   ▊           &6| &fZákladní príkazy &6/prikazy"
+	message "&6   ▊           &6| &fZákladní informace &6/pit"
+	message "&6 ▐▊▌"
+	message ""
+	if player has permission "pit.battlepass.2":
+		{vanish::%player%} is not set
+		if {custom.message::%player%} is not set:
+			broadcast " &a»| &7%player%"
+		else:
+			broadcast " &a»| &7%{custom.message::%player%}%"
+
+	set {_spawn} to random integer between 1 and 3
+	teleport player to {spawn.loc::%{_spawn}%}
+
+on first join:
+	add 60 to {%player%.xpbooster}
+	add 60 to {%player%.gbooster}
+	message ""
+	message "&7Vitej na serveru &6&lThePit&7! &7Jako bonus jsi ziskal &e&lBooster Zlataku &7& &b&lXP Booster&7, oba na &f1 hodinu&7! Vice info &d/booster&7."
+	message ""
+
+on quit:
+	delete {chat.private.reply.%player%}
+	set quit message to ""
+	if player has permission "pit.tym":
+		loop all players:
+			loop-player has permission "pit.tym"
+			send "&9[Staff] %coloured player's offline suffix%%player% &7se &codpojil&7." to loop-player	
+
+on physics:
+	event-item is trapdoor or button
+	cancel event
+
+on explode:
+	cancel event
+
+on projectile hit:
+	projectile is an arrow
+	delete projectile
+
+
+on death of a player:
+	attacker is a player
+	{floor} is not set
+	if victim's chestplate is iron chestplate:
+		if {%attacker%.armor} is not set:
+			chance of 10%:
+				add iron chestplate to drops
+		if {%attacker%.armor} is 1:
+			chance of 20%:
+				add iron chestplate to drops
+		if {%attacker%.armor} is 2:
+			chance of 30%:
+				add iron chestplate to drops
+		if {%attacker%.armor} is 3:
+			chance of 40%:
+				set {_numb} to random integer between 1 and 1000
+				if {_numb} is between 1 and 994:
+					add iron chestplate to drops
+				if {_numb} is between 995 and 1000:
+					add diamond chestplate to drops
+		if {%attacker%.armor} is 4:
+			chance of 50%:
+				set {_numb} to random integer between 1 and 1000
+				if {_numb} is between 1 and 989:
+					add iron chestplate to drops
+				if {_numb} is between 990 and 1000:
+					add diamond chestplate to drops
+		if {%attacker%.armor} is 5:
+			chance of 60%:
+				set {_numb} to random integer between 1 and 1000
+				if {_numb} is between 1 and 974:
+					add iron chestplate to drops
+				if {_numb} is between 975 and 1000:
+					add diamond chestplate to drops
+
+	if victim's leggings is iron leggings:
+		if {%attacker%.armor} is not set:
+			chance of 10%:
+				add iron leggings to drops
+		if {%attacker%.armor} is 1:
+			chance of 20%:
+				add iron leggings to drops
+		if {%attacker%.armor} is 2:
+			chance of 30%:
+				add iron leggings to drops
+		if {%attacker%.armor} is 3:
+			chance of 40%:
+				set {_numb} to random integer between 1 and 100
+				if {_numb} is between 1 and 98:
+					add iron leggings to drops
+				if {_numb} is between 99 and 100:
+					add diamond leggings to drops
+		if {%attacker%.armor} is 4:
+			chance of 50%:
+				set {_numb} to random integer between 1 and 100
+				if {_numb} is between 1 and 95:
+					add iron leggings to drops
+				if {_numb} is between 96 and 100:
+					add diamond leggings to drops
+		if {%attacker%.armor} is 5:
+			chance of 60%:
+				set {_numb} to random integer between 1 and 100
+				if {_numb} is between 1 and 90:
+					add iron leggings to drops
+				if {_numb} is between 91 and 100:
+					add diamond leggings to drops
+
+	if victim's boots is iron boots:
+		if {%attacker%.armor} is not set:
+			chance of 10%:
+				add iron boots to drops
+		if {%attacker%.armor} is 1:
+			chance of 20%:
+				add iron boots to drops
+		if {%attacker%.armor} is 2:
+			chance of 30%:
+				add iron boots to drops
+		if {%attacker%.armor} is 3:
+			chance of 40%:
+				set {_numb} to random integer between 1 and 100
+				if {_numb} is between 1 and 98:
+					add iron boots to drops
+				if {_numb} is between 99 and 100:
+					add diamond boots to drops
+		if {%attacker%.armor} is 4:
+			chance of 50%:
+				set {_numb} to random integer between 1 and 100
+				if {_numb} is between 1 and 95:
+					add iron boots to drops
+				if {_numb} is between 96 and 100:
+					add diamond boots to drops
+		if {%attacker%.armor} is 5:
+			chance of 60%:
+				set {_numb} to random integer between 1 and 100
+				if {_numb} is between 1 and 90:
+					add iron boots to drops
+				if {_numb} is between 91 and 100:
+					add diamond boots to drops
+
+#------------------------------------------------------------------------------
+
+	if victim's chestplate is diamond chestplate:
+		if {%attacker%.armor} is not set:
+			chance of 30%:
+				add diamond chestplate to drops
+		if {%attacker%.armor} is 1:
+			chance of 40%:
+				add diamond chestplate to drops
+		if {%attacker%.armor} is 2:
+			chance of 50%:
+				add diamond chestplate to drops
+		if {%attacker%.armor} is 3:
+			chance of 60%:
+				add diamond chestplate to drops
+		if {%attacker%.armor} is 4:
+			chance of 70%:
+				add diamond chestplate to drops
+		if {%attacker%.armor} is 5:
+			chance of 80%:
+				add diamond chestplate to drops
+
+	if victim's boots is diamond boots:
+		if {%attacker%.armor} is not set:
+			chance of 30%:
+				add diamond boots to drops
+		if {%attacker%.armor} is 1:
+			chance of 40%:
+				add diamond boots to drops
+		if {%attacker%.armor} is 2:
+			chance of 50%:
+				add diamond boots to drops
+		if {%attacker%.armor} is 3:
+			chance of 60%:
+				add diamond boots to drops
+		if {%attacker%.armor} is 4:
+			chance of 70%:
+				add diamond boots to drops
+		if {%attacker%.armor} is 5:
+			chance of 80%:
+				add diamond boots to drops
+
+on pickup:
+	if gamemode of player is spectator:
+		cancel event
+	if player's gamemode is creative or spectator:
+		event-item is gold ingot
+		cancel event
+	
+
+on pickup of iron chestplate or iron leggings or iron boots or diamond chestplate or diamond leggings or diamond boots:
+	{vanish::%player%} is not set
+	cancel event
+	set {_item} to item
+	if item is iron chestplate:
+		if player's chestplate is not iron chestplate or diamond chestplate:
+			set {chestplate} to player's chestplate
+			set {_num} to 9
+			loop 28 times:
+				if slot {_num} of inventory of player is air:
+					set slot {_num} of player to {chestplate} named "&7Zelezná zbroj"
+					stop loop
+				add 1 to {_num}
+				if {_num} is 37:
+					give unbreakable {chestplate} named "&7Zelezná zbroj" to player
+			delete {chestplate}
+			set player's chestplate to unbreakable {_item} named "&7Zelezná zbroj"
+		else:
+			if player's chestplate is iron chestplate:
+				if amount of iron chestplate in player's inventory is less than 1:
+					set {_num} to 9
+					loop 28 times:
+						if slot {_num} of inventory of player is air:
+							set slot {_num} of player to unbreakable {_item} named "&7Zelezná zbroj"
+							stop loop
+						add 1 to {_num}
+						if {_num} is 37:
+							give unbreakable {_item} named "&7Zelezná zbroj" to player
+	if item is iron leggings:
+		if player's leggings is not iron leggings or diamond leggings:
+			set {leggings} to player's leggings
+			set {_num} to 9
+			loop 28 times:
+				if slot {_num} of inventory of player is air:
+					set slot {_num} of player to {leggings} named "&7Zelezné kalhoty"
+					stop loop
+				add 1 to {_num}
+				if {_num} is 37:
+					give unbreakable {leggings} named "&7Zelezné kalhoty" to player
+			delete {leggings}
+			set player's leggings to unbreakable {_item} named "&7Zelezné kalhoty"
+		else:
+			if player's leggings is iron leggings:
+				if amount of iron leggings in player's inventory is less than 1:
+					set {_num} to 9
+					loop 28 times:
+						if slot {_num} of inventory of player is air:
+							set slot {_num} of player to unbreakable {_item} named "&7Zelezné kalhoty"
+							stop loop
+						add 1 to {_num}
+						if {_num} is 37:
+							give unbreakable {_item} named "&7Zelezné kalhoty" to player
+	if item is iron boots:
+		if player's boots is not iron boots or diamond boots:
+			set {boots} to player's boots
+			set {_num} to 9
+			loop 28 times:
+				if slot {_num} of inventory of player is air:
+					set slot {_num} of player to {boots} named "&7Zelezné boty"
+					stop loop
+				add 1 to {_num}
+				if {_num} is 37:
+					give unbreakable {boots} named "&7Zelezné boty" to player
+			delete {boots}
+			set player's boots to unbreakable {_item} named "&7Zelezné boty"
+		else:
+			if player's boots is iron boots:
+				if amount of iron boots in player's inventory is less than 1:
+					set {_num} to 9
+					loop 28 times:
+						if slot {_num} of inventory of player is air:
+							set slot {_num} of player to unbreakable {_item} named "&7Zelezné boty"
+							stop loop
+						add 1 to {_num}
+						if {_num} is 37:
+							give unbreakable {_item} named "&7Zelezné boty" to player
+	if item is diamond chestplate:
+		if player's chestplate is not diamond chestplate:
+			set {chestplate} to player's chestplate
+			set {_num} to 9
+			loop 28 times:
+				if slot {_num} of inventory of player is air:
+					set slot {_num} of player to {chestplate}
+					stop loop
+				add 1 to {_num}
+				if {_num} is 37:
+					give {chestplate} to player
+			delete {chestplate}
+			set player's chestplate to unbreakable {_item} named "&bDiamantová zbroj" with lore "&7&o(Predmet pri smrti zmizi.)||&r"
+		else:
+			set {_num} to 9
+			loop 28 times:
+				if slot {_num} of inventory of player is air:
+					set slot {_num} of player to unbreakable {_item} named "&bDiamantová zbroj" with lore "&7&o(Predmet pri smrti zmizi.)||&r"
+					stop loop
+				add 1 to {_num}
+				if {_num} is 37:
+					give unbreakable {_item} named "&bDiamantová zbroj" with lore "&7&o(Predmet pri smrti zmizi.)||&r" to player
+	if item is diamond leggings:
+		if player's leggings is not diamond leggings:
+			set {leggings} to player's leggings
+			set {_num} to 9
+			loop 28 times:
+				if slot {_num} of inventory of player is air:
+					set slot {_num} of player to {leggings}
+					stop loop
+				add 1 to {_num}
+				if {_num} is 37:
+					give {leggings} to player
+			delete {leggings}
+			set player's leggings to unbreakable {_item} named "&bDiamantové kalhoty" with lore "&7&o(Predmet pri smrti zmizi.)||&r"
+		else:
+			set {_num} to 9
+			loop 28 times:
+				if slot {_num} of inventory of player is air:
+					set slot {_num} of player to unbreakable {_item} named "&bDiamantové kalhoty" with lore "&7&o(Predmet pri smrti zmizi.)||&r"
+					stop loop
+				add 1 to {_num}
+				if {_num} is 37:
+					give unbreakable {_item} named "&bDiamantové kalhoty" with lore "&7&o(Predmet pri smrti zmizi.)||&r" to player
+	if item is diamond boots:
+		if player's boots is not diamond boots:
+			set {boots} to player's boots
+			set {_num} to 9
+			loop 28 times:
+				if slot {_num} of inventory of player is air:
+					set slot {_num} of player to {boots}
+					stop loop
+				add 1 to {_num}
+				if {_num} is 37:
+					give {boots} to player
+			delete {boots}
+			set player's boots to unbreakable {_item} named "&bDiamantové boty" with lore "&7&o(Predmet pri smrti zmizi.)||&r"
+		else:
+			set {_num} to 9
+			loop 28 times:
+				if slot {_num} of inventory of player is air:
+					set slot {_num} of player to unbreakable {_item} named "&bDiamantové boty" with lore "&7&o(Predmet pri smrti zmizi.)||&r"
+					stop loop
+				add 1 to {_num}
+				if {_num} is 37:
+					give unbreakable {_item} named "&bDiamantové boty" with lore "&7&o(Predmet pri smrti zmizi.)||&r" to player
+	delete item
+
+	
+on death of player:
+	set death message to ""
+
+on explosion:
+	cancel event
+
+on hunger meter change:
+	cancel event
+
+on damage:
+	if damage is caused by fall:
+		cancel event
+	if "%region at victim%" or "%region at attacker%" contains "nopvpzone":
+		cancel event
+
+
+on drop of stone sword or iron sword or diamond sword or stone axe or iron axe or diamond axe or bow or fishing rod or arrow or iron pickaxe or diamond pickaxe or golden apple or lava bucket or water_bottle:8203 or baked potato:
+	if gamemode of player is not creative:
+		cancel event
+
+on drop of chainmail chestplate or chainmail leggings or chainmail boots or leather helmet:
+	if {vanish::%player%} is set:
+		cancel event
+		stop
+	if player's gamemode is not creative:
+		delete item
+
+
+on drop of player head:
+	if gamemode of player is not creative:
+		if lore of event-item doesn't contain "box":
+			cancel event

@@ -1,0 +1,271 @@
+#pokud hr·Ë p¯ijme d¯Ìv, ten druh˝ nedostane cash (zkusit s broadcast/itemy)
+
+function itemChange(s: number, i: item, n: number, p: player):
+	set {_name} to splitCoins("%{_n}%")
+	if {_s} is 11:
+		set {_x} to splitCoins("%{daily.limit::%{_p}%}%")
+		set {_name} to splitCoins("%{_n}%")
+		set {_item} to {_i} named "&eZlataky!" with lore "||&e%{_name}% ‚ìè||||&5Jak pridat &lzlataky&5!||&8&l ‚ñ∂ &7Kliknuti levym: &a+&e1||&8&l ‚ñ∂ &7Kliknuti levym + Shift: &a+&e100||&8&l ‚ñ∂ &7Kliknuti pravym: &c-&e1||&8&l ‚ñ∂ &7Kliknuti pravym + Shift: &c-&e100||||&7Denni limit &a%{_x}%&7/&e30.000 ‚ìè&7."
+		format gui slot {_s} of {_p} with {_item} to run function changeName({_s}, {_p}, "right") with "right" click
+		format gui slot {_s} of {_p} with {_item} to run function changeName({_s}, {_p}, "shift right") with "shift right" click
+		format gui slot {_s} of {_p} with {_item} to run function changeName({_s}, {_p}, "left") with "left" click
+		format gui slot {_s} of {_p} with {_item} to run function changeName({_s}, {_p}, "shift left") with "shift left"
+	else if {_s} is 15:
+		set {_item} to {_i} named "&eZlataky!" with lore "||&e%{_name}% ‚ìè||||&7Pocet &ezlataku&7, ktere ti nabizi."
+		format gui slot {_s} of {_p} with {_item}
+	
+
+function changeName(s: number, p: Player, clicktype: String):
+	if {accept::%{_p}%} is true:
+		stop
+	if {daily.limit::%{_p}%} is higher or equal to 30000:
+		play "VILLAGER_NO" to {_p}
+		stop
+	set {_x} to {gold::%{_p}%}
+	replace all "." in {_x} with ""
+	set {_x} to {_x} parsed as number
+
+	set {_number} to line 2 of lore of slot {_s} of {_p}'s current inventory#Requires SkQuery or Bensku's fork
+	replace all "." in {_number} with ""
+	replace all "&e" in {_number} with ""
+	replace all " ‚ìè" in {_number} with ""
+	set {_number} to {_number} parsed as number
+
+	if {_clicktype} is "right":
+		remove 1 from {_number}
+		if {_number} is less or equal to 0:
+			itemChange(11, gold nugget, 0, {_p})
+			itemChange(15, gold nugget, 0, {tradePartner::%{_p}%})
+			if {_number} is less than 0:
+				play "VILLAGER_NO" to {_p}
+			stop
+	else if {_clicktype} is "shift right":
+		remove 100 from {_number}
+		if {_number} is less or equal to 0:
+			itemChange(11, gold nugget, 0, {_p})
+			itemChange(15, gold nugget, 0, {tradePartner::%{_p}%})
+			if {_number} is less than 0:
+				play "VILLAGER_NO" to {_p}
+			stop
+
+	else if {_clicktype} is "left":
+		if {daily.limit::%{_p}%}+ {_number} + 1 is higher than 30000:
+			play "VILLAGER_NO" to {_p}
+			stop
+		if {_x} is 0:
+			play "VILLAGER_NO" to {_p}
+			stop
+		if {_number} + 1 is less than or equal to {_x}:
+			add 1 to {_number}
+		else:
+			play "VILLAGER_NO" to {_p}
+	else if {_clicktype} is "shift left":
+		if {daily.limit::%{_p}%} + {_number} + 100 is higher than 30000:
+			play "VILLAGER_NO" to {_p}
+			stop
+		if {_x} is less than 100:
+			play "VILLAGER_NO" to {_p}
+			stop
+		if {_number} + 100 is less than or equal to {_x}:
+			add 100 to {_number}
+		else:
+			play "VILLAGER_NO" to {_p}
+	itemChange(11, gold ingot, {_number}, {_p})
+	itemChange(15, gold ingot, {_number}, {tradePartner::%{_p}%})
+
+on load:
+	set {playerSlots::*} to 10,12,19,20,21,28,29 and 30
+	
+command trade [<string>]:
+	trigger:
+		if "%region at player%" doesn't contain "nopvpzone":
+			send "&8[&4&l!&8] &cNelze obchodovat mimo safe zone."
+			stop
+		if check [arg-1 is not "accept"]->[arg-1 is not "decline" or "deny"]->[arg-1 parsed as player is not online]:
+			send "&8[&4&l!&8] &cNeco se nepovedlo."
+			send " &d/trade &8<&fhrac&8>"
+			send " &d/trade accept"
+			send " &d/trade decline &8| &ddeny"
+
+		if arg-1 is "accept":
+			if "%region at {tradeRequest::%player%}%" doesn't contain "nopvpzone":
+				send "&8[&4&l!&8] &c%{tradeRequest::%player%}% se nachazi mimo safe zone."
+				stop
+			if player's gamemode is spectator:
+				send "&8[&4&l!&8] &cNelze prijmout zadost v spectate modu."
+				stop
+			if {tradeRequest::%player%} is set:
+				trade(player,{tradeRequest::%player%})
+				delete {tradeRequest::%player%}
+			else:
+				send "&8[&4&l!&8] &cNemas zadnou zadost pro prijeti."
+		if arg-1 is "decline" or "deny":
+			if {tradeRequest::%player%} is set:
+				send "&8[&4&l!&8] %coloured player's offline prefix%%player% &7odmitl tvoji zadost." to {tradeRequest::%player%}
+				delete {tradeRequest::%player%}
+			else:
+				send "&8[&4&l!&8] &cNemas zadnou zadost pro odmitnuti."
+				
+		if (arg-1 parsed as player) is a player:
+			if arg-1 parsed as player is not player:
+				if {tradeRequest::%arg-1 parsed as player%} is not set:
+					set {tradeRequest::%arg-1 parsed as player%} to player
+					send "&8[&2&l!&8] %coloured (arg-1 parsed as player)'s offline prefix%%arg-1% &7jsi poslal zadost o obchod."
+					json(arg-1, "&8[&2&l!&r&8] %coloured player's offline prefix%%player% &7ti poslal zadost o obchod. ||&a[Prijmout]||cmd:/trade accept||ttp:&7Klikni zde pro &aprijeti&7.|| ||&c[Odmitnout]||cmd:/trade deny||ttp:&7Klikni zde pro &codmitnuti&7.")
+					wait 30 seconds
+					delete {tradeRequest::%arg-1 parsed as player%}
+				else:
+					send "&8[&4&l!&8] %coloured (arg-1 parsed as player)'s offline prefix%%arg-1% &7jsi jiz poslal zadost."
+			else:
+				send "&8[&4&l!&8] &cNemuzes obchodovat se sebou."
+
+#This function works as main Trade Task
+function trade(p1:player,p2:player):
+	set {tradePartner::%{_p1}%} to {_p2}
+	set {tradePartner::%{_p2}%} to {_p1}
+	tradeInventory({_p1})
+	tradeInventory({_p2})
+
+
+#The inventory for each player			
+function tradeInventory(p:player):
+	#inventory layout
+	open chest with 5 rows named "&fTy & &f%{tradePartner::%{_p}%}%" to {_p}
+	format gui slot (all integers between 0 and 44) of {_p} with black stained glass pane to do nothing
+	format gui slot 2 of {_p} with skull of {_p} named "%{prestigebrackets::%{_p}%}%[%{%{_p}%.level.color}%%{level::%{_p}%}%%{prestigebrackets::%{_p}%}%] %coloured {_p}'s offline suffix%%{_p}%" to do nothing
+	format gui slot 6 of {_p} with skull of {tradePartner::%{_p}%} named "%{prestigebrackets::%{tradePartner::%{_p}%}%}%[%{%{tradePartner::%{_p}%}%.level.color}%%{level::%{tradePartner::%{_p}%}%}%%{prestigebrackets::%{tradePartner::%{_p}%}%}%] %coloured {tradePartner::%{_p}%}'s offline suffix%%{tradePartner::%{_p}%}%" to do nothing
+	acceptTrade({_p})
+	unformat gui slot {playerSlots::*} of {_p}
+
+	if {daily.limit::%{_p}%} is not set:
+		set {daily.limit::%{_p}%} to 0
+	itemChange(11, gold nugget, 0, {_p})
+	itemChange(15, gold nugget, 0, {_p})
+	format gui slot 42 of {_p} with gray dye named "&7Not Accepted"
+
+	# Sync, the items and the accept status gets synchronised
+	
+	while inventory name of {_p}'s current inventory is "&fTy & &f%{tradePartner::%{_p}%}%":			
+		#Syncs the items
+		loop {playerSlots::*}:
+			set {tradeinv::%{_p}%::%loop-value+4%} to slot loop-value of {_p}'s current inventory 
+		loop {tradeinv::%{tradePartner::%{_p}%}%::*}:
+			set slot loop-index parsed as number of {_p}'s current inventory to loop-value
+			
+		wait 1 second	
+
+			
+# The Timer... 				
+function Timer(p1:player,p2:player):
+	set {_timer} to true
+	set {_slots::*} to 4,13,22,31 and 40
+	format gui slot {_slots::*} of {_p1} with red stained glass pane
+	format gui slot {_slots::*} of {_p2} with red stained glass pane
+	
+	loop 6 times:
+		wait 1 second
+		if {accept::%{_p1}%} or {accept::%{_p2}%} is false:
+			format gui slot {_slots::*} of {_p1} with black stained glass pane
+			format gui slot {_slots::*} of {_p2} with black stained glass pane
+			stop
+		if {accept::%{_p1}%} or {accept::%{_p2}%} is not set:
+			stop
+		if {_x} is not set:
+			set {_x} to 5
+		format gui slot {_slots::*} of {_p1} with {_x} of green stained glass pane
+		format gui slot {_slots::*} of {_p2} with {_x} of green stained glass pane
+		remove 1 from {_x}
+
+	tradeComplete({_p1},{_p2})
+
+# ZDE JE POTVRZENÕ PRO TRADE
+function acceptTrade(p:player):
+	if {accept::%{_p}%} is true:
+		format gui slot 42 of {tradePartner::%{_p}%} with light green dye named "&aAccepted"
+		format gui slot 38 of {_p} with light green dye named "&cClick to Cancel" to run:
+			
+			#Items get unfreezed
+			loop {playerSlots::*}:
+				set {_i} to slot loop-value of {_p}'s current inventory
+				unformat gui slot loop-value of {_p}
+				set slot loop-value of {_p}'s current inventory to {_i}
+				
+			set {accept::%{_p}%} to false	
+			acceptTrade({_p})
+	else:
+		format gui slot 42 of {tradePartner::%{_p}%} with gray dye named "&7Not Accepted"
+		format gui slot 38 of {_p} with gray dye named "&aClick to Accept" to run:
+			#Itemfreeze
+			loop {playerSlots::*}:
+				format gui slot loop-value of {_p} with slot loop-value of {_p}'s current inventory to do nothing
+				
+			set {accept::%{_p}%} to true
+			acceptTrade({_p})
+			if {accept::%{_p}%} is true:
+				if {accept::%{tradePartner::%{_p}%}%} is true:
+					Timer({_p},{tradePartner::%{_p}%})
+
+
+
+# Gives the item to the players and closes their inventory		
+function tradeComplete(p1:player,p2:player):
+	give {_p1} {tradeinv::%{_p2}%::*}
+	give {_p2} {tradeinv::%{_p1}%::*}
+	set {_numb1} to line 2 of lore of slot 11 of {_p1}'s current inventory
+	set {_numb2} to line 2 of lore of slot 11 of {_p2}'s current inventory
+	replace all "." in {_numb1} with ""
+	replace all "&e" in {_numb1} with ""
+	replace all " ‚ìè" in {_numb1} with ""
+	replace all "." in {_numb2} with ""
+	replace all "&e" in {_numb2} with ""
+	replace all " ‚ìè" in {_numb2} with ""
+	set {_numb1} to {_numb1} parsed as number
+	set {_numb2} to {_numb2} parsed as number
+
+	add {_numb1} to {daily.limit::%{_p1}%}
+	add {_numb2} to {daily.limit::%{_p2}%}
+
+	Zlataky("add", {_numb1}, {_p2})
+	Zlataky("remove", {_numb1}, {_p1})
+	Zlataky("add", {_numb2}, {_p1})
+	Zlataky("remove", {_numb2}, {_p2})
+
+	send "&8[&2&l!&8] &7Obchod probehl uspesne." to {_p1} and {_p2}
+
+	Format gui slot {playerSlots::*} of {_p1} with air
+	Format gui slot {playerSlots::*} of {_p2} with air
+	if inventory name of {_p1}'s current inventory is "&fTy & &f%{tradePartner::%{_p1}%}%":
+		delete {tradePartner::%{_p1}%}
+		delete {accept::%{_p1}%}
+		delete {tradeinv::%{_p1}%::*}
+		close {_p1}'s inventory
+	if inventory name of {_p2}'s current inventory is "&fTy & &f%{tradePartner::%{_p2}%}%":
+		delete {tradePartner::%{_p2}%}
+		delete {accept::%{_p2}%}
+		delete {tradeinv::%{_p2}%::*}
+		close {_p2}'s inventory
+
+#Trade accept, tests if they accepted the trade and if they did, it locks their items 
+
+
+
+
+
+
+
+
+
+
+
+
+
+#If the inventory gets closed, it deletes all their trade stuff and gives the items back		
+on inventory close:
+	if inventory name of player's current inventory is "&fTy & &f%{tradePartner::%player%}%":
+		give player slot 10,12,19,20,21,28,29 and 30 of player's current inventory
+		wait 1 tick
+		close {tradePartner::%player%}'s inventory
+		send "&8[&4&l!&8] &7Obchod byl zrusen." to {tradePartner::%player%}
+		delete {tradePartner::%player%}
+		delete {accept::%player%}
+		delete {tradeinv::%player%::*}

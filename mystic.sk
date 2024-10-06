@@ -1,0 +1,1537 @@
+#reduce damage        set damage to damage / 100 * (100 - 5)
+#add damage        set damage to damage / 100 * (100 + 5)
+
+
+on rightclick:
+	if event-block is enchantment table:
+		cancel event
+		"%region at player%" contains "nopvpzone"
+		make player execute "mystic"
+
+
+on death of a player:
+	attacker is a player
+	{floor::%attacker%} is not set
+	{prestige::%player%} is set
+	chance of (0.0005 + 0.0005 * {renown::%player%::mysticwell} * 50)%:
+		give unbreakable golden sword named "&eZlaty Mec" with lore "||&5Info o &lzlatem meci&5!||&8&l ▶ &7&7Lze aplikovat v &6&lMystickem Vylepsení&7.||&8&l ▶ &7Pri vylepsení &94 &7➠ &96.5 Attack Damge&7.||&7&o(Pri smrti nezmizi z inventare.)" to attacker
+
+
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	projectile doesn't exist
+	victim is a player
+	attacker is a player
+	if lore of attacker's tool contains "Beat The Spammer I&1":
+		if victim's held item is bow:
+			set damage to damage / 100 * (100 + 8)
+	if lore of attacker's tool contains "Beat The Spammer II&2":
+		if victim's held item is bow:
+			set damage to damage / 100 * (100 + 15)
+	if lore of attacker's tool contains "Beat The Spammer III":
+		if victim's held item is bow:
+			set damage to damage / 100 * (100 + 40)
+
+	if lore of attacker's tool contains "Berserk I&1":
+		if block under attacker is not air:
+			chance of 12%:
+				set damage to damage / 100 * (100 + 50)
+	if lore of attacker's tool contains "Berserk II&2":
+		if block under attacker is not air:
+			chance of 20%:
+				set damage to damage / 100 * (100 + 50)
+	if lore of attacker's tool contains "Berserk III":
+		if block under attacker is not air:
+			chance of 30%:
+				set damage to damage / 100 * (100 + 50)
+
+	if lore of attacker's tool contains "&5&l&oRare! &9Billionaire I&1":
+		set {_gold} to {gold::%attacker%}
+		replace all "." in {_gold} with ""
+		set {_gold} to {_gold} parsed as number
+
+		if {_gold} is higher or equal to 100:
+			Zlataky("remove", 100, attacker)
+			set damage to damage / 100 * (100 + 33)
+
+
+	if lore of attacker's tool contains "&5&l&oRare! &9Billionaire II&2":
+		set {_gold} to {gold::%attacker%}
+		replace all "." in {_gold} with ""
+		set {_gold} to {_gold} parsed as number
+
+		if {_gold} is higher or equal to 200:
+			Zlataky("remove", 200, attacker)
+			set damage to damage / 100 * (100 + 67)
+
+	if lore of attacker's tool contains "&5&l&oRare! &9Billionaire III":
+		set {_gold} to {gold::%attacker%}
+		replace all "." in {_gold} with ""
+		set {_gold} to {_gold} parsed as number
+
+		if {_gold} is higher or equal to 350:
+			Zlataky("remove", 350, attacker)
+			set damage to damage / 100 * (100 + 100)
+
+	if lore of attacker's tool contains "Bounty Reaper I&1":
+		if {%victim%.bounty} is not "":
+			set damage to damage / 100 * (100 + 5)
+	if lore of attacker's tool contains "Bounty Reaper II&2":
+		if {%victim%.bounty} is not "":
+			set damage to damage / 100 * (100 + 10)
+	if lore of attacker's tool contains "Bounty Reaper III":
+		if {%victim%.bounty} is not "":
+			set damage to damage / 100 * (100 + 20)
+
+	if lore of victim's tool contains "Bruiser I&1":
+		if victim is blocking:
+			if damage is higher or equal to 1:
+				heal victim by 0.5 heart
+	if lore of victim's tool contains "Bruiser II&2":
+		if victim is blocking:
+			if damage is higher or equal to 1.5:
+				heal victim by 1 heart
+
+	if lore of victim's tool contains "Bruiser III":
+		if victim is blocking:
+			if damage is higher or equal to 2.5:
+				heal victim by 2 heart
+
+	if lore of attacker's tool contains "Combo: Damage I&1":
+		add 1 to {combo::damage::%attacker%}
+		if {combo::damage::%attacker%} is 4:
+			set damage to damage / 100 * (100 + 20)
+			delete {combo::damage::%attacker%}
+	if lore of attacker's tool contains "Combo: Damage II&2":
+		add 1 to {combo::damage::%attacker%}
+		if {combo::damage::%attacker%} is 3:
+			set damage to damage / 100 * (100 + 30)
+			delete {combo::damage::%attacker%}
+	if lore of attacker's tool contains "Combo: Damage III":
+		add 1 to {combo::damage::%attacker%}
+		if {combo::damage::%attacker%} is 3:
+			set damage to damage / 100 * (100 + 45)
+			delete {combo::damage::%attacker%}
+
+	if lore of attacker's tool contains "Combo: Heal I&1":
+		add 1 to {combo::heal::%attacker%}
+		if {combo::heal::%attacker%} is 4:
+			heal attacker by 0.5 heart
+			delete {combo::heal::%attacker%}
+	if lore of attacker's tool contains "Combo: Heal II&2":
+		add 1 to {combo::heal::%attacker%}
+		if {combo::heal::%attacker%} is 4:
+			heal attacker by 1 heart
+			delete {combo::heal::%attacker%}
+	if lore of attacker's tool contains "Combo: Heal III":
+		add 1 to {combo::heal::%attacker%}
+		if {combo::heal::%attacker%} is 4:
+			heal attacker by 1.5 heart
+			delete {combo::heal::%attacker%}
+
+on quit:
+	if {combo::damage::%player%} is set:
+		delete {combo::damage::%player%}
+	if {combo::heal::%player%} is set:
+		delete {combo::heal::%player%}
+
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	victim is a player
+	attacker is a player
+	damage is caused by projectile
+	projectile is arrow
+	if lore of victim's tool contains "Bullet Time I&1":
+		cancel event
+	if lore of victim's tool contains "Bullet Time II":
+		cancel event
+		heal victim by 1 heart
+	if lore of victim's tool contains "Bullet Time III":
+		cancel event
+		heal victim by 1.5 heart
+
+
+
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	projectile doesn't exist
+	victim is a player
+	attacker is a player
+	if {tdm::%attacker%} is "&c":
+		if {tdm::%victim%} is "&c":
+			stop
+	else if {tdm::%attacker%} is "&b":
+		if {tdm::%victim%} is "&b":
+			stop
+	if lore of attacker's tool contains "&5&l&oRare! &9Combo: Perun's Warth I&1":
+		add 1 to {combo::perun::%attacker%}
+		if {combo::perun::%attacker%} is 5:
+			strike lightning effect at the victim
+			damage victim by 1 heart
+			delete {combo::perun::%attacker%}
+	if lore of attacker's tool contains "&5&l&oRare! &9Combo: Perun's Warth II&2":
+		add 1 to {combo::perun::%attacker%}
+		if {combo::perun::%attacker%} is 4:
+			strike lightning effect at the victim
+			damage victim by 2 hearts
+			delete {combo::perun::%attacker%}
+	if lore of attacker's tool contains "&5&l&oRare! &9Combo: Perun's Warth III":
+		add 1 to {combo::perun::%attacker%}
+		if {combo::perun::%attacker%} is 5:
+			strike lightning effect at the victim
+			damage victim by 3 hearts
+			delete {combo::perun::%attacker%}
+
+on quit:
+	if {combo::perun::%player%} is set:
+		delete {combo::perun::%player%}
+
+on death of a player:
+	attacker is a player
+	if lore of attacker's tool contains "Counter-Janitor I&1":
+		apply potion of resistance of tier 1 to the attacker for 2 seconds
+	if lore of attacker's tool contains "Counter-Janitor II&2":
+		apply potion of resistance of tier 1 to the attacker for 3 seconds
+	if lore of attacker's tool contains "Counter-Janitor III":
+		apply potion of resistance of tier 1 to the attacker for 5 seconds
+
+
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	projectile doesn't exist
+	victim is a player
+	attacker is a player
+	if lore of attacker's tool contains "Diamond Stomp I&1":
+		if victim's chestplate or leggings or boots is diamond chestplate or diamond leggings or diamond boots:
+			set damage to damage / 100 * (100 + 6)
+	if lore of attacker's tool contains "Diamond Stomp II&2":
+		if victim's chestplate or leggings or boots is diamond chestplate or diamond leggings or diamond boots:
+			set damage to damage / 100 * (100 + 12)
+	if lore of attacker's tool contains "Diamond Stomp III":
+		if victim's chestplate or leggings or boots is diamond chestplate or diamond leggings or diamond boots:
+			set damage to damage / 100 * (100 + 25)
+
+
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	projectile doesn't exist
+	victim is a player
+	attacker is a player
+	if lore of victim's tool contains "Duelist I&1":
+		if victim is blocking:
+			add 1 to {duelist::%victim%::%attacker%}
+	if lore of victim's tool contains "Duelist II&2":
+		if victim is blocking:
+			add 1 to {duelist::%victim%::%attacker%}
+	if lore of victim's tool contains "Duelist III":
+		if victim is blocking:
+			add 1 to {duelist::%victim%::%attacker%}
+
+	if lore of attacker's tool contains "Duelist I&1":
+		if {duelist::%attacker%::%victim%} is higher or equal to 2:
+			set damage to damage / 100 * (100 + 20)
+			delete {duelist::%attacker%::%victim%}
+	if lore of attacker's tool contains "Duelist II&2":
+		if {duelist::%attacker%::%victim%} is higher or equal to 2:
+			set damage to damage / 100 * (100 + 40)
+			delete {duelist::%attacker%::%victim%}
+	if lore of attacker's tool contains "Duelist III":
+		if {duelist::%attacker%::%victim%} is higher or equal to 2:
+			set damage to damage / 100 * (100 + 75)
+			delete {duelist::%attacker%::%victim%}
+
+on quit:
+	if {duelist::%player%::*} is set:
+		delete {duelist::%player%::*}
+
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	projectile doesn't exist
+	victim is a player
+	attacker is a player
+	if lore of attacker's tool contains "&5&l&oRare! &9Executioner I&1":
+		if victim's health is less or equal to 1.5:
+			set damage to damage / 100 * (100 + 1000)
+	if lore of attacker's tool contains "&5&l&oRare! &9Executioner II&2":
+		if victim's health is less or equal to 1.5:
+			set damage to damage / 100 * (100 + 1000)
+	if lore of attacker's tool contains "&5&l&oRare! &9Executioner III":
+		if victim's health is less or equal to 2:
+			set damage to damage / 100 * (100 + 1000)
+
+
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	projectile doesn't exist
+	victim is a player
+	attacker is a player
+	if {tdm::%attacker%} is "&c":
+		if {tdm::%victim%} is "&c":
+			stop
+	else if {tdm::%attacker%} is "&b":
+		if {tdm::%victim%} is "&b":
+			stop
+	if lore of attacker's tool contains "&5&l&oRare! &9Gamble I&1":
+		chance of 50%:
+			set {_random} to random integer between 1 and 2
+			if {_random} is 1:	
+				damage victim by 1 heart
+			if {_random} is 2:	
+				damage attacker by 1 heart
+			delete {_random}
+	if lore of attacker's tool contains "&5&l&oRare! &9Gamble II&2":
+		chance of 50%:
+			set {_random} to random integer between 1 and 2
+			if {_random} is 1:	
+				damage victim by 2 heart
+			if {_random} is 2:	
+				damage attacker by 2 heart
+			delete {_random}
+	if lore of attacker's tool contains "&5&l&oRare! &9Gamble III":
+		chance of 50%:
+			set {_random} to random integer between 1 and 2
+			if {_random} is 1:	
+				damage victim by 3 heart
+			if {_random} is 2:	
+				damage attacker by 3 heart
+			delete {_random}
+
+
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	projectile doesn't exist
+	victim is a player
+	attacker is a player
+	if lore of attacker's tool contains "Gold and Boosted I&1":
+		if attacker has absorption:
+			set damage to damage / 100 * (100 + 5)
+	if lore of attacker's tool contains "Gold and Boosted II&2":
+		if attacker has absorption:
+			set damage to damage / 100 * (100 + 9)
+	if lore of attacker's tool contains "Gold and Boosted III":
+		if attacker has absorption:
+			set damage to damage / 100 * (100 + 15)
+
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	projectile doesn't exist
+	victim is a player
+	attacker is a player
+	if lore of attacker's tool contains "Grasshopper I&1":
+		if block under victim or attacker is grass or dirt or coarse dirt:
+			set damage to damage / 100 * (100 + 5)
+	if lore of attacker's tool contains "Grasshopper II&2":
+		if block under victim or attacker is grass or dirt or coarse dirt:
+			set damage to damage / 100 * (100 + 9)
+	if lore of attacker's tool contains "Grasshopper III":
+		if block under victim or attacker is grass or dirt or coarse dirt:
+			set damage to damage / 100 * (100 + 15)
+
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	projectile doesn't exist
+	victim is a player
+	attacker is a player
+	if lore of attacker's tool contains "&5&l&oRare! &9Healer I&1":
+		heal attacker by 1 heart
+		heal victim by 1 heart
+	if lore of attacker's tool contains "&5&l&oRare! &9Healer II&2":
+		heal attacker by 2 heart
+		heal victim by 2 heart
+	if lore of attacker's tool contains "&5&l&oRare! &9Healer III":
+		heal attacker by 3 heart
+		heal victim by 3 heart
+
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	projectile doesn't exist
+	victim is a player
+	attacker is a player
+	if lore of attacker's tool contains "King Buster I&1":
+		set {_kingbuster} to (difference between victim's max health and health of victim) * 10
+		if {_kingbuster} is higher than 50:
+			set damage to damage / 100 * (100 + 7)
+		delete {_kingbuster}
+	if lore of attacker's tool contains "King Buster II&2":
+		set {_kingbuster} to (difference between victim's max health and health of victim) * 10
+		if {_kingbuster} is higher than 50:
+			set damage to damage / 100 * (100 + 13)
+		delete {_kingbuster}
+	if lore of attacker's tool contains "King Buster III":
+		set {_kingbuster} to (difference between victim's max health and health of victim) * 10
+		if {_kingbuster} is higher than 50:
+			set damage to damage / 100 * (100 + 20)
+		delete {_kingbuster}
+			
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	projectile doesn't exist
+	victim is a player
+	attacker is a player
+	wait 1 tick
+	if lore of attacker's tool contains "Knockback I&1":
+		push victim in direction of attacker with force 1	
+	if lore of attacker's tool contains "Knockback II&2":
+		push victim in direction of attacker with force 2			
+	if lore of attacker's tool contains "Knockback III":
+		push victim in direction of attacker with force 3			
+		
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	projectile doesn't exist
+	victim is a player
+	attacker is a player
+	if lore of attacker's tool contains "Lifesteal I&1":
+		set {_lifesteal} to damage / 100 * (100 - 94)
+		heal attacker by {_lifesteal} heart
+		delete {_lifesteal}
+	if lore of attacker's tool contains "Lifesteal II&2":
+		set {_lifesteal} to damage / 100 * (100 - 92)
+		heal attacker by {_lifesteal} heart
+		delete {_lifesteal}
+	if lore of attacker's tool contains "Lifesteal III":
+		set {_lifesteal} to damage / 100 * (100 - 87)
+		heal attacker by {_lifesteal} heart
+		delete {_lifesteal}
+
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	projectile doesn't exist
+	victim is a player
+	attacker is a player
+	if lore of attacker's tool contains "Pain Focus I&1":
+		if health of attacker is not attacker's max health:
+			set {_painfocus} to difference between attacker's max health and health of attacker
+			set damage to damage / 100 * (100 + ({_painfocus} * 1))
+			delete {_painfocus}
+	if lore of attacker's tool contains "Pain Focus II&2":
+		if health of attacker is not attacker's max health:
+			set {_painfocus} to difference between attacker's max health and health of attacker
+			set damage to damage / 100 * (100 + ({_painfocus} * 2))
+			delete {_painfocus}
+	if lore of attacker's tool contains "Pain Focus III":
+		if health of attacker is not attacker's max health:
+			set {_painfocus} to difference between attacker's max health and health of attacker
+			set damage to damage / 100 * (100 + ({_painfocus} * 5))
+			delete {_painfocus}
+
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	projectile doesn't exist
+	victim is a player
+	attacker is a player
+	if lore of attacker's tool contains "Pit Pocket I&1":
+		set {_gold} to {gold::%victim%}
+		replace all "." in {_gold} with ""
+		set {_gold} to {_gold} parsed as number
+
+		if {_gold} is more than or equal to 15:
+			if {pitpocket::%attacker%} is not set:
+				set {pitpocket::%attacker%} to true
+				Zlataky("remove", 15, victim)
+				Zlataky("add", 15, attacker)
+				send "&6&lPit Pocket! %coloured victim's offline prefix%%attacker% &7jsi ukradl &e15 Ⓩ&7." to attacker
+				send "&6&lPit Pocket! %coloured attacker's offline prefix%%attacker% &7ti ukradl &e15 Ⓩ&7." to victim
+				wait 25 seconds
+				delete {pitpocket::%attacker%}
+		else:
+			message "&c%victim% nema zlataky, ktere by si mohl ukrast."
+	if lore of attacker's tool contains "Pit Pocket II&2":
+		set {_gold} to {gold::%victim%}
+		replace all "." in {_gold} with ""
+		set {_gold} to {_gold} parsed as number
+
+		if {_gold} is more than or equal to 20:
+			if {pitpocket::%attacker%} is not set:
+				set {pitpocket::%attacker%} to true
+				Zlataky("remove", 20, victim)
+				Zlataky("add", 20, attacker)
+				send "&6&lPit Pocket! %coloured victim's offline prefix%%attacker% &7jsi ukradl &e20 Ⓩ&7." to attacker
+				send "&6&lPit Pocket! %coloured attacker's offline prefix%%attacker% &7ti ukradl &e20 Ⓩ&7." to victim
+				wait 20 seconds
+				delete {pitpocket::%attacker%}
+		else:
+			message "&c%victim% nema zlataky, ktere by si mohl ukrast."
+	if lore of attacker's tool contains "Pit Pocket III":
+		set {_gold} to {gold::%victim%}
+		replace all "." in {_gold} with ""
+		set {_gold} to {_gold} parsed as number
+
+		if {_gold} is more than or equal to 25:
+			if {pitpocket::%attacker%} is not set:
+				set {pitpocket::%attacker%} to true
+				Zlataky("remove", 25, victim)
+				Zlataky("add", 25, attacker)
+				send "&6&lPit Pocket! %coloured victim's offline prefix%%attacker% &7jsi ukradl &e25 Ⓩ&7." to attacker
+				send "&6&lPit Pocket! %coloured attacker's offline prefix%%attacker% &7ti ukradl &e25 Ⓩ&7." to victim
+				wait 13 seconds
+				delete {pitpocket::%attacker%}
+		else:
+			send "&c%victim% nema zlataky, ktere by si mohl ukrast." to attacker
+
+on skript start:
+	delete {pitpocket::*}
+
+
+
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	projectile doesn't exist
+	victim is a player
+	attacker is a player
+	if lore of attacker's tool contains "Punisher I&1":
+		set {_punisher} to (difference between victim's max health and health of victim) * 10
+		if {_punisher} is less than 50:
+			set damage to damage / 100 * (100 + 6)
+		delete {_punisher}
+	if lore of attacker's tool contains "Punisher II&2":
+		if {_punisher} is less than 50:
+			set damage to damage / 100 * (100 + 12)
+		delete {_punisher}
+	if lore of attacker's tool contains "Punisher III":
+		if {_punisher} is less than 50:
+			set damage to damage / 100 * (100 + 18)
+		delete {_punisher}
+
+
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	projectile doesn't exist
+	victim is a player
+	attacker is a player
+	if lore of attacker's tool contains "Revengeance I&1":
+		if {revengeance::%victim%} contains victim:
+			set damage to damage / 100 * (100 + 8)
+	if lore of attacker's tool contains "Revengeance II&2":
+		if {revengeance::%victim%} contains victim:
+			set damage to damage / 100 * (100 + 15)
+	if lore of attacker's tool contains "Revengeance III":
+		if {revengeance::%victim%} contains victim:
+			set damage to damage / 100 * (100 + 25)
+		
+on death of a player:
+	attacker is a player
+	if {revengeance::%victim%} is set:
+		delete {revengeance::%victim%}
+	add attacker to {revengeance::%victim%}
+
+on quit:
+	if {revengeance::%player%} is set:
+		delete {revengeance::%player%}
+
+
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	projectile doesn't exist
+	victim is a player
+	attacker is a player
+	if lore of attacker's tool contains "Shark I&1":
+		loop players in radius 12 around attacker:
+			health of loop-player is less than 6
+			add 1 to {_shark}
+		set damage to damage / 100 * (100 + ({_shark} * 2))
+		delete {_shark}
+	if lore of attacker's tool contains "Shark II&2":
+		loop players in radius 12 around attacker:
+			health of loop-player is less than 6
+			add 1 to {_shark}
+		set damage to damage / 100 * (100 + ({_shark} * 4))
+		delete {_shark}
+
+	if lore of attacker's tool contains "Shark III":
+		loop players in radius 12 around attacker:
+			health of loop-player is less than 6
+			add 1 to {_shark}
+		set damage to damage / 100 * (100 + ({_shark} * 7))
+		delete {_shark}
+
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	projectile doesn't exist
+	victim is a player
+	attacker is a player
+	if lore of attacker's tool contains "Sharp I&1":
+		set damage to damage / 100 * (100 + 4)
+	if lore of attacker's tool contains "Sharp II&2":
+		set damage to damage / 100 * (100 + 7)
+	if lore of attacker's tool contains "Sharp III":
+		set damage to damage / 100 * (100 + 12)
+	
+	
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	projectile doesn't exist
+	victim is a player
+	attacker is a player
+	wait 1 tick
+	if lore of attacker's tool contains "The Punch I&1":
+		if {thepunch::%attacker%} is not set:
+			set {thepunch::%attacker%} to true
+			push victim up with force 1.8
+			wait 30 seconds
+			delete {thepunch::%attacker%}
+	if lore of attacker's tool contains "The Punch II&2":
+		if {thepunch::%attacker%} is not set:
+			set {thepunch::%attacker%} to true
+			push victim up with force 1.8
+			wait 25 seconds
+			delete {thepunch::%attacker%}
+	if lore of attacker's tool contains "The Punch III":
+		if {thepunch::%attacker%} is not set:
+			set {thepunch::%attacker%} to true
+			push victim up with force 1.8
+			wait 20 seconds
+			delete {thepunch::%attacker%}
+
+on skript start:
+	delete {thepunch::*}
+
+on quit:
+	if {thepunch::%player%} is set:
+		delete {thepunch::%player%}
+
+on skript start:
+	delete {enchanting::*}
+
+on join:
+	delete {enchanting::%player%}
+
+on inventory close:
+	{enchanting::%player%} is set
+	wait a tick
+	open chest with 5 rows named "&eProhlízís si mystické vylepsení..&0" to player
+
+
+command /mystic:
+	trigger:
+		close player's inventory
+		wait 1 tick
+		set {_blackSlots::*} to 10, 11, 12, 21, 30, 29, 28 and 19
+
+		if {mystic::%player%} is not set:
+			open chest with 5 rows named "&eProhlízís si mystické vylepsení..&0" to player
+			make gui slot 24 of player with empty map named "&6&lMystické vylepsení" with lore "||&7Musis zde vlozit &eZlaty Mec&7.||&f ➥ &7Mec lze vylepsit az na &6Tier III&7.||||&5Info o &lzlatem meci&5!||&8&l ▶ &7Lze zakoupit v &fPremium Obchode&7.||&8&l ▶ &7Sance ziskat ho za &czabiti &7hrace.||    &7&o(Moznost ziskat pouze od &ePrestige &a&6##&eI&7&o.)||&r" to do nothing
+			while inventory name of player's current inventory is "&eProhlízís si mystické vylepsení..&0":
+				make gui slot {_blackSlots::*} of player with black glass to do nothing
+				loop 8 times:
+					if inventory name of player's current inventory is "&eProhlízís si mystické vylepsení..&0":
+						make gui slot {_blackSlots::%loop-value -1%} of player with black glass to do nothing
+						make gui slot {_blackSlots::%loop-value%} of player with red glass to do nothing
+						wait 1 tick
+						if inventory name of player's current inventory is not "&eProhlízís si mystické vylepsení..&0":
+							stop
+						wait 1 tick
+						if inventory name of player's current inventory is not "&eProhlízís si mystické vylepsení..&0":
+							stop
+						wait 1 tick
+						if inventory name of player's current inventory is not "&eProhlízís si mystické vylepsení..&0":
+							stop
+						wait 1 tick
+						if inventory name of player's current inventory is not "&eProhlízís si mystické vylepsení..&0":
+							stop
+						wait 1 tick
+						if inventory name of player's current inventory is not "&eProhlízís si mystické vylepsení..&0":
+							stop
+					else:
+						stop
+		if {mystic::%player%} is 1:
+			open chest with 5 rows named "&eProhlízís si mystické vylepsení..&d&0" to player
+			make gui slot 20 of player with unbreakable golden sword named "&eZlaty Mec" with lore "||&5Info o &lzlatem meci&5!||&8&l ▶ &7&7Lze aplikovat v &6&lMystickem Vylepsení&7.||&8&l ▶ &7Pri vylepsení &94 &7➠ &96.5 Attack Damge&7.||&7&o(Pri smrti nezmizi z inventare.)" to run:
+				close player's inventory
+				delete {mystic::%player%}
+				give unbreakable golden sword named "&eZlaty Mec" with lore "||&5Info o &lzlatem meci&5!||&8&l ▶ &7&7Lze aplikovat v &6&lMystickem Vylepsení&7.||&8&l ▶ &7Pri vylepsení &94 &7➠ &96.5 Attack Damge&7.||&7&o(Pri smrti nezmizi z inventare.)" to player
+				make player execute command "/mystic"
+			set {_shop} to {gold::%player%}
+			replace all "." in {_shop} with ""
+			set {_shop} to {_shop} parsed as number
+
+			if {_shop} is higher or equal to 1200:
+				make gui slot 24 of player with enchantment table named "&6Vylepseni Zlateho Mece" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Nahodne vylepseni mece.||||&4⚠ &cUjisti se, ze mas v inventari misto.||||&7Vylepseni stoji &e1.200 Ⓩ&7.||&7 ➥ &aKlikni zde pro zakoupeni vylepseni." to run:
+					set {mystic::%player%} to 4
+					close player's inventory
+					make player execute command "/mystic"
+					Zlataky("remove", 1200, player)
+					message ""
+					message "&aUspesne jsi zakoupil vylepseni zlateho mece."
+					message "&f ➥ &7Z uctu ti bylo odebrano &e1.200 Ⓩ&7."
+					message ""
+
+
+			else:
+				make gui slot 24 of player with enchantment table named "&6Vylepseni Zlateho Mece" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Nahodne vylepseni mece.||||&7Vylepseni stoji &e1.200 Ⓩ&7.||&7 ➥ &cNemas dostatek zlataku pro zakoupeni." to do nothing
+
+			while inventory name of player's current inventory is "&eProhlízís si mystické vylepsení..&d&0":
+				make gui slot {_blackSlots::*} of player with black glass to do nothing
+				loop 8 times:
+					if inventory name of player's current inventory is "&eProhlízís si mystické vylepsení..&d&0":
+						make gui slot {_blackSlots::%loop-value -1%} of player with black glass to do nothing
+						make gui slot {_blackSlots::%loop-value%} of player with light green glass to do nothing
+						wait 1 tick
+						if inventory name of player's current inventory is not "&eProhlízís si mystické vylepsení..&d&0":
+							stop
+						wait 1 tick
+						if inventory name of player's current inventory is not "&eProhlízís si mystické vylepsení..&d&0":
+							stop
+						wait 1 tick
+						if inventory name of player's current inventory is not "&eProhlízís si mystické vylepsení..&d&0":
+							stop
+						wait 1 tick
+						if inventory name of player's current inventory is not "&eProhlízís si mystické vylepsení..&d&0":
+							stop
+						wait 1 tick
+						if inventory name of player's current inventory is not "&eProhlízís si mystické vylepsení..&d&0":
+							stop
+					else:
+						stop
+
+		if {mystic::%player%} is 2:
+			open chest with 5 rows named "&eProhlízís si mystické vylepsení..&d&1" to player
+			make gui slot 20 of player with unbreakable golden sword with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:6.5,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "&eZlaty Mec &8┃ &6Tier I" with lore "%{loremystic::%player%}%" to run:
+				close player's inventory
+				delete {mystic::%player%}
+				give unbreakable golden sword with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:6.5,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "&eZlaty Mec &8┃ &6Tier I" with lore "%{loremystic::%player%}%" to player
+				delete {loremystic::%player%}
+				make player execute command "/mystic"
+			set {_shop} to {gold::%player%}
+			replace all "." in {_shop} with ""
+			set {_shop} to {_shop} parsed as number
+
+			if {_shop} is higher or equal to 2300:
+				make gui slot 24 of player with enchantment table named "&6Vylepseni Zlateho Mece" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Nahodne vylepseni mece.||||&4⚠ &cUjisti se, ze mas v inventari misto.||||&7Vylepseni stoji &e2.300 Ⓩ&7.||&7 ➥ &aKlikni zde pro zakoupeni vylepseni." to run:
+					set {mystic::%player%} to 5
+					close player's inventory
+					make player execute command "/mystic"
+					Zlataky("remove", 2300, player)
+					message ""
+					message "&aUspesne jsi zakoupil vylepseni zlateho mece."
+					message "&f ➥ &7Z uctu ti bylo odebrano &e2.300 Ⓩ&7."
+					message ""
+
+
+			else:
+				make gui slot 24 of player with enchantment table named "&6Vylepseni Zlateho Mece" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Nahodne vylepseni mece.||||&7Vylepseni stoji &e2.300 Ⓩ&7.||&7 ➥ &cNemas dostatek zlataku pro zakoupeni." to do nothing
+
+			while inventory name of player's current inventory is "&eProhlízís si mystické vylepsení..&d&1":
+				make gui slot {_blackSlots::*} of player with black glass to do nothing
+				loop 8 times:
+					if inventory name of player's current inventory is "&eProhlízís si mystické vylepsení..&d&1":
+						make gui slot {_blackSlots::%loop-value -1%} of player with black glass to do nothing
+						make gui slot {_blackSlots::%loop-value%} of player with cyan glass to do nothing
+						wait 1 tick
+						if inventory name of player's current inventory is not "&eProhlízís si mystické vylepsení..&d&1":
+							stop
+						wait 1 tick
+						if inventory name of player's current inventory is not "&eProhlízís si mystické vylepsení..&d&1":
+							stop
+						wait 1 tick
+						if inventory name of player's current inventory is not "&eProhlízís si mystické vylepsení..&d&1":
+							stop
+						wait 1 tick
+						if inventory name of player's current inventory is not "&eProhlízís si mystické vylepsení..&d&1":
+							stop
+						wait 1 tick
+						if inventory name of player's current inventory is not "&eProhlízís si mystické vylepsení..&d&1":
+							stop
+					else:
+						stop
+
+			
+
+		if {mystic::%player%} is 3:
+			open chest with 5 rows named "&eProhlízís si mystické vylepsení..&d&2" to player
+			make gui slot 20 of player with unbreakable golden sword with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:6.5,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "&eZlaty Mec &8┃ &6Tier II" with lore "%{loremystic::%player%}%" to run:
+				close player's inventory
+				delete {mystic::%player%}
+				give unbreakable golden sword with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:6.5,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "&eZlaty Mec &8┃ &6Tier II" with lore "%{loremystic::%player%}%" to player
+				delete {loremystic::%player%}
+				make player execute command "/mystic"
+			set {_shop} to {gold::%player%}
+			replace all "." in {_shop} with ""
+			set {_shop} to {_shop} parsed as number
+
+			if {_shop} is higher or equal to 3500:
+				make gui slot 24 of player with enchantment table named "&6Vylepseni Zlateho Mece" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Nahodne vylepseni mece.||||&4⚠ &cUjisti se, ze mas v inventari misto.||||&7Vylepseni stoji &e3.500 Ⓩ&7.||&7 ➥ &aKlikni zde pro zakoupeni vylepseni." to run:
+					set {mystic::%player%} to 6
+					close player's inventory
+					make player execute command "/mystic"
+					Zlataky("remove", 3500, player)
+					message ""
+					message "&aUspesne jsi zakoupil vylepseni zlateho mece."
+					message "&f ➥ &7Z uctu ti bylo odebrano &e3.500 Ⓩ&7."
+					message ""
+
+
+			else:
+				make gui slot 24 of player with enchantment table named "&6Vylepseni Zlateho Mece" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Nahodne vylepseni mece.||||&7Vylepseni stoji &e3.500 Ⓩ&7.||&7 ➥ &cNemas dostatek zlataku pro zakoupeni." to do nothing
+
+			while inventory name of player's current inventory is "&eProhlízís si mystické vylepsení..&d&2":
+				make gui slot {_blackSlots::*} of player with black glass to do nothing
+				loop 8 times:
+					if inventory name of player's current inventory is "&eProhlízís si mystické vylepsení..&d&2":
+						make gui slot {_blackSlots::%loop-value -1%} of player with black glass to do nothing
+						make gui slot {_blackSlots::%loop-value%} of player with purple glass to do nothing
+						wait 1 tick
+						if inventory name of player's current inventory is not "&eProhlízís si mystické vylepsení..&d&2":
+							stop
+						wait 1 tick
+						if inventory name of player's current inventory is not "&eProhlízís si mystické vylepsení..&d&2":
+							stop
+						wait 1 tick
+						if inventory name of player's current inventory is not "&eProhlízís si mystické vylepsení..&d&2":
+							stop
+						wait 1 tick
+						if inventory name of player's current inventory is not "&eProhlízís si mystické vylepsení..&d&2":
+							stop
+						wait 1 tick
+						if inventory name of player's current inventory is not "&eProhlízís si mystické vylepsení..&d&2":
+							stop
+					else:
+						stop
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		if {mystic::%player%} is 4:
+			open chest with 5 rows named "&eProhlízís si mystické vylepsení..&e&0" to player
+			make gui slot 24 of player with enchantment table named "&6Vylepseni Zlateho Mece" with lore "||&5Vylepseni &lzlateho mece&5!||&8&l ▶ &7&kabcdefg&8 ┃ &6Tier I||||&4⚠ &cPokud nemas misto v inventari,||   &cmec zmizi!||||&7&o(Prave probiha vylepseni!)" to do nothing
+
+			delete {mystic::%player%}
+			set {enchanting::%player%} to 1
+			
+			make gui slot {_blackSlots::*} of player with black glass to do nothing
+			loop 8 times:
+				make gui slot 20 of player with bonemeal
+				make gui slot {_blackSlots::%loop-value -1%} of player with black glass to do nothing
+				make gui slot {_blackSlots::%loop-value%} of player with red glass to do nothing
+				wait 1 ticks
+				make gui slot 20 of player with brown dye
+				wait 1 ticks
+			make gui slot {_blackSlots::*} of player with black glass to do nothing
+			loop 8 times:
+				make gui slot 20 of player with bonemeal
+				make gui slot {_blackSlots::%loop-value -1%} of player with black glass to do nothing
+				make gui slot {_blackSlots::%loop-value%} of player with red glass to do nothing
+				wait 1 ticks
+				make gui slot 20 of player with brown dye
+				wait 1 ticks
+			set {_number} to 10
+			loop 3 times:
+				make gui slot {_number} of player with light green glass
+				add 1 to {_number}
+			set {_number} to 19
+			loop 3 times:
+				make gui slot {_number} of player with light green glass
+				add 1 to {_number}
+			set {_number} to 28
+			loop 3 times:
+				make gui slot {_number} of player with light green glass
+				add 1 to {_number}
+			wait 5 ticks
+			set {_number} to 10
+			loop 3 times:
+				make gui slot {_number} of player with black glass
+				add 1 to {_number}
+			set {_number} to 19
+			loop 3 times:
+				make gui slot {_number} of player with black glass
+				add 1 to {_number}
+			set {_number} to 28
+			loop 3 times:
+				make gui slot {_number} of player with black glass
+				add 1 to {_number}
+			wait 5 ticks
+			set {_number} to 10
+			loop 3 times:
+				make gui slot {_number} of player with light green glass
+				add 1 to {_number}
+			set {_number} to 19
+			loop 3 times:
+				make gui slot {_number} of player with light green glass
+				add 1 to {_number}
+			set {_number} to 28
+			loop 3 times:
+				make gui slot {_number} of player with light green glass
+				add 1 to {_number}
+			wait 5 ticks
+			set {_number} to 10
+			loop 3 times:
+				make gui slot {_number} of player with black glass
+				add 1 to {_number}
+			set {_number} to 19
+			loop 3 times:
+				make gui slot {_number} of player with black glass
+				add 1 to {_number}
+			set {_number} to 28
+			loop 3 times:
+				make gui slot {_number} of player with black glass
+				add 1 to {_number}
+			make gui slot {_blackSlots::*} of player with black glass to do nothing
+			loop 8 times:
+				make gui slot {_blackSlots::%loop-value -1%} of player with black glass to do nothing
+				make gui slot {_blackSlots::%loop-value%} of player with red glass to do nothing
+				wait 2 ticks
+			make gui slot 19 of player with black glass
+
+			set {_livesrandom} to a random integer between 7 and 15
+			set {_numofench} to a random integer between 1 and 100
+
+			if {_numofench} is between 1 and 40:
+				set {_numofench} to "I&1"
+				set {_ench::*} to "Beat The Spammer=&8&l ▶ &7Pridava &a+8%% poskozeni &7proti||    &7hraci, ktery drzi &fluk&7.", "Berserk=&8&l ▶ &7Pridava &a+8%% poskozeni &7proti||    &7hraci, ktery drzi &fluk&7."
+				set {_Beat The Spammer} to "&8&l ▶ &7Pridava &a+8%% poskozeni &7proti||    &7hraci, ktery drzi &fluk&7."
+				set {_Berserk} to "&8&l ▶ &7Critical hit na zemi! Sance &d12%%&7, ze||    &7pri zasahu udelis o &c50%% &7vetsi poskozeni."
+				set {_Bounty Reaper} to "&8&l ▶ &7Pridava &a+5%% poskozeni &7proti||    &7hraci na ktereho je bounty."
+				set {_Bruiser} to "&8&l ▶ &7Pokud s mecem blokujes, poskozeni||    &7bude mensi o &c0.5&4❤&7."
+				set {_Bullet Time} to "&8&l ▶ &7Pokud s mecem blokujes, pri zasahu||    &7sipem se sip &cznici&7."
+				set {_Combo: Damage} to "&8&l ▶ &7Kazdy &f4. zasah &7udeli||    &7o &a+20%% &7vetsi poskozeni."
+				set {_Combo: Heal} to "&8&l ▶ &7Kazdy &f4. zasah &7ti doplni &c0.5&4❤&7."
+				set {_Counter-Janitor} to "&8&l ▶ &7Pri zabiti hrace ziskas &fResistance I&7. (2s)"
+				set {_Diamond Stomp} to "&8&l ▶ &7Pridava &a+6%% poskozeni &7proti||    &7hraci s &bDiamond &7brnenim."
+				set {_Duelist} to "&8&l ▶ &7Pokud s mecem blokujes dvakrat poskozeni||    &7od stejneho hrace, pri zasazeni hrace||    &7se zvysi poskozeni o &a+20%%&7."
+				set {_Gold and Boosted} to "&8&l ▶ &7Pridava &a+5%% poskozeni&7, pokud||    &7mas aktivni &fAbsorption&7."
+				set {_Grasshopper} to "&8&l ▶ &7Pridava &a+5%% poskozeni&7, pokud||    &7ty nebo obet stoji na &ftrave&7."
+				set {_King Buster} to "&8&l ▶ &7Pridava &a+7%% poskozeni&7, pokud||    &7ma obet nad &c50%% HP&7."
+				set {_Lifesteal} to "&8&l ▶ &7Uzdravi &a4%% &7ze zpusobeneho poskozeni."
+				set {_Pain Focus} to "&8&l ▶ &7Prida &a+1%% poskozeni &7za kazde||    &7srdicko, ktere ti chybi."
+				set {_Pit Pocket} to "&8&l ▶ &7Seberes &e15 Ⓩ &7obeti pri zasahu.||    &7&o(25s cooldown!)"
+				set {_Punisher} to "&8&l ▶ &7Pridava &a+6%% poskozeni&7, pokud||    &7ma obet pod &c50%% HP&7."
+				set {_Revengeance} to "&8&l ▶ &7Pridava &a+8%% poskozeni &7proti||    &7hraci, ktery te posledni zabil."
+				set {_Shark} to "&8&l ▶ &7Pridava &a+2%% poskozeni &7za kazdeho||    &7hrace, v okruhu &f12 bloku&7, ktery ma pod &c6&4❤&7."
+				set {_Sharp} to "&8&l ▶ &7Pridava &a+4%% &7pri kazdem zasahu."
+				set {_Moctezuma} to "&8&l ▶ &7Pri zabiti ziskas &6+&e7 Ⓩ&7.||&7&o(Vcetne assistu!)"
+				set {_Sierra} to "&8&l ▶ &7Ziskas pri zabiti &6+&e20 Ⓩ &7za kazdou||    &bDiamond &7cast, kterou obet ma."
+				set {_Gold Bump} to "&8&l ▶ &7Pri zabiti ziskas &6+&e4 Ⓩ&7."
+				set {_Gold Boost} to "&8&l ▶ &7Pri zabiti ziskas o &e+&615%% zlataku &7vic."
+				set {_XP Bump} to "&8&l ▶ &7Pri zabiti ziskas &3+&b2XP&7."
+				set {_XP Boost} to "&8&l ▶ &7Pri zabiti ziskas o &3+&b10%% XP &7vic."
+				set {_Billionaire} to "&8&l ▶ &7Poskozeni se zvysi o &f1.33x&7, ale||    &7zasah stoji &e100 Ⓩ&7."
+				set {_Combo: Perun's Warth} to "&8&l ▶ &7Kazdy &f5. zasah &7udeli obeti||    &7pravy zasah za &c1&4❤&7."
+				set {_Executioner} to "&8&l ▶ &7Pokud ma obet mene nez &c1.5&4❤||    &7okamzite umre."
+				set {_Gamble} to "&8&l ▶ &7Sance &d50%%&7, ze zranis obet, nebo sam sebe||    &7s pravym zranenim &c1&4❤&7."
+				set {_Healer} to "&8&l ▶ &7Pri zasahu se ty, ale i obet||    &7uzdravi o &c1&4❤&7."
+				set {_Knockback} to "&8&l ▶ &7Knockback obeti se zvysi||    &7o &f3 bloky&7."
+				set {_The Punch} to "&8&l ▶ &7Pri zasahu obet vyleti do vzduchu.||    &7&o(30s cooldown!)"
+				set {_Blindness} to "&8&l ▶ &7Sance &c0.25%%&7, ze obeti pri zasahu||    &7udelis efekt &fBlindness I&7. (2s)"
+				set {_Poisonous} to "&8&l ▶ &7Sance &c0.25%%&7, ze obeti pri zasahu||    &7udelis efekt &fPoison I&7. (2s)"
+				set {_Slowness} to "&8&l ▶ &7Sance &c0.25%%&7, ze obeti pri zasahu||    &7udelis efekt &fSlowness I&7. (2s)"
+			if {_numofench} is between 41 and 75:
+				set {_numofench} to "II&2"
+				set {_Beat The Spammer} to "&8&l ▶ &7Pridava &a+15%% poskozeni &7proti||    &7hraci, ktery drzi &fluk&7."
+				set {_Berserk} to "&8&l ▶ &7Critical hit na zemi! Sance &d20%%&7, ze||    &7pri zasahu udelis o &c50%% &7vetsi poskozeni."
+				set {_Bounty Reaper} to "&8&l ▶ &7Pridava &a+10%% poskozeni &7proti||    &7hraci na ktereho je bounty."
+				set {_Bruiser} to "&8&l ▶ &7Pokud s mecem blokujes, poskozeni||    &7bude mensi o &c1&4❤&7."
+				set {_Bullet Time} to "&8&l ▶ &7Pokud s mecem blokujes, pri zasahu||    &7sipem se sip &cznici &7a uzdravi te za &c1&4❤&7."
+				set {_Combo: Damage} to "&8&l ▶ &7Kazdy &f3. zasah &7udeli||    &7o &a+30%% &7vetsi poskozeni."
+				set {_Combo: Heal} to "&8&l ▶ &7Kazdy &f4. zasah &7ti doplni &c1&4❤&7."
+				set {_Counter-Janitor} to "&8&l ▶ &7Pri zabiti hrace ziskas &fResistance I&7. (3s)"
+				set {_Diamond Stomp} to "&8&l ▶ &7Pridava &a+12%% poskozeni &7proti||    &7hraci s &bDiamond &7brnenim."
+				set {_Duelist} to "&8&l ▶ &7Pokud s mecem blokujes dvakrat poskozeni||    &7od stejneho hrace, pri zasazeni hrace||    &7se zvysi poskozeni o &a+40%%&7."
+				set {_Gold and Boosted} to "&8&l ▶ &7Pridava &a+9%% poskozeni&7, pokud||    &7mas aktivni &fAbsorption&7."
+				set {_Grasshopper} to "&8&l ▶ &7Pridava &a+9%% poskozeni&7, pokud||    &7ty nebo obet stoji na &ftrave&7."
+				set {_King Buster} to "&8&l ▶ &7Pridava &a+13%% poskozeni&7, pokud||    &7ma obet nad &c50%% HP&7."
+				set {_Lifesteal} to "&8&l ▶ &7Uzdravi &a8%% &7ze zpusobeneho poskozeni."
+				set {_Pain Focus} to "&8&l ▶ &7Prida &a+2%% poskozeni &7za kazde||    &7srdicko, ktere ti chybi."
+				set {_Pit Pocket} to "&8&l ▶ &7Seberes &e20 Ⓩ &7obeti pri zasahu.||    &7&o(20s cooldown!)"
+				set {_Punisher} to "&8&l ▶ &7Pridava &a+12%% poskozeni&7, pokud||    &7ma obet pod &c50%% HP&7."
+				set {_Revengeance} to "&8&l ▶ &7Pridava &a+15%% poskozeni &7proti||    &7hraci, ktery te posledni zabil."
+				set {_Shark} to "&8&l ▶ &7Pridava &a+4%% poskozeni &7za kazdeho||    &7hrace, v okruhu &f12 bloku&7, ktery ma pod &c6&4❤&7."
+				set {_Sharp} to "&8&l ▶ &7Pridava &a+7%% &7pri kazdem zasahu."
+				set {_Moctezuma} to "&8&l ▶ &7Pri zabiti ziskas &e+&614 Ⓩ&7.||&7&o(Vcetne assistu!)"
+				set {_Sierra} to "&8&l ▶ &7Ziskas pri zabiti &6+&e40 Ⓩ &7za kazdou||    &bDiamond &7cast, kterou obet ma."
+				set {_Gold Bump} to "&8&l ▶ &7Pri zabiti ziskas &6+&e8 Ⓩ&7."
+				set {_Gold Boost} to "&8&l ▶ &7Pri zabiti ziskas o &e+&630%% zlataku &7vic."
+				set {_XP Bump} to "&8&l ▶ &7Pri zabiti ziskas &3+&b4XP&7."
+				set {_XP Boost} to "&8&l ▶ &7Pri zabiti ziskas o &3+&b20%% XP &7vic."
+				set {_Billionaire} to "&8&l ▶ &7Poskozeni se zvysi o &f1.67x&7, ale||    &7zasah stoji &e200 Ⓩ&7."
+				set {_Combo: Perun's Warth} to "&8&l ▶ &7Kazdy &f4. zasah &7udeli obeti||    &7pravy zasah za &c2&4❤&7."
+				set {_Executioner} to "&8&l ▶ &7Pokud ma obet mene nez &c1.5&4❤||    &7okamzite umre."
+				set {_Gamble} to "&8&l ▶ &7Sance &d50%%&7, ze zranis obet, nebo sam sebe||    &7s pravym zranenim &c2&4❤&7."
+				set {_Healer} to "&8&l ▶ &7Pri zasahu se ty, ale i obet||    &7uzdravi o &c2&4❤&7."
+				set {_Knockback} to "&8&l ▶ &7Knockback pri zasahu obeti||    &7se zvysi o &f6 bloku&7."
+				set {_The Punch} to "&8&l ▶ &7Pri zasahu obet vyleti do vzduchu.||    &7&o(25s cooldown!)"
+				set {_Blindness} to "&8&l ▶ &7Sance &c0.5%%&7, ze obeti pri zasahu||    &7udelis efekt &fBlindness I&7. (3s)"
+				set {_Poisonous} to "&8&l ▶ &7Sance &c0.5%%&7, ze obeti pri zasahu||    &7udelis efekt &fPoison I&7. (3s)"
+				set {_Slowness} to "&8&l ▶ &7Sance &c0.5%%&7, ze obeti pri zasahu||    &7udelis efekt &fSlowness I&7. (3s)"
+			if {_numofench} is between 76 and 100:
+				set {_numofench} to "III"
+				set {_Beat The Spammer} to "&8&l ▶ &7Pridava &a+40%% poskozeni &7proti||    &7hraci, ktery drzi &fluk&7."
+				set {_Berserk} to "&8&l ▶ &7Critical hit na zemi! Sance &d30%%&7, ze||    &7pri zasahu udelis o &c50%% &7vetsi poskozeni."
+				set {_Bounty Reaper} to "&8&l ▶ &7Pridava &a+15%% poskozeni &7proti||    &7hraci na ktereho je bounty."
+				set {_Bruiser} to "&8&l ▶ &7Pokud s mecem blokujes, poskozeni||    &7bude mensi o &c1.5&4❤&7."
+				set {_Bullet Time} to "&8&l ▶ &7Pokud s mecem blokujes, pri zasahu||    &7sipem se sip &cznici &7a uzdravi te za &c1.5&4❤&7."
+				set {_Combo: Damage} to "&8&l ▶ &7Kazdy &f3. zasah &7udeli||    &7o &a+40%% &7vetsi poskozeni."
+				set {_Combo: Heal} to "&8&l ▶ &7Kazdy &f4. zasah &7ti doplni &c1.5&4❤&7."
+				set {_Counter-Janitor} to "&8&l ▶ &7Pri zabiti hrace ziskas &fResistance I&7. (5s)"
+				set {_Diamond Stomp} to "&8&l ▶ &7Pridava &a+25%% poskozeni &7proti||    &7hraci s &bDiamond &7brnenim."
+				set {_Duelist} to "&8&l ▶ &7Pokud s mecem blokujes dvakrat poskozeni||    &7od stejneho hrace, pri zasazeni hrace||    &7se zvysi poskozeni o &a+75%%&7."
+				set {_Gold and Boosted} to "&8&l ▶ &7Pridava &a+15%% poskozeni&7, pokud||    &7mas aktivni &fAbsorption&7."
+				set {_Grasshopper} to "&8&l ▶ &7Pridava &a+15%% poskozeni&7, pokud||    &7ty nebo obet stoji na &ftrave&7."
+				set {_King Buster} to "&8&l ▶ &7Pridava &a+20%% poskozeni&7, pokud||    &7ma obet nad &c50%% HP&7."
+				set {_Lifesteal} to "&8&l ▶ &7Uzdravi &a13%% &7ze zpusobeneho poskozeni."
+				set {_Pain Focus} to "&8&l ▶ &7Prida &a+5%% poskozeni &7za kazde||    &7srdicko, ktere ti chybi."
+				set {_Pit Pocket} to "&8&l ▶ &7Seberes &e25 Ⓩ &7obeti pri zasahu.||    &7&o(13s cooldown!)"
+				set {_Punisher} to "&8&l ▶ &7Pridava &a+18%% poskozeni&7, pokud||    &7ma obet pod &c50%% HP&7."
+				set {_Revengeance} to "&8&l ▶ &7Pridava &a+25%% poskozeni &7proti||    &7hraci, ktery te posledni zabil."
+				set {_Shark} to "&8&l ▶ &7Pridava &a+7%% poskozeni &7za kazdeho||    &7hrace, v okruhu &f12 bloku&7, ktery ma pod &c6&4❤&7."
+				set {_Sharp} to "&8&l ▶ &7Pridava &a+12%% &7pri kazdem zasahu."
+				set {_Moctezuma} to "&8&l ▶ &7Pri zabiti ziskas &6+&e21 Ⓩ&7.||&7&o(Vcetne assistu!)"
+				set {_Sierra} to "&8&l ▶ &7Ziskas pri zabiti &6+&e60 Ⓩ &7za kazdou||    &bDiamond &7cast, kterou obet ma."
+				set {_Gold Bump} to "&8&l ▶ &7Pri zabiti ziskas &e+&612g&7."
+				set {_Gold Boost} to "&8&l ▶ &7Pri zabiti ziskas o &e+&645%% zlataku &7vic."
+				set {_XP Bump} to "&8&l ▶ &7Pri zabiti ziskas &3+&b6XP&7."
+				set {_XP Boost} to "&8&l ▶ &7Pri zabiti ziskas o &3+&b30%% XP &7vic."
+				set {_Billionaire} to "&8&l ▶ &7Poskozeni se zvysi o &f2x&7, ale||    &7zasah stoji &e350 Ⓩ&7."
+				set {_Combo: Perun's Warth} to "&8&l ▶ &7Kazdy &f4. zasah &7udeli obeti||    &7pravy zasah za &c3&4❤&7."
+				set {_Executioner} to "&8&l ▶ &7Pokud ma obet mene nez &c2&4❤||    &7okamzite umre."
+				set {_Gamble} to "&8&l ▶ &7Sance &d50%%&7, ze zranis obet, nebo sam sebe||    &7s pravym zranenim &c3&4❤&7."
+				set {_Healer} to "&8&l ▶ &7Pri zasahu se ty, ale i obet||    &7uzdravi o &c3&4❤&7."
+				set {_Knockback} to "&8&l ▶ &7Knockback obeti se zvysi||    &7o &f9 bloky&7."
+				set {_The Punch} to "&8&l ▶ &7Pri zasahu obet vyleti do vzduchu.||    &7&o(20s cooldown!)"
+				set {_Blindness} to "&8&l ▶ &7Sance &c1%%&7, ze obeti pri zasahu||    &7udelis efekt &fBlindness I&7. (4s)"
+				set {_Poisonous} to "&8&l ▶ &7Sance &c1%%&7, ze obeti pri zasahu||    &7udelis efekt &fPoison I&7. (4s)"
+				set {_Slowness} to "&8&l ▶ &7Sance &c1%%&7, ze obeti pri zasahu||    &7udelis efekt &fSlowness I&7. (4s)"
+
+			set {_mysticrandom} to a random integer between 1 and 100
+
+			if {_mysticrandom} is between 1 and 85:
+				set {_mystics::*} to "Beat The Spammer", "Berserk", "Bounty Reaper", "Bruiser", "Bullet Time", "Combo: Damage", "Combo: Heal", "Counter-Janitor", "Diamond Stomp", "Duelist", "Gold and Boosted", "Grasshopper", "King Buster", "Lifesteal", "Pain Focus", "Pit Pocket", "Punisher", "Revengeance", "Shark", "Sharp", "Moctezuma", "Sierra", "Gold Bump", "Gold Boost", "XP Bump", "XP Boost", "Blindness", "Poisonous" and "Slowness"
+				set {_name} to random element out of {_mystics::*}
+				make gui slot 20 of player with unbreakable golden sword with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:6.5,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "&eZlaty Mec &8┃ &6Tier I" with lore "&7 ➥ &dZivotu&7: &a%{_livesrandom}%&8/&f%{_livesrandom}%||||&9%{_name}% %{_numofench}%||%{_%{_name}%}%" to run:
+					close player's inventory
+				give unbreakable golden sword with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:6.5,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "&eZlaty Mec &8┃ &6Tier I" with lore "&7 ➥ &dZivotu&7: &a%{_livesrandom}%&8/&f%{_livesrandom}%||||&9%{_name}% %{_numofench}%||%{_%{_name}%}%" to player
+				make gui slot 24 of player with enchantment table named "&6Vylepseni Zlateho Mece" with lore "||&5Vylepseni &lzlateho mece&5!||&8&l ▶ &9%{_name}% %{_numofench}%||||&7&o(Vylepseni mece skoncilo!)" to do nothing
+
+			if {_mysticrandom} is between 86 and 100:
+				set {_mystics::*} to "Billionaire", "Combo: Perun's Warth", "Executioner", "Gamble", "Healer", "Knockback" and "The Punch"
+				set {_name} to random element out of {_mystics::*}
+				make gui slot 20 of player with unbreakable golden sword with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:6.5,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "&eZlaty Mec &8┃ &6Tier I" with lore "&7 ➥ &dZivotu&7: &a%{_livesrandom}%&8/&f%{_livesrandom}%||||&5&l&oRare! &9%{_name}% %{_numofench}%||%{_%{_name}%}%" to run:
+					close player's inventory
+				give unbreakable golden sword with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:6.5,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "&eZlaty Mec &8┃ &6Tier I" with lore "&7 ➥ &dZivotu&7: &a%{_livesrandom}%&8/&f%{_livesrandom}%||||&5&l&oRare! &9%{_name}% %{_numofench}%||%{_%{_name}%}%" to player
+				make gui slot 24 of player with enchantment table named "&6Vylepseni Zlateho Mece" with lore "||&5Vylepseni &lzlateho mece&5!||&8&l ▶ &5&l&oRare! &9%{_name}% %{_numofench}%||||&7&o(Vylepseni mece skoncilo!)" to do nothing
+
+
+			make gui slot {_blackSlots::*} of player with black glass to do nothing
+
+			delete {enchanting::%player%}
+			
+
+	
+		if {mystic::%player%} is 5:
+			open chest with 5 rows named "&eProhlízís si mystické vylepsení..&e&1" to player
+			make gui slot 24 of player with enchantment table named "&6Vylepseni Zlateho Mece" with lore "||&5Vylepseni &lzlateho mece&5!||&8&l ▶ &7&kabcdefg&8 ┃ &6Tier II||||&4⚠ &cPokud nemas misto v inventari,||   &cmec zmizi!||||&7&o(Prave probiha vylepseni!)" to do nothing
+
+			delete {mystic::%player%}
+			set {enchanting::%player%} to 1
+
+			make gui slot {_blackSlots::*} of player with black glass to do nothing
+			loop 8 times:
+				make gui slot 20 of player with bonemeal
+				make gui slot {_blackSlots::%loop-value -1%} of player with black glass to do nothing
+				make gui slot {_blackSlots::%loop-value%} of player with red glass to do nothing
+				wait 1 ticks
+				make gui slot 20 of player with brown dye
+				wait 1 ticks
+			make gui slot {_blackSlots::*} of player with black glass to do nothing
+			loop 8 times:
+				make gui slot 20 of player with bonemeal
+				make gui slot {_blackSlots::%loop-value -1%} of player with black glass to do nothing
+				make gui slot {_blackSlots::%loop-value%} of player with red glass to do nothing
+				wait 1 ticks
+				make gui slot 20 of player with brown dye
+				wait 1 ticks
+			set {_number} to 10
+			loop 3 times:
+				make gui slot {_number} of player with light green glass
+				add 1 to {_number}
+			set {_number} to 19
+			loop 3 times:
+				make gui slot {_number} of player with light green glass
+				add 1 to {_number}
+			set {_number} to 28
+			loop 3 times:
+				make gui slot {_number} of player with light green glass
+				add 1 to {_number}
+			wait 5 ticks
+			set {_number} to 10
+			loop 3 times:
+				make gui slot {_number} of player with black glass
+				add 1 to {_number}
+			set {_number} to 19
+			loop 3 times:
+				make gui slot {_number} of player with black glass
+				add 1 to {_number}
+			set {_number} to 28
+			loop 3 times:
+				make gui slot {_number} of player with black glass
+				add 1 to {_number}
+			wait 5 ticks
+			set {_number} to 10
+			loop 3 times:
+				make gui slot {_number} of player with light green glass
+				add 1 to {_number}
+			set {_number} to 19
+			loop 3 times:
+				make gui slot {_number} of player with light green glass
+				add 1 to {_number}
+			set {_number} to 28
+			loop 3 times:
+				make gui slot {_number} of player with light green glass
+				add 1 to {_number}
+			wait 5 ticks
+			set {_number} to 10
+			loop 3 times:
+				make gui slot {_number} of player with black glass
+				add 1 to {_number}
+			set {_number} to 19
+			loop 3 times:
+				make gui slot {_number} of player with black glass
+				add 1 to {_number}
+			set {_number} to 28
+			loop 3 times:
+				make gui slot {_number} of player with black glass
+				add 1 to {_number}
+			make gui slot {_blackSlots::*} of player with black glass to do nothing
+			loop 8 times:
+				make gui slot {_blackSlots::%loop-value -1%} of player with black glass to do nothing
+				make gui slot {_blackSlots::%loop-value%} of player with red glass to do nothing
+				wait 2 ticks
+			make gui slot 19 of player with black glass
+
+			set {_livesrandom} to a random integer between 16 and 22
+			set {_numofench} to a random integer between 1 and 100
+
+			if {_numofench} is between 1 and 40:
+				set {_numofench} to "I&1"
+				set {_ench::*} to "Beat The Spammer=&8&l ▶ &7Pridava &a+8%% poskozeni &7proti||    &7hraci, ktery drzi &fluk&7.", "Berserk=&8&l ▶ &7Pridava &a+8%% poskozeni &7proti||    &7hraci, ktery drzi &fluk&7."
+				set {_Beat The Spammer} to "&8&l ▶ &7Pridava &a+8%% poskozeni &7proti||    &7hraci, ktery drzi &fluk&7."
+				set {_Berserk} to "&8&l ▶ &7Critical hit na zemi! Sance &d12%%&7, ze||    &7pri zasahu udelis o &c50%% &7vetsi poskozeni."
+				set {_Bounty Reaper} to "&8&l ▶ &7Pridava &a+5%% poskozeni &7proti||    &7hraci na ktereho je bounty."
+				set {_Bruiser} to "&8&l ▶ &7Pokud s mecem blokujes, poskozeni||    &7bude mensi o &c0.5&4❤&7."
+				set {_Bullet Time} to "&8&l ▶ &7Pokud s mecem blokujes, pri zasahu||    &7sipem se sip &cznici&7."
+				set {_Combo: Damage} to "&8&l ▶ &7Kazdy &f4. zasah &7udeli||    &7o &a+20%% &7vetsi poskozeni."
+				set {_Combo: Heal} to "&8&l ▶ &7Kazdy &f4. zasah &7ti doplni &c0.5&4❤&7."
+				set {_Counter-Janitor} to "&8&l ▶ &7Pri zabiti hrace ziskas &fResistance I&7. (2s)"
+				set {_Diamond Stomp} to "&8&l ▶ &7Pridava &a+6%% poskozeni &7proti||    &7hraci s &bDiamond &7brnenim."
+				set {_Duelist} to "&8&l ▶ &7Pokud s mecem blokujes dvakrat poskozeni||    &7od stejneho hrace, pri zasazeni hrace||    &7se zvysi poskozeni o &a+20%%&7."
+				set {_Gold and Boosted} to "&8&l ▶ &7Pridava &a+5%% poskozeni&7, pokud||    &7mas aktivni &fAbsorption&7."
+				set {_Grasshopper} to "&8&l ▶ &7Pridava &a+5%% poskozeni&7, pokud||    &7ty nebo obet stoji na &ftrave&7."
+				set {_King Buster} to "&8&l ▶ &7Pridava &a+7%% poskozeni&7, pokud||    &7ma obet nad &c50%% HP&7."
+				set {_Lifesteal} to "&8&l ▶ &7Uzdravi &a4%% &7ze zpusobeneho poskozeni."
+				set {_Pain Focus} to "&8&l ▶ &7Prida &a+1%% poskozeni &7za kazde||    &7srdicko, ktere ti chybi."
+				set {_Pit Pocket} to "&8&l ▶ &7Seberes &e15 Ⓩ &7obeti pri zasahu.||    &7&o(25s cooldown!)"
+				set {_Punisher} to "&8&l ▶ &7Pridava &a+6%% poskozeni&7, pokud||    &7ma obet pod &c50%% HP&7."
+				set {_Revengeance} to "&8&l ▶ &7Pridava &a+8%% poskozeni &7proti||    &7hraci, ktery te posledni zabil."
+				set {_Shark} to "&8&l ▶ &7Pridava &a+2%% poskozeni &7za kazdeho||    &7hrace, v okruhu &f12 bloku&7, ktery ma pod &c6&4❤&7."
+				set {_Sharp} to "&8&l ▶ &7Pridava &a+4%% &7pri kazdem zasahu."
+				set {_Moctezuma} to "&8&l ▶ &7Pri zabiti ziskas &6+&e7 Ⓩ&7.||&7&o(Vcetne assistu!)"
+				set {_Sierra} to "&8&l ▶ &7Ziskas pri zabiti &6+&e20 Ⓩ &7za kazdou||    &bDiamond &7cast, kterou obet ma."
+				set {_Gold Bump} to "&8&l ▶ &7Pri zabiti ziskas &6+&e4 Ⓩ&7."
+				set {_Gold Boost} to "&8&l ▶ &7Pri zabiti ziskas o &e+&615%% zlataku &7vic."
+				set {_XP Bump} to "&8&l ▶ &7Pri zabiti ziskas &3+&b2XP&7."
+				set {_XP Boost} to "&8&l ▶ &7Pri zabiti ziskas o &3+&b10%% XP &7vic."
+				set {_Billionaire} to "&8&l ▶ &7Poskozeni se zvysi o &f1.33x&7, ale||    &7zasah stoji &e100 Ⓩ&7."
+				set {_Combo: Perun's Warth} to "&8&l ▶ &7Kazdy &f5. zasah &7udeli obeti||    &7pravy zasah za &c1&4❤&7."
+				set {_Executioner} to "&8&l ▶ &7Pokud ma obet mene nez &c1.5&4❤||    &7okamzite umre."
+				set {_Gamble} to "&8&l ▶ &7Sance &d50%%&7, ze zranis obet, nebo sam sebe||    &7s pravym zranenim &c1&4❤&7."
+				set {_Healer} to "&8&l ▶ &7Pri zasahu se ty, ale i obet||    &7uzdravi o &c1&4❤&7."
+				set {_Knockback} to "&8&l ▶ &7Knockback obeti se zvysi||    &7o &f3 bloky&7."
+				set {_The Punch} to "&8&l ▶ &7Pri zasahu obet vyleti do vzduchu.||    &7&o(30s cooldown!)"
+				set {_Blindness} to "&8&l ▶ &7Sance &c0.25%%&7, ze obeti pri zasahu||    &7udelis efekt &fBlindness I&7. (2s)"
+				set {_Poisonous} to "&8&l ▶ &7Sance &c0.25%%&7, ze obeti pri zasahu||    &7udelis efekt &fPoison I&7. (2s)"
+				set {_Slowness} to "&8&l ▶ &7Sance &c0.25%%&7, ze obeti pri zasahu||    &7udelis efekt &fSlowness I&7. (2s)"
+			if {_numofench} is between 41 and 75:
+				set {_numofench} to "II&2"
+				set {_Beat The Spammer} to "&8&l ▶ &7Pridava &a+15%% poskozeni &7proti||    &7hraci, ktery drzi &fluk&7."
+				set {_Berserk} to "&8&l ▶ &7Critical hit na zemi! Sance &d20%%&7, ze||    &7pri zasahu udelis o &c50%% &7vetsi poskozeni."
+				set {_Bounty Reaper} to "&8&l ▶ &7Pridava &a+10%% poskozeni &7proti||    &7hraci na ktereho je bounty."
+				set {_Bruiser} to "&8&l ▶ &7Pokud s mecem blokujes, poskozeni||    &7bude mensi o &c1&4❤&7."
+				set {_Bullet Time} to "&8&l ▶ &7Pokud s mecem blokujes, pri zasahu||    &7sipem se sip &cznici &7a uzdravi te za &c1&4❤&7."
+				set {_Combo: Damage} to "&8&l ▶ &7Kazdy &f3. zasah &7udeli||    &7o &a+30%% &7vetsi poskozeni."
+				set {_Combo: Heal} to "&8&l ▶ &7Kazdy &f4. zasah &7ti doplni &c1&4❤&7."
+				set {_Counter-Janitor} to "&8&l ▶ &7Pri zabiti hrace ziskas &fResistance I&7. (3s)"
+				set {_Diamond Stomp} to "&8&l ▶ &7Pridava &a+12%% poskozeni &7proti||    &7hraci s &bDiamond &7brnenim."
+				set {_Duelist} to "&8&l ▶ &7Pokud s mecem blokujes dvakrat poskozeni||    &7od stejneho hrace, pri zasazeni hrace||    &7se zvysi poskozeni o &a+40%%&7."
+				set {_Gold and Boosted} to "&8&l ▶ &7Pridava &a+9%% poskozeni&7, pokud||    &7mas aktivni &fAbsorption&7."
+				set {_Grasshopper} to "&8&l ▶ &7Pridava &a+9%% poskozeni&7, pokud||    &7ty nebo obet stoji na &ftrave&7."
+				set {_King Buster} to "&8&l ▶ &7Pridava &a+13%% poskozeni&7, pokud||    &7ma obet nad &c50%% HP&7."
+				set {_Lifesteal} to "&8&l ▶ &7Uzdravi &a8%% &7ze zpusobeneho poskozeni."
+				set {_Pain Focus} to "&8&l ▶ &7Prida &a+2%% poskozeni &7za kazde||    &7srdicko, ktere ti chybi."
+				set {_Pit Pocket} to "&8&l ▶ &7Seberes &e20 Ⓩ &7obeti pri zasahu.||    &7&o(20s cooldown!)"
+				set {_Punisher} to "&8&l ▶ &7Pridava &a+12%% poskozeni&7, pokud||    &7ma obet pod &c50%% HP&7."
+				set {_Revengeance} to "&8&l ▶ &7Pridava &a+15%% poskozeni &7proti||    &7hraci, ktery te posledni zabil."
+				set {_Shark} to "&8&l ▶ &7Pridava &a+4%% poskozeni &7za kazdeho||    &7hrace, v okruhu &f12 bloku&7, ktery ma pod &c6&4❤&7."
+				set {_Sharp} to "&8&l ▶ &7Pridava &a+7%% &7pri kazdem zasahu."
+				set {_Moctezuma} to "&8&l ▶ &7Pri zabiti ziskas &e+&614 Ⓩ&7.||&7&o(Vcetne assistu!)"
+				set {_Sierra} to "&8&l ▶ &7Ziskas pri zabiti &6+&e40 Ⓩ &7za kazdou||    &bDiamond &7cast, kterou obet ma."
+				set {_Gold Bump} to "&8&l ▶ &7Pri zabiti ziskas &6+&e8 Ⓩ&7."
+				set {_Gold Boost} to "&8&l ▶ &7Pri zabiti ziskas o &e+&630%% zlataku &7vic."
+				set {_XP Bump} to "&8&l ▶ &7Pri zabiti ziskas &3+&b4XP&7."
+				set {_XP Boost} to "&8&l ▶ &7Pri zabiti ziskas o &3+&b20%% XP &7vic."
+				set {_Billionaire} to "&8&l ▶ &7Poskozeni se zvysi o &f1.67x&7, ale||    &7zasah stoji &e200 Ⓩ&7."
+				set {_Combo: Perun's Warth} to "&8&l ▶ &7Kazdy &f4. zasah &7udeli obeti||    &7pravy zasah za &c2&4❤&7."
+				set {_Executioner} to "&8&l ▶ &7Pokud ma obet mene nez &c1.5&4❤||    &7okamzite umre."
+				set {_Gamble} to "&8&l ▶ &7Sance &d50%%&7, ze zranis obet, nebo sam sebe||    &7s pravym zranenim &c2&4❤&7."
+				set {_Healer} to "&8&l ▶ &7Pri zasahu se ty, ale i obet||    &7uzdravi o &c2&4❤&7."
+				set {_Knockback} to "&8&l ▶ &7Knockback pri zasahu obeti||    &7se zvysi o &f6 bloku&7."
+				set {_The Punch} to "&8&l ▶ &7Pri zasahu obet vyleti do vzduchu.||    &7&o(25s cooldown!)"
+				set {_Blindness} to "&8&l ▶ &7Sance &c0.5%%&7, ze obeti pri zasahu||    &7udelis efekt &fBlindness I&7. (3s)"
+				set {_Poisonous} to "&8&l ▶ &7Sance &c0.5%%&7, ze obeti pri zasahu||    &7udelis efekt &fPoison I&7. (3s)"
+				set {_Slowness} to "&8&l ▶ &7Sance &c0.5%%&7, ze obeti pri zasahu||    &7udelis efekt &fSlowness I&7. (3s)"
+			if {_numofench} is between 76 and 100:
+				set {_numofench} to "III"
+				set {_Beat The Spammer} to "&8&l ▶ &7Pridava &a+40%% poskozeni &7proti||    &7hraci, ktery drzi &fluk&7."
+				set {_Berserk} to "&8&l ▶ &7Critical hit na zemi! Sance &d30%%&7, ze||    &7pri zasahu udelis o &c50%% &7vetsi poskozeni."
+				set {_Bounty Reaper} to "&8&l ▶ &7Pridava &a+15%% poskozeni &7proti||    &7hraci na ktereho je bounty."
+				set {_Bruiser} to "&8&l ▶ &7Pokud s mecem blokujes, poskozeni||    &7bude mensi o &c1.5&4❤&7."
+				set {_Bullet Time} to "&8&l ▶ &7Pokud s mecem blokujes, pri zasahu||    &7sipem se sip &cznici &7a uzdravi te za &c1.5&4❤&7."
+				set {_Combo: Damage} to "&8&l ▶ &7Kazdy &f3. zasah &7udeli||    &7o &a+40%% &7vetsi poskozeni."
+				set {_Combo: Heal} to "&8&l ▶ &7Kazdy &f4. zasah &7ti doplni &c1.5&4❤&7."
+				set {_Counter-Janitor} to "&8&l ▶ &7Pri zabiti hrace ziskas &fResistance I&7. (5s)"
+				set {_Diamond Stomp} to "&8&l ▶ &7Pridava &a+25%% poskozeni &7proti||    &7hraci s &bDiamond &7brnenim."
+				set {_Duelist} to "&8&l ▶ &7Pokud s mecem blokujes dvakrat poskozeni||    &7od stejneho hrace, pri zasazeni hrace||    &7se zvysi poskozeni o &a+75%%&7."
+				set {_Gold and Boosted} to "&8&l ▶ &7Pridava &a+15%% poskozeni&7, pokud||    &7mas aktivni &fAbsorption&7."
+				set {_Grasshopper} to "&8&l ▶ &7Pridava &a+15%% poskozeni&7, pokud||    &7ty nebo obet stoji na &ftrave&7."
+				set {_King Buster} to "&8&l ▶ &7Pridava &a+20%% poskozeni&7, pokud||    &7ma obet nad &c50%% HP&7."
+				set {_Lifesteal} to "&8&l ▶ &7Uzdravi &a13%% &7ze zpusobeneho poskozeni."
+				set {_Pain Focus} to "&8&l ▶ &7Prida &a+5%% poskozeni &7za kazde||    &7srdicko, ktere ti chybi."
+				set {_Pit Pocket} to "&8&l ▶ &7Seberes &e25 Ⓩ &7obeti pri zasahu.||    &7&o(13s cooldown!)"
+				set {_Punisher} to "&8&l ▶ &7Pridava &a+18%% poskozeni&7, pokud||    &7ma obet pod &c50%% HP&7."
+				set {_Revengeance} to "&8&l ▶ &7Pridava &a+25%% poskozeni &7proti||    &7hraci, ktery te posledni zabil."
+				set {_Shark} to "&8&l ▶ &7Pridava &a+7%% poskozeni &7za kazdeho||    &7hrace, v okruhu &f12 bloku&7, ktery ma pod &c6&4❤&7."
+				set {_Sharp} to "&8&l ▶ &7Pridava &a+12%% &7pri kazdem zasahu."
+				set {_Moctezuma} to "&8&l ▶ &7Pri zabiti ziskas &6+&e21 Ⓩ&7.||&7&o(Vcetne assistu!)"
+				set {_Sierra} to "&8&l ▶ &7Ziskas pri zabiti &6+&e60 Ⓩ &7za kazdou||    &bDiamond &7cast, kterou obet ma."
+				set {_Gold Bump} to "&8&l ▶ &7Pri zabiti ziskas &e+&612g&7."
+				set {_Gold Boost} to "&8&l ▶ &7Pri zabiti ziskas o &e+&645%% zlataku &7vic."
+				set {_XP Bump} to "&8&l ▶ &7Pri zabiti ziskas &3+&b6XP&7."
+				set {_XP Boost} to "&8&l ▶ &7Pri zabiti ziskas o &3+&b30%% XP &7vic."
+				set {_Billionaire} to "&8&l ▶ &7Poskozeni se zvysi o &f2x&7, ale||    &7zasah stoji &e350 Ⓩ&7."
+				set {_Combo: Perun's Warth} to "&8&l ▶ &7Kazdy &f4. zasah &7udeli obeti||    &7pravy zasah za &c3&4❤&7."
+				set {_Executioner} to "&8&l ▶ &7Pokud ma obet mene nez &c2&4❤||    &7okamzite umre."
+				set {_Gamble} to "&8&l ▶ &7Sance &d50%%&7, ze zranis obet, nebo sam sebe||    &7s pravym zranenim &c3&4❤&7."
+				set {_Healer} to "&8&l ▶ &7Pri zasahu se ty, ale i obet||    &7uzdravi o &c3&4❤&7."
+				set {_Knockback} to "&8&l ▶ &7Knockback obeti se zvysi||    &7o &f9 bloky&7."
+				set {_The Punch} to "&8&l ▶ &7Pri zasahu obet vyleti do vzduchu.||    &7&o(20s cooldown!)"
+				set {_Blindness} to "&8&l ▶ &7Sance &c1%%&7, ze obeti pri zasahu||    &7udelis efekt &fBlindness I&7. (4s)"
+				set {_Poisonous} to "&8&l ▶ &7Sance &c1%%&7, ze obeti pri zasahu||    &7udelis efekt &fPoison I&7. (4s)"
+				set {_Slowness} to "&8&l ▶ &7Sance &c1%%&7, ze obeti pri zasahu||    &7udelis efekt &fSlowness I&7. (4s)"
+
+			set {_lore::*} to {loremystic::%player%} split by "||||"
+			set {_xy} to "&7 ➥ &dZivotu&7: &a%{_livesrandom}%&8/&f%{_livesrandom}%||||%{_lore::2}%"
+			set {loremystic::%player%} to {_xy}
+
+			set {_mysticrandom} to a random integer between 1 and 100
+
+			if {_mysticrandom} is between 1 and 85:
+				set {_mystics::*} to "Beat The Spammer", "Berserk", "Bounty Reaper", "Bruiser", "Bullet Time", "Combo: Damage", "Combo: Heal", "Counter-Janitor", "Diamond Stomp", "Duelist", "Gold and Boosted", "Grasshopper", "King Buster", "Lifesteal", "Pain Focus", "Pit Pocket", "Punisher", "Revengeance", "Shark", "Sharp", "Moctezuma", "Sierra", "Gold Bump", "Gold Boost", "XP Bump", "XP Boost", "Blindness", "Poisonous" and "Slowness"
+				set {_name} to random element out of {_mystics::*}
+				if {loremystic::%player%} contains "%{_name}%":
+					remove {_name} from {_mystics::*}
+					set {_name} to random element out of {_mystics::*}
+				make gui slot 20 of player with unbreakable golden sword with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:6.5,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "&eZlaty Mec &8┃ &6Tier II" with lore "%{loremystic::%player%}%||||&9%{_name}% %{_numofench}%||%{_%{_name}%}%" to run:
+					close player's inventory
+				give unbreakable golden sword with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:6.5,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "&eZlaty Mec &8┃ &6Tier II" with lore "%{loremystic::%player%}%||||&9%{_name}% %{_numofench}%||%{_%{_name}%}%" to player
+				make gui slot 24 of player with enchantment table named "&6Vylepseni Zlateho Mece" with lore "||&5Vylepseni &lzlateho mece&5!||&8&l ▶ &9%{_name}% %{_numofench}%||||&7&o(Vylepseni mece skoncilo!)" to do nothing
+
+			if {_mysticrandom} is between 86 and 100:
+				set {_mystics::*} to "Billionaire", "Combo: Perun's Warth", "Executioner", "Gamble", "Healer", "Knockback" and "The Punch"
+				set {_name} to random element out of {_mystics::*}
+				if {loremystic::%player%} contains "%{_name}%":
+					remove {_name} from {_mystics::*}
+					set {_name} to random element out of {_mystics::*}
+				make gui slot 20 of player with unbreakable golden sword with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:6.5,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "&eZlaty Mec &8┃ &6Tier II" with lore "%{loremystic::%player%}%||||&5&l&oRare! &9%{_name}% %{_numofench}%||%{_%{_name}%}%" to run:
+					close player's inventory
+				give unbreakable golden sword with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:6.5,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "&eZlaty Mec &8┃ &6Tier II" with lore "%{loremystic::%player%}%||||&5&l&oRare! &9%{_name}% %{_numofench}%||%{_%{_name}%}%" to player
+				make gui slot 24 of player with enchantment table named "&6Vylepseni Zlateho Mece" with lore "||&5Vylepseni &lzlateho mece&5!||&8&l ▶ &5&l&oRare! &9%{_name}% %{_numofench}%||||&7&o(Vylepseni mece skoncilo!)" to do nothing
+
+			make gui slot {_blackSlots::*} of player with black glass to do nothing
+
+			delete {enchanting::%player%}
+			
+
+
+		if {mystic::%player%} is 6:
+			open chest with 5 rows named "&eProhlízís si mystické vylepsení..&e&2" to player
+			make gui slot 24 of player with enchantment table named "&6Vylepseni Zlateho Mece" with lore "||&5Vylepseni &lzlateho mece&5!||&8&l ▶ &7&kabcdefg&8 ┃ &6Tier III||||&4⚠ &cPokud nemas misto v inventari,||   &cmec zmizi!||||&7&o(Prave probiha vylepseni!)" to do nothing
+
+			delete {mystic::%player%}
+			set {enchanting::%player%} to 1
+
+			make gui slot {_blackSlots::*} of player with black glass to do nothing
+			loop 8 times:
+				make gui slot 20 of player with bonemeal
+				make gui slot {_blackSlots::%loop-value -1%} of player with black glass to do nothing
+				make gui slot {_blackSlots::%loop-value%} of player with red glass to do nothing
+				wait 1 ticks
+				make gui slot 20 of player with brown dye
+				wait 1 ticks
+			make gui slot {_blackSlots::*} of player with black glass to do nothing
+			loop 8 times:
+				make gui slot 20 of player with bonemeal
+				make gui slot {_blackSlots::%loop-value -1%} of player with black glass to do nothing
+				make gui slot {_blackSlots::%loop-value%} of player with red glass to do nothing
+				wait 1 ticks
+				make gui slot 20 of player with brown dye
+				wait 1 ticks
+			set {_number} to 10
+			loop 3 times:
+				make gui slot {_number} of player with light green glass
+				add 1 to {_number}
+			set {_number} to 19
+			loop 3 times:
+				make gui slot {_number} of player with light green glass
+				add 1 to {_number}
+			set {_number} to 28
+			loop 3 times:
+				make gui slot {_number} of player with light green glass
+				add 1 to {_number}
+			wait 5 ticks
+			set {_number} to 10
+			loop 3 times:
+				make gui slot {_number} of player with black glass
+				add 1 to {_number}
+			set {_number} to 19
+			loop 3 times:
+				make gui slot {_number} of player with black glass
+				add 1 to {_number}
+			set {_number} to 28
+			loop 3 times:
+				make gui slot {_number} of player with black glass
+				add 1 to {_number}
+			wait 5 ticks
+			set {_number} to 10
+			loop 3 times:
+				make gui slot {_number} of player with light green glass
+				add 1 to {_number}
+			set {_number} to 19
+			loop 3 times:
+				make gui slot {_number} of player with light green glass
+				add 1 to {_number}
+			set {_number} to 28
+			loop 3 times:
+				make gui slot {_number} of player with light green glass
+				add 1 to {_number}
+			wait 5 ticks
+			set {_number} to 10
+			loop 3 times:
+				make gui slot {_number} of player with black glass
+				add 1 to {_number}
+			set {_number} to 19
+			loop 3 times:
+				make gui slot {_number} of player with black glass
+				add 1 to {_number}
+			set {_number} to 28
+			loop 3 times:
+				make gui slot {_number} of player with black glass
+				add 1 to {_number}
+			make gui slot {_blackSlots::*} of player with black glass to do nothing
+			loop 8 times:
+				make gui slot {_blackSlots::%loop-value -1%} of player with black glass to do nothing
+				make gui slot {_blackSlots::%loop-value%} of player with red glass to do nothing
+				wait 2 ticks
+			make gui slot 19 of player with black glass
+
+			set {_livesrandom} to a random integer between 23 and 30
+			set {_numofench} to a random integer between 1 and 100
+
+			if {_numofench} is between 1 and 40:
+				set {_numofench} to "I&1"
+				set {_ench::*} to "Beat The Spammer=&8&l ▶ &7Pridava &a+8%% poskozeni &7proti||    &7hraci, ktery drzi &fluk&7.", "Berserk=&8&l ▶ &7Pridava &a+8%% poskozeni &7proti||    &7hraci, ktery drzi &fluk&7."
+				set {_Beat The Spammer} to "&8&l ▶ &7Pridava &a+8%% poskozeni &7proti||    &7hraci, ktery drzi &fluk&7."
+				set {_Berserk} to "&8&l ▶ &7Critical hit na zemi! Sance &d12%%&7, ze||    &7pri zasahu udelis o &c50%% &7vetsi poskozeni."
+				set {_Bounty Reaper} to "&8&l ▶ &7Pridava &a+5%% poskozeni &7proti||    &7hraci na ktereho je bounty."
+				set {_Bruiser} to "&8&l ▶ &7Pokud s mecem blokujes, poskozeni||    &7bude mensi o &c0.5&4❤&7."
+				set {_Bullet Time} to "&8&l ▶ &7Pokud s mecem blokujes, pri zasahu||    &7sipem se sip &cznici&7."
+				set {_Combo: Damage} to "&8&l ▶ &7Kazdy &f4. zasah &7udeli||    &7o &a+20%% &7vetsi poskozeni."
+				set {_Combo: Heal} to "&8&l ▶ &7Kazdy &f4. zasah &7ti doplni &c0.5&4❤&7."
+				set {_Counter-Janitor} to "&8&l ▶ &7Pri zabiti hrace ziskas &fResistance I&7. (2s)"
+				set {_Diamond Stomp} to "&8&l ▶ &7Pridava &a+6%% poskozeni &7proti||    &7hraci s &bDiamond &7brnenim."
+				set {_Duelist} to "&8&l ▶ &7Pokud s mecem blokujes dvakrat poskozeni||    &7od stejneho hrace, pri zasazeni hrace||    &7se zvysi poskozeni o &a+20%%&7."
+				set {_Gold and Boosted} to "&8&l ▶ &7Pridava &a+5%% poskozeni&7, pokud||    &7mas aktivni &fAbsorption&7."
+				set {_Grasshopper} to "&8&l ▶ &7Pridava &a+5%% poskozeni&7, pokud||    &7ty nebo obet stoji na &ftrave&7."
+				set {_King Buster} to "&8&l ▶ &7Pridava &a+7%% poskozeni&7, pokud||    &7ma obet nad &c50%% HP&7."
+				set {_Lifesteal} to "&8&l ▶ &7Uzdravi &a4%% &7ze zpusobeneho poskozeni."
+				set {_Pain Focus} to "&8&l ▶ &7Prida &a+1%% poskozeni &7za kazde||    &7srdicko, ktere ti chybi."
+				set {_Pit Pocket} to "&8&l ▶ &7Seberes &e15 Ⓩ &7obeti pri zasahu.||    &7&o(25s cooldown!)"
+				set {_Punisher} to "&8&l ▶ &7Pridava &a+6%% poskozeni&7, pokud||    &7ma obet pod &c50%% HP&7."
+				set {_Revengeance} to "&8&l ▶ &7Pridava &a+8%% poskozeni &7proti||    &7hraci, ktery te posledni zabil."
+				set {_Shark} to "&8&l ▶ &7Pridava &a+2%% poskozeni &7za kazdeho||    &7hrace, v okruhu &f12 bloku&7, ktery ma pod &c6&4❤&7."
+				set {_Sharp} to "&8&l ▶ &7Pridava &a+4%% &7pri kazdem zasahu."
+				set {_Moctezuma} to "&8&l ▶ &7Pri zabiti ziskas &6+&e7 Ⓩ&7.||&7&o(Vcetne assistu!)"
+				set {_Sierra} to "&8&l ▶ &7Ziskas pri zabiti &6+&e20 Ⓩ &7za kazdou||    &bDiamond &7cast, kterou obet ma."
+				set {_Gold Bump} to "&8&l ▶ &7Pri zabiti ziskas &6+&e4 Ⓩ&7."
+				set {_Gold Boost} to "&8&l ▶ &7Pri zabiti ziskas o &e+&615%% zlataku &7vic."
+				set {_XP Bump} to "&8&l ▶ &7Pri zabiti ziskas &3+&b2XP&7."
+				set {_XP Boost} to "&8&l ▶ &7Pri zabiti ziskas o &3+&b10%% XP &7vic."
+				set {_Billionaire} to "&8&l ▶ &7Poskozeni se zvysi o &f1.33x&7, ale||    &7zasah stoji &e100 Ⓩ&7."
+				set {_Combo: Perun's Warth} to "&8&l ▶ &7Kazdy &f5. zasah &7udeli obeti||    &7pravy zasah za &c1&4❤&7."
+				set {_Executioner} to "&8&l ▶ &7Pokud ma obet mene nez &c1.5&4❤||    &7okamzite umre."
+				set {_Gamble} to "&8&l ▶ &7Sance &d50%%&7, ze zranis obet, nebo sam sebe||    &7s pravym zranenim &c1&4❤&7."
+				set {_Healer} to "&8&l ▶ &7Pri zasahu se ty, ale i obet||    &7uzdravi o &c1&4❤&7."
+				set {_Knockback} to "&8&l ▶ &7Knockback obeti se zvysi||    &7o &f3 bloky&7."
+				set {_The Punch} to "&8&l ▶ &7Pri zasahu obet vyleti do vzduchu.||    &7&o(30s cooldown!)"
+				set {_Blindness} to "&8&l ▶ &7Sance &c0.25%%&7, ze obeti pri zasahu||    &7udelis efekt &fBlindness I&7. (2s)"
+				set {_Poisonous} to "&8&l ▶ &7Sance &c0.25%%&7, ze obeti pri zasahu||    &7udelis efekt &fPoison I&7. (2s)"
+				set {_Slowness} to "&8&l ▶ &7Sance &c0.25%%&7, ze obeti pri zasahu||    &7udelis efekt &fSlowness I&7. (2s)"
+			if {_numofench} is between 41 and 75:
+				set {_numofench} to "II&2"
+				set {_Beat The Spammer} to "&8&l ▶ &7Pridava &a+15%% poskozeni &7proti||    &7hraci, ktery drzi &fluk&7."
+				set {_Berserk} to "&8&l ▶ &7Critical hit na zemi! Sance &d20%%&7, ze||    &7pri zasahu udelis o &c50%% &7vetsi poskozeni."
+				set {_Bounty Reaper} to "&8&l ▶ &7Pridava &a+10%% poskozeni &7proti||    &7hraci na ktereho je bounty."
+				set {_Bruiser} to "&8&l ▶ &7Pokud s mecem blokujes, poskozeni||    &7bude mensi o &c1&4❤&7."
+				set {_Bullet Time} to "&8&l ▶ &7Pokud s mecem blokujes, pri zasahu||    &7sipem se sip &cznici &7a uzdravi te za &c1&4❤&7."
+				set {_Combo: Damage} to "&8&l ▶ &7Kazdy &f3. zasah &7udeli||    &7o &a+30%% &7vetsi poskozeni."
+				set {_Combo: Heal} to "&8&l ▶ &7Kazdy &f4. zasah &7ti doplni &c1&4❤&7."
+				set {_Counter-Janitor} to "&8&l ▶ &7Pri zabiti hrace ziskas &fResistance I&7. (3s)"
+				set {_Diamond Stomp} to "&8&l ▶ &7Pridava &a+12%% poskozeni &7proti||    &7hraci s &bDiamond &7brnenim."
+				set {_Duelist} to "&8&l ▶ &7Pokud s mecem blokujes dvakrat poskozeni||    &7od stejneho hrace, pri zasazeni hrace||    &7se zvysi poskozeni o &a+40%%&7."
+				set {_Gold and Boosted} to "&8&l ▶ &7Pridava &a+9%% poskozeni&7, pokud||    &7mas aktivni &fAbsorption&7."
+				set {_Grasshopper} to "&8&l ▶ &7Pridava &a+9%% poskozeni&7, pokud||    &7ty nebo obet stoji na &ftrave&7."
+				set {_King Buster} to "&8&l ▶ &7Pridava &a+13%% poskozeni&7, pokud||    &7ma obet nad &c50%% HP&7."
+				set {_Lifesteal} to "&8&l ▶ &7Uzdravi &a8%% &7ze zpusobeneho poskozeni."
+				set {_Pain Focus} to "&8&l ▶ &7Prida &a+2%% poskozeni &7za kazde||    &7srdicko, ktere ti chybi."
+				set {_Pit Pocket} to "&8&l ▶ &7Seberes &e20 Ⓩ &7obeti pri zasahu.||    &7&o(20s cooldown!)"
+				set {_Punisher} to "&8&l ▶ &7Pridava &a+12%% poskozeni&7, pokud||    &7ma obet pod &c50%% HP&7."
+				set {_Revengeance} to "&8&l ▶ &7Pridava &a+15%% poskozeni &7proti||    &7hraci, ktery te posledni zabil."
+				set {_Shark} to "&8&l ▶ &7Pridava &a+4%% poskozeni &7za kazdeho||    &7hrace, v okruhu &f12 bloku&7, ktery ma pod &c6&4❤&7."
+				set {_Sharp} to "&8&l ▶ &7Pridava &a+7%% &7pri kazdem zasahu."
+				set {_Moctezuma} to "&8&l ▶ &7Pri zabiti ziskas &e+&614 Ⓩ&7.||&7&o(Vcetne assistu!)"
+				set {_Sierra} to "&8&l ▶ &7Ziskas pri zabiti &6+&e40 Ⓩ &7za kazdou||    &bDiamond &7cast, kterou obet ma."
+				set {_Gold Bump} to "&8&l ▶ &7Pri zabiti ziskas &6+&e8 Ⓩ&7."
+				set {_Gold Boost} to "&8&l ▶ &7Pri zabiti ziskas o &e+&630%% zlataku &7vic."
+				set {_XP Bump} to "&8&l ▶ &7Pri zabiti ziskas &3+&b4XP&7."
+				set {_XP Boost} to "&8&l ▶ &7Pri zabiti ziskas o &3+&b20%% XP &7vic."
+				set {_Billionaire} to "&8&l ▶ &7Poskozeni se zvysi o &f1.67x&7, ale||    &7zasah stoji &e200 Ⓩ&7."
+				set {_Combo: Perun's Warth} to "&8&l ▶ &7Kazdy &f4. zasah &7udeli obeti||    &7pravy zasah za &c2&4❤&7."
+				set {_Executioner} to "&8&l ▶ &7Pokud ma obet mene nez &c1.5&4❤||    &7okamzite umre."
+				set {_Gamble} to "&8&l ▶ &7Sance &d50%%&7, ze zranis obet, nebo sam sebe||    &7s pravym zranenim &c2&4❤&7."
+				set {_Healer} to "&8&l ▶ &7Pri zasahu se ty, ale i obet||    &7uzdravi o &c2&4❤&7."
+				set {_Knockback} to "&8&l ▶ &7Knockback pri zasahu obeti||    &7se zvysi o &f6 bloku&7."
+				set {_The Punch} to "&8&l ▶ &7Pri zasahu obet vyleti do vzduchu.||    &7&o(25s cooldown!)"
+				set {_Blindness} to "&8&l ▶ &7Sance &c0.5%%&7, ze obeti pri zasahu||    &7udelis efekt &fBlindness I&7. (3s)"
+				set {_Poisonous} to "&8&l ▶ &7Sance &c0.5%%&7, ze obeti pri zasahu||    &7udelis efekt &fPoison I&7. (3s)"
+				set {_Slowness} to "&8&l ▶ &7Sance &c0.5%%&7, ze obeti pri zasahu||    &7udelis efekt &fSlowness I&7. (3s)"
+			if {_numofench} is between 76 and 100:
+				set {_numofench} to "III"
+				set {_Beat The Spammer} to "&8&l ▶ &7Pridava &a+40%% poskozeni &7proti||    &7hraci, ktery drzi &fluk&7."
+				set {_Berserk} to "&8&l ▶ &7Critical hit na zemi! Sance &d30%%&7, ze||    &7pri zasahu udelis o &c50%% &7vetsi poskozeni."
+				set {_Bounty Reaper} to "&8&l ▶ &7Pridava &a+15%% poskozeni &7proti||    &7hraci na ktereho je bounty."
+				set {_Bruiser} to "&8&l ▶ &7Pokud s mecem blokujes, poskozeni||    &7bude mensi o &c1.5&4❤&7."
+				set {_Bullet Time} to "&8&l ▶ &7Pokud s mecem blokujes, pri zasahu||    &7sipem se sip &cznici &7a uzdravi te za &c1.5&4❤&7."
+				set {_Combo: Damage} to "&8&l ▶ &7Kazdy &f3. zasah &7udeli||    &7o &a+40%% &7vetsi poskozeni."
+				set {_Combo: Heal} to "&8&l ▶ &7Kazdy &f4. zasah &7ti doplni &c1.5&4❤&7."
+				set {_Counter-Janitor} to "&8&l ▶ &7Pri zabiti hrace ziskas &fResistance I&7. (5s)"
+				set {_Diamond Stomp} to "&8&l ▶ &7Pridava &a+25%% poskozeni &7proti||    &7hraci s &bDiamond &7brnenim."
+				set {_Duelist} to "&8&l ▶ &7Pokud s mecem blokujes dvakrat poskozeni||    &7od stejneho hrace, pri zasazeni hrace||    &7se zvysi poskozeni o &a+75%%&7."
+				set {_Gold and Boosted} to "&8&l ▶ &7Pridava &a+15%% poskozeni&7, pokud||    &7mas aktivni &fAbsorption&7."
+				set {_Grasshopper} to "&8&l ▶ &7Pridava &a+15%% poskozeni&7, pokud||    &7ty nebo obet stoji na &ftrave&7."
+				set {_King Buster} to "&8&l ▶ &7Pridava &a+20%% poskozeni&7, pokud||    &7ma obet nad &c50%% HP&7."
+				set {_Lifesteal} to "&8&l ▶ &7Uzdravi &a13%% &7ze zpusobeneho poskozeni."
+				set {_Pain Focus} to "&8&l ▶ &7Prida &a+5%% poskozeni &7za kazde||    &7srdicko, ktere ti chybi."
+				set {_Pit Pocket} to "&8&l ▶ &7Seberes &e25 Ⓩ &7obeti pri zasahu.||    &7&o(13s cooldown!)"
+				set {_Punisher} to "&8&l ▶ &7Pridava &a+18%% poskozeni&7, pokud||    &7ma obet pod &c50%% HP&7."
+				set {_Revengeance} to "&8&l ▶ &7Pridava &a+25%% poskozeni &7proti||    &7hraci, ktery te posledni zabil."
+				set {_Shark} to "&8&l ▶ &7Pridava &a+7%% poskozeni &7za kazdeho||    &7hrace, v okruhu &f12 bloku&7, ktery ma pod &c6&4❤&7."
+				set {_Sharp} to "&8&l ▶ &7Pridava &a+12%% &7pri kazdem zasahu."
+				set {_Moctezuma} to "&8&l ▶ &7Pri zabiti ziskas &6+&e21 Ⓩ&7.||&7&o(Vcetne assistu!)"
+				set {_Sierra} to "&8&l ▶ &7Ziskas pri zabiti &6+&e60 Ⓩ &7za kazdou||    &bDiamond &7cast, kterou obet ma."
+				set {_Gold Bump} to "&8&l ▶ &7Pri zabiti ziskas &e+&612g&7."
+				set {_Gold Boost} to "&8&l ▶ &7Pri zabiti ziskas o &e+&645%% zlataku &7vic."
+				set {_XP Bump} to "&8&l ▶ &7Pri zabiti ziskas &3+&b6XP&7."
+				set {_XP Boost} to "&8&l ▶ &7Pri zabiti ziskas o &3+&b30%% XP &7vic."
+				set {_Billionaire} to "&8&l ▶ &7Poskozeni se zvysi o &f2x&7, ale||    &7zasah stoji &e350 Ⓩ&7."
+				set {_Combo: Perun's Warth} to "&8&l ▶ &7Kazdy &f4. zasah &7udeli obeti||    &7pravy zasah za &c3&4❤&7."
+				set {_Executioner} to "&8&l ▶ &7Pokud ma obet mene nez &c2&4❤||    &7okamzite umre."
+				set {_Gamble} to "&8&l ▶ &7Sance &d50%%&7, ze zranis obet, nebo sam sebe||    &7s pravym zranenim &c3&4❤&7."
+				set {_Healer} to "&8&l ▶ &7Pri zasahu se ty, ale i obet||    &7uzdravi o &c3&4❤&7."
+				set {_Knockback} to "&8&l ▶ &7Knockback obeti se zvysi||    &7o &f9 bloky&7."
+				set {_The Punch} to "&8&l ▶ &7Pri zasahu obet vyleti do vzduchu.||    &7&o(20s cooldown!)"
+				set {_Blindness} to "&8&l ▶ &7Sance &c1%%&7, ze obeti pri zasahu||    &7udelis efekt &fBlindness I&7. (4s)"
+				set {_Poisonous} to "&8&l ▶ &7Sance &c1%%&7, ze obeti pri zasahu||    &7udelis efekt &fPoison I&7. (4s)"
+				set {_Slowness} to "&8&l ▶ &7Sance &c1%%&7, ze obeti pri zasahu||    &7udelis efekt &fSlowness I&7. (4s)"
+
+			set {_lore::*} to {loremystic::%player%} split by "||||"
+			set {_xy} to "&7 ➥ &dZivotu&7: &a%{_livesrandom}%&8/&f%{_livesrandom}%||||%{_lore::2}%||||%{_lore::3}%"
+			set {loremystic::%player%} to {_xy}
+
+			set {_mysticrandom} to a random integer between 1 and 100
+
+			if {_mysticrandom} is between 1 and 85:
+				set {_mystics::*} to "Beat The Spammer", "Berserk", "Bounty Reaper", "Bruiser", "Bullet Time", "Combo: Damage", "Combo: Heal", "Counter-Janitor", "Diamond Stomp", "Duelist", "Gold and Boosted", "Grasshopper", "King Buster", "Lifesteal", "Pain Focus", "Pit Pocket", "Punisher", "Revengeance", "Shark", "Sharp", "Moctezuma", "Sierra", "Gold Bump", "Gold Boost", "XP Bump", "XP Boost", "Blindness", "Poisonous" and "Slowness"
+				set {_name} to random element out of {_mystics::*}
+				loop 2 times:
+					if {loremystic::%player%} contains "%{_name}%":
+						remove {_name} from {_mystics::*}
+						set {_name} to random element out of {_mystics::*}
+				make gui slot 20 of player with unbreakable golden sword with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:6.5,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "&eZlaty Mec &8┃ &6Tier III" with lore "%{loremystic::%player%}%||||&9%{_name}% %{_numofench}%||%{_%{_name}%}%" to run:
+					close player's inventory
+				give unbreakable golden sword with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:6.5,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "&eZlaty Mec &8┃ &6Tier III" with lore "%{loremystic::%player%}%||||&9%{_name}% %{_numofench}%||%{_%{_name}%}%" to player
+				make gui slot 24 of player with enchantment table named "&6Vylepseni Zlateho Mece" with lore "||&5Vylepseni &lzlateho mece&5!||&8&l ▶ &9%{_name}% %{_numofench}%||||&7&o(Vylepseni mece skoncilo!)" to do nothing
+
+			if {_mysticrandom} is between 86 and 100:
+				set {_mystics::*} to "Billionaire", "Combo: Perun's Warth", "Executioner", "Gamble", "Healer", "Knockback" and "The Punch"
+				set {_name} to random element out of {_mystics::*}
+				loop 2 times:
+					if {loremystic::%player%} contains "%{_name}%":
+						remove {_name} from {_mystics::*}
+						set {_name} to random element out of {_mystics::*}
+				make gui slot 20 of player with unbreakable golden sword with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:6.5,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "&eZlaty Mec &8┃ &6Tier III" with lore "%{loremystic::%player%}%||||&5&l&oRare! &9%{_name}% %{_numofench}%||%{_%{_name}%}%" to run:
+					close player's inventory
+				give unbreakable golden sword with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:6.5,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "&eZlaty Mec &8┃ &6Tier III" with lore "%{loremystic::%player%}%||||&5&l&oRare! &9%{_name}% %{_numofench}%||%{_%{_name}%}%" to player
+				make gui slot 24 of player with enchantment table named "&6Vylepseni Zlateho Mece" with lore "||&5Vylepseni &lzlateho mece&5!||&8&l ▶ &5&l&oRare! &9%{_name}% %{_numofench}%||||&7&o(Vylepseni mece skoncilo!)" to do nothing
+
+
+			make gui slot {_blackSlots::*} of player with black glass to do nothing
+
+			delete {enchanting::%player%}
+
+	
+on inventory click:
+	{enchanting::%player%} is not set
+	if inventory name of player's current inventory is "&eProhlízís si mystické vylepsení..&0":
+		if name of item is "&eZlaty Mec":
+			set {mystic::%player%} to 1
+			set clicked item to air
+			wait 1 tick
+			make player execute command "/mystic"
+		if name of item is "&eZlaty Mec &8┃ &6Tier I":
+			set {mystic::%player%} to 2
+			set {loremystic::%player%} to lore of item
+			set clicked item to air
+			wait 1 tick
+			make player execute command "/mystic"
+		if name of item is "&eZlaty Mec &8┃ &6Tier II":
+			set {mystic::%player%} to 3
+			set {loremystic::%player%} to lore of clicked item
+			set clicked item to air
+			wait 1 tick
+			make player execute command "/mystic"
+
+
+on chest add:
+	player's gamemode is not creative
+	if inventory name of player's current inventory is "&eProhlízís si mystické vylepsení..&0":
+		if name of item is not "&eZlaty Mec":
+			cancel event
+			if name of item is "&eZlaty Mec &8┃ &6Tier III":
+				message "&cDosahl jsi maximalniho vylepseni pro tento mec."
+			else:
+				message "&cZde muzes vlozit pouze Zlaty Mec."
+	if inventory name of player's current inventory is not "&eProhlízís si mystické vylepsení..&0" or "&eKoukás do magické bedny..&b" or "&eKoukás do magické bedny..&a" or "&eKoukás do magické bedny..&f" or "&fTy & &f%{tradePartner::%player%}%":
+		cancel event
+		message "&cZde nelze vlozit zadny item."

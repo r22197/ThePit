@@ -1,0 +1,103 @@
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	{vanish::%attacker%} is not set
+	victim is not attacker
+	victim is a player
+	damage cause is not fall
+	if {picker} is set:
+		if {tdm::%attacker%} is "&c":
+			if {tdm::%victim%} is "&c":
+				stop
+		else if {tdm::%attacker%} is "&9":
+			if {tdm::%victim%} is "&9":
+				stop
+
+	add damage to {totaldamage::%victim%}
+
+	attacker is a player
+	set {assists::%victim%::%attacker%} to "%attacker%" parsed as player
+
+	add damage to {+1damage::%victim%::%attacker%}
+
+	set {assists::timer::%victim%::%attacker%} to 25
+	if {assists::check::%victim%::%attacker%} is not set:
+		set {assists::check::%victim%::%attacker%} to true
+		while {assists::timer::%victim%::%attacker%} is set:
+			wait 1 second
+			remove 1 from {assists::timer::%victim%::%attacker%}
+			if {assists::timer::%victim%::%attacker%} is 0:
+				delete {assists::timer::%victim%::%attacker%}
+				delete {assists::check::%victim%::%attacker%}
+				if {totaldamage::%victim%} is higher or equal to {+1damage::%victim%::%attacker%}:
+					remove {+1damage::%victim%::%attacker%} from {totaldamage::%victim%}
+				delete {assists::%victim%::%attacker%}
+				delete {+1damage::%victim%::%attacker%}
+
+on skript start:
+	delete {totaldamage::*}
+	delete {assists::*}
+	delete {+1damage::*}
+	delete {assists::timer::*}
+	delete {assists::check::*}
+
+on quit:
+	delete {totaldamage::%player%}
+	delete {assists::%player%::*}
+	delete {+1damage::%player%::*}
+	delete {assists::timer::%player%::*}
+	delete {assists::check::%player%::*}
+
+on death of a player:
+	remove attacker from {assists::%victim%::*}
+
+	loop {assists::%victim%::*}:
+		
+		if {picker} is set:
+			add 1 to {tdm.ka::%{assists::%victim%::%loop-value%}%}
+
+
+		set {_gold.random} to random integer between 4 and 7
+		set {_xp.random} to random integer between 5 and 10
+
+		set {_percent} to ({+1damage::%victim%::%loop-value%} / {totaldamage::%victim%}) * 100
+		set {_percent} to round({_percent})
+
+		set {_gold.random} to {_gold.random} * ({_percent} / 100)
+		set {_xp.random} to {_xp.random} * ({_percent} / 100)
+
+		if lore of {assists::%victim%::%loop-value%}'s tool contains "Moctezuma I&1":
+			add 7 to {_gold.random}
+		if lore of {assists::%victim%::%loop-value%}'s tool contains "Moctezuma II&2":
+			add 14 to {_gold.random}
+		if lore of {assists::%victim%::%loop-value%}'s tool contains "Moctezuma III&3":
+			add 21 to {_gold.random}
+
+		if {activatedperk1::%{assists::%victim%::%loop-value%}%} or {activatedperk2::%{assists::%victim%::%loop-value%}%} or {activatedperk3::%{assists::%victim%::%loop-value%}%} or {activatedperk4::%{assists::%victim%::%loop-value%}%} is "bountyhunter":
+			add 4 to {_gold.random}
+		if {activatedperk1::%{assists::%victim%::%loop-value%}%} or {activatedperk2::%{assists::%victim%::%loop-value%}%} or {activatedperk3::%{assists::%victim%::%loop-value%}%} or {activatedperk4::%{assists::%victim%::%loop-value%}%} is "spammer":
+			add 2 to {_gold.random}
+
+		set {_gold.random} to TierGBoost({_gold.random}, {assists::%victim%::%loop-value%})
+		set {_xp.random} to TierXPBoost({_xp.random}, {assists::%victim%::%loop-value%})
+
+		set {_gold.random} to GBooster({_gold.random}, {assists::%victim%::%loop-value%})
+		set {_xp.random} to XPBooster({_xp.random}, {assists::%victim%::%loop-value%})
+
+		Zlataky("add", {_gold.random}, {assists::%victim%::%loop-value%})
+		XP("remove", {_xp.random}, {assists::%victim%::%loop-value%})
+		play "ORB_PICKUP" to {assists::%victim%::%loop-value%}
+		send "&a&lPomohl jsi zabit %{prestigebrackets::%victim%}%[%{%victim%.level.color}%%{level::%victim%}%%{prestigebrackets::%victim%}%] %coloured victim's offline suffix%%victim%&a&l! &7%{_percent}%%% poskozeni! &6+&e%{_gold.random}% Ⓩ &3+&b%{_xp.random}%xp" to {assists::%victim%::%loop-value%}
+
+		if "%now%" contains "Tue":
+			Quest("tuesday3", 5, {assists::%victim%::%loop-value%})
+
+		if "%now%" contains "Fri":
+			Quest("friday3", 5, {assists::%victim%::%loop-value%})
+
+		LevelSystem({assists::%victim%::%loop-value%})
+
+	delete {assists::%victim%::*}
+	delete {+1damage::%victim%::*}
+	delete {totaldamage::%victim%}
+	delete {assists::timer::%victim%::*}
+	delete {assists::check::%victim%::*}

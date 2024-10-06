@@ -1,0 +1,1109 @@
+on command "armory":
+	"%region at player%" contains "nopvpzone"
+	cancel event
+	open chest with 6 rows named "&eKoukás na upgrady.." to player
+	wait 2 ticks
+
+	set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52 and 53
+	format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+	create a gui slot 0 of player with rose red named "&cOpustit menu" with lore "||&eKlikni zde pro opusteni menu!||&r" to close
+
+	set {_tokeny::%player%} to placeholder "tm_tokens_raw" from player parsed as number
+	set {_token} to splitCoins("%{_tokeny::%player%}%")
+	create a gui slot 4 of player with skull of ("%player%" parsed as an offline player) named "&6Postava" with lore "||&5Tva &lekonomika&5!|| &8▪ &7Zlataky: &e%{gold::%player%}% Ⓩ|| &8▪ &7PvPCoiny: &6%{_token}% Ⓟ||&7&o(Lze zakoupit v obchode! &d&o/obchod&7&o)||&r"
+
+	set {_shop} to {gold::%player%}
+	replace all "." in {_shop} with ""
+	set {_shop} to {_shop} parsed as number
+
+	if {%player%.bow} is set:
+
+		if {%player%.bow} is 1:
+
+			if {_shop} is greater than or equal to 1300:	
+				create a gui slot 20 of player with bow with no nbt named "&6Vylepsení Luku" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri dalsim vylepseni budes||    &7mit &fLuk&7.||||&d&l ▶ &dPower I||||&eAktualni level &8[&6&l✩&7✩✩✩✩&8] &7➜ &8[&6&l✩✩&7✩✩✩&8]||||&7Vylepseni luku stoji &e1.300 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni vylepseni." to run:
+
+					add 1 to {%player%.bow}
+					close inventory of player
+					play "ORB_PICKUP" to player
+					Zlataky("remove", 1300, player)
+					message ""
+					message "&aUspesne jsi zakoupil vylepseni luku."
+					message "&f ➥ &7Z uctu ti bylo odebrano &e1.300 Ⓩ&7."
+					message ""
+
+					set {_num} to 0
+					loop 36 times:
+						if slot {_num} of inventory of player is bow:
+							set slot {_num} of player to unbreakable bow named "&dVzácny luk" with lore "||&5Vlastnosti &lluku&5!||&d&l ▶ &dPower I&a||||&eKvalita zbrane &8[&6&l✩&7✩✩✩✩&8]||||&e&o,,Tak jo, tohle uz je luk &a&oRobina Hooda&e&o."""
+							stop loop
+						add 1 to {_num}
+
+
+					make player execute "armory"
+			else:	
+				create a gui slot 20 of player with bow with no nbt named "&6Vylepsení Luku" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri dalsim vylepseni budes||    &7mit &fLuk&7.||||&d&l ▶ &dPower I||||&eAktualni level &8[&6&l✩&7✩✩✩✩&8] &7➜ &8[&6&l✩✩&7✩✩✩&8]||||&7Vylepseni luku stoji &e1.300 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+		if {%player%.bow} is 2:
+
+			if {_shop} is greater than or equal to 2500:	
+				create a gui slot 20 of player with bow with no nbt named "&6Vylepsení Luku" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri dalsim vylepseni budes||    &7mit &fLuk&7.||||&d&l ▶ &dPower II||||&eAktualni level &8[&6&l✩✩&7✩✩✩&8] &7➜ &8[&6&l✩✩✩&7✩✩&8]||||&7Vylepseni luku stoji &e2.500 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni vylepseni." to run:
+
+					add 1 to {%player%.bow}
+					close inventory of player
+					play "ORB_PICKUP" to player
+					Zlataky("remove", 2500, player)
+					message ""
+					message "&aUspesne jsi zakoupil vylepseni luku."
+					message "&f ➥ &7Z uctu ti bylo odebrano &e2.500 Ⓩ&7."
+					message ""
+
+					set {_num} to 0
+					loop 36 times:
+						if slot {_num} of inventory of player is bow:
+							set slot {_num} of player to unbreakable bow named "&dVzácny lehky luk" with lore "||&5Vlastnosti &lluku&5!||&d&l ▶ &dPower II&b||||&eKvalita zbrane &8[&6&l✩✩&7✩✩✩&8]||||&e&o,,Davej si bacha, at s nim nekomu nevypichnes oko."""
+							stop loop
+						add 1 to {_num}
+
+					make player execute "armory"
+			else:	
+				create a gui slot 20 of player with bow with no nbt named "&6Vylepsení Luku" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri dalsim vylepseni budes||    &7mit &fLuk&7.||||&d&l ▶ &dPower II||||&eAktualni level &8[&6&l✩✩&7✩✩✩&8] &7➜ &8[&6&l✩✩✩&7✩✩&8]||||&7Vylepseni luku stoji &e2.500 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+		if {%player%.bow} is 3:
+
+			if {_shop} is greater than or equal to 4800:	
+				create a gui slot 20 of player with glowing bow with no nbt named "&6Vylepsení Luku" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri dalsim vylepseni budes||    &7mit &fLuk&7.||||&d&l ▶ &dPower III||||&eAktualni level &8[&6&l✩✩✩&7✩✩&8] &7➜ &8[&6&l✩✩✩✩&7✩&8]||||&7Vylepseni luku stoji &e4.800 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni vylepseni." to run:
+
+					add 1 to {%player%.bow}
+					close inventory of player
+					play "ORB_PICKUP" to player
+					Zlataky("remove", 4800, player)
+					message ""
+					message "&aUspesne jsi zakoupil vylepseni luku."
+					message "&f ➥ &7Z uctu ti bylo odebrano &e4.800 Ⓩ&7."
+
+					set {_num} to 0
+					loop 36 times:
+						if slot {_num} of inventory of player is bow:
+							set slot {_num} of player to unbreakable glowing bow named "&cLegendarní lovecky luk" with lore "||&5Vlastnosti &lluku&5!||&d&l ▶ &dPower III&c||||&eKvalita zbrane &8[&6&l✩✩✩&7✩✩&8]||||&e&o,,Jeste chvili a budes o sobe moct rikat,||&e&o ze s nim umis."""
+							stop loop
+						add 1 to {_num}
+
+					make player execute "armory"
+			else:	
+				create a gui slot 20 of player with glowing bow with no nbt named "&6Vylepsení Luku" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri dalsim vylepseni budes||    &7mit &fLuk&7.||||&d&l ▶ &dPower III||||&eAktualni level &8[&6&l✩✩✩&7✩✩&8] &7➜ &8[&6&l✩✩✩✩&7✩&8]||||&7Vylepseni luku stoji &e4.800 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+		if {%player%.bow} is 4:
+
+			if {_shop} is greater than or equal to 9200:	
+				create a gui slot 20 of player with glowing bow with no nbt named "&6Vylepsení Luku" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri dalsim vylepseni budes||    &7mit &fLuk&7.||||&d&l ▶ &dPower IV||&d&l ▶ &dExploze I||||&eAktualni level &8[&6&l✩✩✩✩&7✩&8] &7➜ &8[&6&l✩✩✩✩✩&8]||||&7Vylepseni luku stoji &e9.200 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni vylepseni." to run:
+
+					add 1 to {%player%.bow}
+					close inventory of player
+					play "ORB_PICKUP" to player
+					Zlataky("remove", 9200, player)
+					message ""
+					message "&aUspesne jsi zakoupil vylepseni luku."
+					message "&f ➥ &7Z uctu ti bylo odebrano &e9.200 Ⓩ&7."
+					message ""
+
+					set {_num} to 0
+					loop 36 times:
+						if slot {_num} of inventory of player is bow:
+							set slot {_num} of player to unbreakable glowing bow named "&cLegendarní elfí luk" with lore "||&5Vlastnosti &lluku&5!||&d&l ▶ &dPower IV&d||&d&l ▶ &dExploze I||||&eKvalita zbrane &8[&6&l✩✩✩✩✩&8]||||&e&o,,Ted uz je z tebe doslova &b&oLegolas&e&o."""
+							stop loop
+						add 1 to {_num}
+
+					make player execute "armory"
+			else:	
+				create a gui slot 20 of player with glowing bow with no nbt named "&6Vylepsení Luku" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri dalsim vylepseni budes||    &7mit &fLuk&7.||||&d&l ▶ &dPower IV||&d&l ▶ &dExploze I||||&eAktualni level &8[&6&l✩✩✩✩&7✩&8] &7➜ &8[&6&l✩✩✩✩✩&8]||||&7Vylepseni luku stoji &e9.200 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+
+
+		if {%player%.bow} is 5:
+
+			create a gui slot 20 of player with glowing bow named "&6Vylepsení Luku " with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri respawnu budes||    &7mit &fLuk&7.||||&d&l ▶ &dPower IV||&d&l ▶ &dExploze I||||&eAktualni level &8[&6&l✩✩✩✩✩&8]||||&eDosahl jsi maximalniho vylepseni||&epro &6luk&7."
+
+
+		if {%player%.arrow} is between 12 and 49:
+			if {_shop} is more than or equal to 350:
+				create a gui slot 29 of player with arrow named "&6Vylepsení Sípu" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri zakoupeni dostanes &a+1 &7sip||    &7do celkoveho poctu pri respawnu.||||&eAktualni status &8[&f%{%player%.arrow}% &6➶&8]||||&7Vylepseni sipu stoji &e350 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni vylepseni." to run:
+
+					add 1 to {%player%.arrow}
+					close inventory of player
+					play "ORB_PICKUP" to player
+					Zlataky("remove", 350, player)
+					message ""
+					message "&aUspesne jsi zakoupil vylepseni sipu."
+					message "&f ➥ &7Z uctu ti bylo odebrano &e350 Ⓩ&7."
+					message ""
+
+					set {_arrows} to amount of glowing arrow named "&7Síp" in player's inventory
+					set {_givearrows} to {%player%.arrow} - {_arrows}
+					give player glowing ("%{_givearrows}% arrow" parsed as item) named "&7Síp"
+
+					make player execute "armory"
+
+			else:
+				create a gui slot 29 of player with arrow named "&6Vylepsení Sípu" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri zakoupeni dostanes &a+1 &7sip||    &7do celkoveho poctu pri respawnu.||||&eAktualni status &8[&f%{%player%.arrow}% &6➶&8]||||&7Vylepseni sipu stoji &e350 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."	
+
+		if {%player%.arrow} is 50:
+			create a gui slot 29 of player with arrow named "&6Vylepsení Sípu " with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Dosahl jsi maximalniho vylepseni, tento||    &7pocet dostanes pri kazdem respawnu.||||&eAktualni status &8[&f%{%player%.arrow}% &6➶&8]||||&eDosahl jsi maximalniho vylepseni||&epro &6sipy&7."
+
+
+
+	else:
+
+		if {_shop} is greater than or equal to 500:	
+			create a gui slot 20 of player with bow with no nbt named "&6Koupit Luk" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri dalsim vylepseni budes||    &7mit &fLuk&7.||||&eAktualni level &8[&7✩✩✩✩✩&8] &7➜ &8[&6&l✩&7✩✩✩✩&8]||||&7Luk stoji &e500 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni vylepseni." to run:
+
+				add 1 to {%player%.bow}
+				close inventory of player
+				play "ORB_PICKUP" to player
+				Zlataky("remove", 500, player)
+				message ""
+				message "&aUspesne jsi zakoupil luk."
+				message "&f ➥ &7Z uctu ti bylo odebrano &e500 Ⓩ&7."
+				message ""
+				make player execute "armory"
+				set {%player%.arrow} to 12
+				if slot 1 of player is air:
+					set slot 1 of player to unbreakable bow named "&aObycejny luk" with lore "||&5Vlastnosti &lluku&5!||&d&l ▶ &dBez vylepseni.||||&eKvalita zbrane &8[&6&l✩&7✩✩✩✩&8]||||&e&o,,Horsi luk nemel ani &a&oRobin Hood&e&o."""
+				else:
+					give player unbreakable bow named "&aObycejny luk" with lore "||&5Vlastnosti &lluku&5!||&d&l ▶ &dBez vylepseni.||||&eKvalita zbrane &8[&6&l✩&7✩✩✩✩&8]||||&e&o,,Horsi luk nemel ani &a&oRobin Hood&e&o."""
+
+
+				if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is 8:
+					set {_num} to 0
+					loop 9 times:
+						if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+							set {inventoryslot::%player%::arrow} to {_num}
+							stop loop
+						add 1 to {_num}
+				else:
+					set {inventoryslot::%player%::arrow} to 8
+
+
+				if slot {inventoryslot::%player%::arrow} of player is air:
+					set slot {inventoryslot::%player%::arrow} of player to glowing ("%{%player%.arrow}% arrow" parsed as item) named "&7Síp"
+				else:
+					give player glowing ("%{%player%.arrow}% arrow" parsed as item) named "&7Síp"
+
+				if {inventoryslot::%player%::sword} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is 1:
+					set {_num} to 0
+					loop 9 times:
+						if {inventoryslot::%player%::sword} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+							set {inventoryslot::%player%::bow} to {_num}
+							stop loop
+						add 1 to {_num}
+				else:
+					set {inventoryslot::%player%::bow} to 1
+
+
+
+		else:	
+			create a gui slot 20 of player with bow with no nbt named "&6Koupit Luk" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri dalsim vylepseni budes||    &7mit &fLuk&7.||||&eAktualni level &8[&7✩✩✩✩✩&8] &7➜ &8[&6&l✩&7✩✩✩✩&8]||||&7Luk stoji &e500 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+		create a gui slot 29 of player with arrow named "&6Vylepsení Sípu" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri zakoupeni dostanes &a+1 &7sip||    &7do celkoveho poctu pri respawnu.||||&eAktualni status &8[&f12 &6➶&8]||||&7Vylepseni sipu nelze zakoupit.||&8 ➥ &cNemas zakoupeny luk."	
+
+
+
+
+
+
+
+	if {%player%.armor} is not set:
+
+		if {_shop} is greater than or equal to 500:	
+			create a gui slot 19 of player with iron chestplate with no nbt named "&6Vylepsení Brnení" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Sance &d20%%&7, ze pri zabiti hrace||    &7z nej vypadne jeho &firon &7brneni.||&7&o(Pouze &c&o10%% &7&obez vylepseni!)||||&8&l ▶ &7Sance &d40%%&7, ze pri zabiti hrace||    &7z nej vypadne jeho &bdiamond &7brneni.||&7&o(Pouze &c&o30%% &7&obez vylepseni!)||||&8&l ▶ &7Specialni &dvylepseni&7.||&7&o(&7&oPouze od &6&l&o✩✩✩&7&o✩✩ levelu!)||||&eAktualni level &8[&7✩✩✩✩✩&8] &7➜ &8[&6&l✩&7✩✩✩✩&8]||||&7Vylepseni brneni stoji &e500 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni vylepseni." to run:
+
+				add 1 to {%player%.armor}
+				close inventory of player
+				play "ORB_PICKUP" to player
+				Zlataky("remove", 500, player)
+				message ""
+				message "&aUspesne jsi zakoupil vylepseni brneni."
+				message "&f ➥ &7Z uctu ti bylo odebrano &e500 Ⓩ&7."
+				message ""
+				make player execute "armory"
+		else:	
+			create a gui slot 19 of player with iron chestplate with no nbt named "&6Vylepsení Brnení" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Sance &d20%%&7, ze pri zabiti hrace||    &7z nej vypadne jeho &firon &7brneni.||&7&o(Pouze &c&o10%% &7&obez vylepseni!)||||&8&l ▶ &7Sance &d40%%&7, ze pri zabiti hrace||    &7z nej vypadne jeho &bdiamond &7brneni.||&7&o(Pouze &c&o30%% &7&obez vylepseni!)||||&8&l ▶ &7Specialni &dvylepseni&7.||&7&o(&7&oPouze od &6&l&o✩✩✩&7&o✩✩ levelu!)||||&eAktualni level &8[&7✩✩✩✩✩&8] &7➜ &8[&6&l✩&7✩✩✩✩&8]||||&7Vylepseni brneni stoji &e500 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+	if {%player%.armor} is 1:
+
+		if {_shop} is greater than or equal to 1400:	
+			create a gui slot 19 of player with iron chestplate with no nbt named "&6Vylepsení Brnení" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Sance &d30%%&7, ze pri zabiti hrace||    &7z nej vypadne jeho &firon &7brneni.||&7&o(Pouze &c&o10%% &7&obez vylepseni!)||||&8&l ▶ &7Sance &d50%%&7, ze pri zabiti hrace||    &7z nej vypadne jeho &bdiamond &7brneni.||&7&o(Pouze &c&o30%% &7&obez vylepseni!)||||&8&l ▶ &7Specialni &dvylepseni&7.||&7&o(&7&oPouze od &6&l&o✩✩✩&7&o✩✩ levelu!)||||&eAktualni level &8[&6&l✩&7✩✩✩✩&8] &7➜ &8[&6&l✩✩&7✩✩✩&8]||||&7Vylepseni brneni stoji &e1.400 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni vylepseni." to run:
+
+				add 1 to {%player%.armor}
+				close inventory of player
+				play "ORB_PICKUP" to player
+				Zlataky("remove", 1400, player)
+				message ""
+				message "&aUspesne jsi zakoupil vylepseni brneni."
+				message "&f ➥ &7Z uctu ti bylo odebrano &e1.400 Ⓩ&7."
+				message ""
+				make player execute "armory"
+		else:	
+			create a gui slot 19 of player with iron chestplate with no nbt named "&6Vylepsení Brnení" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Sance &d30%%&7, ze pri zabiti hrace||    &7z nej vypadne jeho &firon &7brneni.||&7&o(Pouze &c&o10%% &7&obez vylepseni!)||||&8&l ▶ &7Sance &d50%%&7, ze pri zabiti hrace||    &7z nej vypadne jeho &bdiamond &7brneni.||&7&o(Pouze &c&o30%% &7&obez vylepseni!)||||&8&l ▶ &7Specialni &dvylepseni&7.||&7&o(&7&oPouze od &6&l&o✩✩✩&7&o✩✩ levelu!)||||&eAktualni level &8[&6&l✩&7✩✩✩✩&8] &7➜ &8[&6&l✩✩&7✩✩✩&8]||||&7Vylepseni brneni stoji &e1.400 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+	if {%player%.armor} is 2:
+
+		if {_shop} is greater than or equal to 5200:	
+			create a gui slot 19 of player with diamond chestplate with no nbt named "&6Vylepsení Brnení" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Sance &d40%%&7, ze pri zabiti hrace||    &7z nej vypadne jeho &firon &7brneni.||&7&o(Pouze &c&o10%% &7&obez vylepseni!)||||&8&l ▶ &7Sance &d60%%&7, ze pri zabiti hrace||    &7z nej vypadne jeho &bdiamond &7brneni.||&7&o(Pouze &c&o30%% &7&obez vylepseni!)||||&8&l ▶ &7Sance &d0.5%%&7, ze pri zabiti hrace||    &7se z &firon &7brneni stane &bdiamond&7.||&7&o(&7&oPouze od &6&l&o✩✩✩&7&o✩✩ levelu!)||||&eAktualni level &8[&6&l✩✩&7✩✩✩&8] &7➜ &8[&6&l✩✩✩&7✩✩&8]||||&7Vylepseni brneni stoji &e5.200 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni vylepseni." to run:
+
+				add 1 to {%player%.armor}
+				close inventory of player
+				play "ORB_PICKUP" to player
+				Zlataky("remove", 5200, player)
+				message ""
+				message "&aUspesne jsi zakoupil vylepseni brneni."
+				message "&f ➥ &7Z uctu ti bylo odebrano &e5.200 Ⓩ&7."
+				message ""
+				make player execute "armory"
+		else:	
+			create a gui slot 19 of player with diamond chestplate with no nbt named "&6Vylepsení Brnení" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Sance &d40%%&7, ze pri zabiti hrace||    &7z nej vypadne jeho &firon &7brneni.||&7&o(Pouze &c&o10%% &7&obez vylepseni!)||||&8&l ▶ &7Sance &d60%%&7, ze pri zabiti hrace||    &7z nej vypadne jeho &bdiamond &7brneni.||&7&o(Pouze &c&o30%% &7&obez vylepseni!)||||&8&l ▶ &7Sance &d0.5%%&7, ze pri zabiti hrace||    &7se z &firon &7brneni stane &bdiamond&7.||&7&o(&7&oPouze od &6&l&o✩✩✩&7&o✩✩ levelu!)||||&eAktualni level &8[&6&l✩✩&7✩✩✩&8] &7➜ &8[&6&l✩✩✩&7✩✩&8]||||&7Vylepseni brneni stoji &e5.200 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+	if {%player%.armor} is 3:
+
+		if {_shop} is greater than or equal to 8500:	
+			create a gui slot 19 of player with diamond chestplate with no nbt named "&6Vylepsení Brnení" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Sance &d50%%&7, ze pri zabiti hrace||    &7z nej vypadne jeho &firon &7brneni.||&7&o(Pouze &c&o10%% &7&obez vylepseni!)||||&8&l ▶ &7Sance &d70%%&7, ze pri zabiti hrace||    &7z nej vypadne jeho &bdiamond &7brneni.||&7&o(Pouze &c&o30%% &7&obez vylepseni!)||||&8&l ▶ &7Sance &d1%%&7, ze pri zabiti hrace||    &7se z &firon &7brneni stane &bdiamond&7.||&7&o(&7&oPouze od &6&l&o✩✩✩&7&o✩✩ levelu!)||||&eAktualni level &8[&6&l✩✩✩&7✩✩&8] &7➜ &8[&6&l✩✩✩✩&7✩&8]||||&7Vylepseni brneni stoji &e8.500 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni vylepseni." to run:
+
+				add 1 to {%player%.armor}
+				close inventory of player
+				play "ORB_PICKUP" to player
+				Zlataky("remove", 8500, player)
+				message ""
+				message "&aUspesne jsi zakoupil vylepseni brneni."
+				message "&f ➥ &7Z uctu ti bylo odebrano &e8.500 Ⓩ&7."
+				message ""
+				make player execute "armory"
+		else:	
+			create a gui slot 19 of player with diamond chestplate with no nbt named "&6Vylepsení Brnení" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Sance &d50%%&7, ze pri zabiti hrace||    &7z nej vypadne jeho &firon &7brneni.||&7&o(Pouze &c&o10%% &7&obez vylepseni!)||||&8&l ▶ &7Sance &d70%%&7, ze pri zabiti hrace||    &7z nej vypadne jeho &bdiamond &7brneni.||&7&o(Pouze &c&o30%% &7&obez vylepseni!)||||&8&l ▶ &7Sance &d1%%&7, ze pri zabiti hrace||    &7se z &firon &7brneni stane &bdiamond&7.||&7&o(&7&oPouze od &6&l&o✩✩✩&7&o✩✩ levelu!)||||&eAktualni level &8[&6&l✩✩✩&7✩✩&8] &7➜ &8[&6&l✩✩✩✩&7✩&8]||||&7Vylepseni brneni stoji &e8.500 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+	if {%player%.armor} is 4:
+
+		if {_shop} is greater than or equal to 15000:	
+			create a gui slot 19 of player with diamond chestplate with no nbt named "&6Vylepsení Brnení" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Sance &d60%%&7, ze pri zabiti hrace||    &7z nej vypadne jeho &firon &7brneni.||&7&o(Pouze &c&o10%% &7&obez vylepseni!)||||&8&l ▶ &7Sance &d80%%&7, ze pri zabiti hrace||    &7z nej vypadne jeho &bdiamond &7brneni.||&7&o(Pouze &c&o30%% &7&obez vylepseni!)||||&8&l ▶ &7Sance &d2.5%%&7, ze pri zabiti hrace||    &7se z &firon &7brneni stane &bdiamond&7.||&7&o(&7&oPouze od &6&l&o✩✩✩&7&o✩✩ levelu!)||||&eAktualni level &8[&6&l✩✩✩✩&7✩&8] &7➜ &8[&6&l✩✩✩✩✩&8]||||&7Vylepseni brneni stoji &e15.000 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni vylepseni." to run:
+
+				add 1 to {%player%.armor}
+				close inventory of player
+				play "ORB_PICKUP" to player
+				Zlataky("remove", 15000, player)
+				message ""
+				message "&aUspesne jsi zakoupil vylepseni brneni."
+				message "&f ➥ &7Z uctu ti bylo odebrano &e15.000 Ⓩ&7."
+				message ""
+				make player execute "armory"
+		else:	
+			create a gui slot 19 of player with diamond chestplate with no nbt named "&6Vylepsení Brnení" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Sance &d60%%&7, ze pri zabiti hrace||    &7z nej vypadne jeho &firon &7brneni.||&7&o(Pouze &c&o10%% &7&obez vylepseni!)||||&8&l ▶ &7Sance &d80%%&7, ze pri zabiti hrace||    &7z nej vypadne jeho &bdiamond &7brneni.||&7&o(Pouze &c&o30%% &7&obez vylepseni!)||||&8&l ▶ &7Sance &d2.5%%&7, ze pri zabiti hrace||    &7se z &firon &7brneni stane &bdiamond&7.||&7&o(&7&oPouze od &6&l&o✩✩✩&7&o✩✩ levelu!)||||&eAktualni level &8[&6&l✩✩✩✩&7✩&8] &7➜ &8[&6&l✩✩✩✩✩&8]||||&7Vylepseni brneni stoji &e15.000 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+	if {%player%.armor} is 5:
+		create a gui slot 19 of player with diamond chestplate with no nbt named "&6Vylepsení Brnení " with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Sance &d60%%&7, ze pri zabiti hrace||    &7z nej vypadne jeho &firon &7brneni.||&7&o(Pouze &c&o10%% &7&obez vylepseni!)||||&8&l ▶ &7Sance &d80%%&7, ze pri zabiti hrace||    &7z nej vypadne jeho &bdiamond &7brneni.||&7&o(Pouze &c&o30%% &7&obez vylepseni!)||||&8&l ▶ &7Sance &d2.5%%&7, ze pri zabiti hrace||    &7se z &firon &7brneni stane &bdiamond&7.||&7&o(&7&oPouze od &6&l&o✩✩✩&7&o✩✩ levelu!)||||&eAktualni level &8[&6&l✩✩✩✩✩&8]||||&eDosahl jsi maximalniho vylepseni||&epro &6brneni&7."
+
+
+
+	if {%player%.pickaxe} is set:
+
+		if {%player%.pickaxe} is 1:
+
+			if {_shop} is greater than or equal to 2600:	
+				create a gui slot 21 of player with glowing diamond pickaxe with no nbt named "&6Vylepsení Krumpáce" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri dalsim vylepseni budes||    &7mit &bDiamantovy Krumpac&7.||||&d&l ▶ &dUcinnost II||||&5Vlastnosti &lkrumpace&5!||&8&l ▶ &7Pri kazdem vykopani &eGold Ore||    &7dostanes &6+&e2 Ⓩ&7.||||&eAktualni level &8[&6&l✩&7✩✩&8] &7➜ &8[&6&l✩✩&7✩&8]||||&7Vylepseni krumpace stoji &e2.600 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni vylepseni." to run:
+
+					add 1 to {%player%.pickaxe}
+					close inventory of player
+					play "ORB_PICKUP" to player
+					Zlataky("remove", 2600, player)
+					message ""
+					message "&aUspesne jsi zakoupil vylepseni krumpace."
+					message "&f ➥ &7Z uctu ti bylo odebrano &e2.600 Ⓩ&7."
+					message ""
+
+					loop 36 times:
+						if slot {_num} of inventory of player is iron pickaxe:
+							set slot {_num} of player to unbreakable diamond pickaxe of efficiency 2 with no nbt named "&dVzácny krumpac" with lore "||&5Vlastnosti &lkrumpace&5!||&8&l ▶ &7Pri kazdem vykopani &eGold Ore||    &7dostanes  2g&7.||||&d&l ▶ &dUcinnost II||||&eKvalita zbrane &8[&6&l✩✩✩&8]||||&e&o,,Idealni krumpac pro &a&ozlatokopku&e&o."""
+							stop loop
+						add 1 to {_num}
+
+					make player execute "armory"
+			else:	
+				create a gui slot 21 of player with glowing diamond pickaxe with no nbt named "&6Vylepsení Krumpáce" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri dalsim vylepseni budes||    &7mit &bDiamantovy Krumpac&7.||||&d&l ▶ &dUcinnost II||||&5Vlastnosti &lkrumpace&5!||&8&l ▶ &7Pri kazdem vykopani &eGold Ore||    &7dostanes &6+&e2 Ⓩ&7.||||&eAktualni level &8[&6&l✩&7✩✩&8] &7➜ &8[&6&l✩✩&7✩&8]||||&7Vylepseni krumpace stoji &e2.600 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+		if {%player%.pickaxe} is 2:
+
+			if {_shop} is greater than or equal to 5300:	
+				create a gui slot 21 of player with glowing diamond pickaxe with no nbt named "&6Vylepsení Krumpáce" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri dalsim vylepseni budes||    &7mit &bDiamantovy Krumpac&7.||||&d&l ▶ &dUcinnost V||||&5Vlastnosti &lkrumpace&5!||&8&l ▶ &7Pri kazdem vykopani &eGold Ore||    &7dostanes &6+&e2 Ⓩ&7.||||&eAktualni level &8[&6&l✩✩&7✩&8] &7➜ &8[&6&l✩✩✩&8]||||&7Vylepseni krumpace stoji &e5.300 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni vylepseni." to run:
+
+					add 1 to {%player%.pickaxe}
+					close inventory of player
+					play "ORB_PICKUP" to player
+					Zlataky("remove", 5300, player)
+					message ""
+					message "&aUspesne jsi zakoupil vylepseni krumpace."
+					message "&f ➥ &7Z uctu ti bylo odebrano &e5.300 Ⓩ&7."
+					message ""
+
+					loop 36 times:
+						if slot {_num} of inventory of player is diamond pickaxe:
+							set slot {_num} of player to unbreakable diamond pickaxe of efficiency 5 with no nbt named "&dVelmi vzácny krumpac" with lore "||&5Vlastnosti &lkrumpace&5!||&8&l ▶ &7Pri kazdem vykopani &eGold Ore||    &7dostanes &6+&e2 Ⓩ&7.||||&d&l ▶ &dUcinnost V||||&eKvalita zbrane &8[&6&l✩✩&7✩&8]||||&e&o,,Davny krumpac &d&oThorina Paveze&e&o."""
+							stop loop
+						add 1 to {_num}
+
+					make player execute "armory"
+			else:	
+				create a gui slot 21 of player with glowing diamond pickaxe with no nbt named "&6Vylepsení Krumpáce" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri dalsim vylepseni budes||    &7mit &bDiamantovy Krumpac&7.||||&d&l ▶ &dUcinnost V||||&5Vlastnosti &lkrumpace&5!||&8&l ▶ &7Pri kazdem vykopani &eGold Ore||    &7dostanes &6+&e2 Ⓩ&7.||||&eAktualni level &8[&6&l✩✩&7✩&8] &7➜ &8[&6&l✩✩✩&8]||||&7Vylepseni krumpace stoji &e5.300 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+
+
+		if {%player%.pickaxe} is 3:
+
+			create a gui slot 21 of player with glowing diamond pickaxe with no nbt named "&6Vylepsení Krumpáce " with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri respawnu budes||    &7mit &bDiamantovy Krumpac&7.||||&d&l ▶ &dUcinnost V||||&5Vlastnosti &lkrumpace&5!||&8&l ▶ &7Pri kazdem vykopani &eGold Ore||    &7dostanes &6+&e2 Ⓩ&7.||||&eAktualni level &8[&6&l✩✩✩&8]||||&eDosahl jsi maximalniho vylepseni||&epro &6krumpac&7."
+
+
+	else:
+
+		if {_shop} is greater than or equal to 650:	
+			create a gui slot 21 of player with iron pickaxe with no nbt named "&6Koupit Krumpac" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri dalsim vylepseni budes||    &7mit &fIron Krumpac&7.||||&5Vlastnosti &lkrumpace&5!||&8&l ▶ &7Pri kazdem vykopani &eGold Ore||    &7dostanes &6+&e1 Ⓩ&7.||||&eAktualni level &8[&7✩✩✩&8] &7➜ &8[&6&l✩&7✩✩&8]||||&7Krumpac stoji &e650 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni vylepseni." to run:
+
+				add 1 to {%player%.pickaxe}
+				close inventory of player
+				play "ORB_PICKUP" to player
+				Zlataky("remove", 650, player)
+				message ""
+				message "&aUspesne jsi zakoupil krumpac."
+				message "&f ➥ &7Z uctu ti bylo odebrano &e650 Ⓩ&7."
+				message ""
+				if slot 4 of player is air:
+					set slot 4 of player to unbreakable iron pickaxe with no nbt named "&aObycejny krumpac" with lore "||&5Vlastnosti &lkrumpace&5!||&8&l ▶ &7Pri kazdem vykopani &eGold Ore||    &7dostanes &6+&e1 Ⓩ&7.||||&eKvalita zbrane &8[&6&l✩&7✩✩&8]||||&e&o,,Darek trpasliku &a&oSnehurce&e&o,||&e&oproto je tak spatny."""
+				else:
+					give player unbreakable iron pickaxe named "&aObycejny krumpac" with lore "||&5Vlastnosti &lkrumpace&5!||&8&l ▶ &7Pri kazdem vykopani &eGold Ore||    &7dostanes &6+&e1 Ⓩ&7.||||&eKvalita zbrane &8[&6&l✩&7✩✩&8]||||&e&o,,Darek trpasliku &a&oSnehurce&e&o,||&e&oproto je tak spatny."""
+
+				if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is 4:
+					set {_num} to 0
+					loop 9 times:
+						if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+							set {inventoryslot::%player%::pickaxe} to {_num}
+							stop loop
+						add 1 to {_num}
+				else:
+					set {inventoryslot::%player%::pickaxe} to 4
+
+
+
+				make player execute "armory"
+		else:	
+			create a gui slot 21 of player with iron pickaxe with no nbt named "&6Koupit Krumpac" with lore "||&5Info o &lvylepseni&5!||&8&l ▶ &7Pri dalsim vylepseni budes||    &7mit &fIron Krumpac&7.||||&5Vlastnosti &lkrumpace&5!||&8&l ▶ &7Pri kazdem vykopani &eGold Ore||    &7dostanes &6+&e1 Ⓩ&7.||||&eAktualni level &8[&7✩✩✩&8] &7➜ &8[&6&l✩&7✩✩&8]||||&7Krumpac stoji &e650 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+
+	if {tier.perk::%player%::xpboost} is not set:
+		PermPerk(46, "xpboost", 500, light blue dye, "&3XP Boost", "||&5Info o &lvylepseni&5!||&8&l ▶ &7Ziskas &3+&b10%%xp &7z kazdeho zisku.||||&eAktualni level &8[&7✩✩✩✩✩&8] &7➜ &8[&6&l✩&7✩✩✩✩&8]", player)
+	else if {tier.perk::%player%::xpboost} is 1:
+		PermPerk(46, "xpboost", 2500, light blue dye, "&3XP Boost", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualne ziskas &3+&b10%%xp&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Ziskas &3+&b20%%xp &7z kazdeho zisku.||||&eAktualni level  &8[&6&l✩&7✩✩✩✩&8] &7➜ &8[&6&l✩✩&7✩✩✩&8]", player)
+	else if {tier.perk::%player%::xpboost} is 2:
+		PermPerk(46, "xpboost", 5000, light blue dye, "&3XP Boost", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualne ziskas &3+&b20%%xp&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Ziskas &3+&b30%%xp &7z kazdeho zisku.||||&eAktualni level  &8[&6&l✩✩&7✩✩✩&8] &7➜ &8[&6&l✩✩✩&7✩✩&8]", player)
+	else if {tier.perk::%player%::xpboost} is 3:
+		PermPerk(46, "xpboost", 10000, light blue dye, "&3XP Boost", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualne ziskas &3+&b30%%xp&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Ziskas &3+&b40%%xp &7z kazdeho zisku.||||&eAktualni level  &8[&6&l✩✩✩&7✩✩&8] &7➜ &8[&6&l✩✩✩✩&7✩&8]", player)
+	else if {tier.perk::%player%::xpboost} is 4:
+		PermPerk(46, "xpboost", 25000, light blue dye, "&3XP Boost", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualne ziskas &3+&b40%%xp&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Ziskas &3+&b50%%xp &7z kazdeho zisku.||||&eAktualni level  &8[&6&l✩✩✩✩&7✩&8] &7➜ &8[&6&l✩✩✩✩✩&8]", player)
+	else if {tier.perk::%player%::xpboost} is 5:
+		create a gui slot 46 of player with light blue dye with no nbt named "&3XP Boost" with lore "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualne ziskas &3+&b50%%xp&7.||||&eAktualni level &8[&6&l✩✩✩✩✩&8]||||&eDosahl jsi maximalniho vylepseni||&epro &6XP Boost&7."
+
+	if {tier.perk::%player%::goldboost} is not set:
+		PermPerk(47, "goldboost", 1000, orange dye, "&eBoost Zlataku", "||&5Info o &lvylepseni&5!||&8&l ▶ &7Ziskas &6+&e10%% Ⓩ &7z kazdeho zisku.||||&eAktualni level &8[&7✩✩✩✩✩&8] &7➜ &8[&6&l✩&7✩✩✩✩&8]", player)
+	else if {tier.perk::%player%::goldboost} is 1:
+		PermPerk(47, "goldboost", 2500, orange dye, "&eBoost Zlataku", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualne ziskas &6+&e10%% Ⓩ&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Ziskas &6+&e20%% Ⓩ &7z kazdeho zisku.||||&eAktualni level  &8[&6&l✩&7✩✩✩✩&8] &7➜ &8[&6&l✩✩&7✩✩✩&8]", player)
+	else if {tier.perk::%player%::goldboost} is 2:
+		PermPerk(47, "goldboost", 10000, orange dye, "&eBoost Zlataku", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualne ziskas &6+&e20%% Ⓩ&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Ziskas &6+&e30%% Ⓩ &7z kazdeho zisku.||||&eAktualni level  &8[&6&l✩✩&7✩✩✩&8] &7➜ &8[&6&l✩✩✩&7✩✩&8]", player)
+	else if {tier.perk::%player%::goldboost} is 3:
+		PermPerk(47, "goldboost", 25000, orange dye, "&eBoost Zlataku", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualne ziskas &6+&e30%% Ⓩ&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Ziskas &6+&e40%% Ⓩ &7z kazdeho zisku.||||&eAktualni level  &8[&6&l✩✩✩&7✩✩&8] &7➜ &8[&6&l✩✩✩✩&7✩&8]", player)
+	else if {tier.perk::%player%::goldboost} is 4:
+		PermPerk(47, "goldboost", 40000, orange dye, "&eBoost Zlataku", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualne ziskas &6+&e40%% Ⓩ&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Ziskas &6+&e50%% Ⓩ &7z kazdeho zisku.||||&eAktualni level  &8[&6&l✩✩✩✩&7✩&8] &7➜ &8[&6&l✩✩✩✩✩&8]", player)
+	else if {tier.perk::%player%::goldboost} is 5:
+		create a gui slot 47 of player with orange dye with no nbt named "&eBoost Zlataku" with lore "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualne ziskas &6+&e50%% Ⓩ&7.||||&eAktualni level &8[&6&l✩✩✩✩✩&8]||||&eDosahl jsi maximalniho vylepseni||&epro &6Boost Zlataku&7."
+
+	if {tier.perk::%player%::meleedamage} is not set:
+		PermPerk(48, "meleedamage", 450, red dye, "&cPoskozeni", "||&5Info o &lvylepseni&5!||&8&l ▶ &7Zvysi tve poskozeni o &a+&c1%%&7.||||&eAktualni level &8[&7✩✩✩✩✩&8] &7➜ &8[&6&l✩&7✩✩✩✩&8]", player)
+	else if {tier.perk::%player%::meleedamage} is 1:
+		PermPerk(48, "meleedamage", 1050, red dye, "&cPoskozeni", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualni zvyseni o &a+&c1%%&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Zvysi tve poskozeni o &a+&c2%%&7.||||&eAktualni level  &8[&6&l✩&7✩✩✩✩&8] &7➜ &8[&6&l✩✩&7✩✩✩&8]", player)
+	else if {tier.perk::%player%::meleedamage} is 2:
+		PermPerk(48, "meleedamage", 1500, red dye, "&cPoskozeni", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualni zvyseni o &a+&c2%%&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Zvysi tve poskozeni o &a+&c3%%&7.||||&eAktualni level  &8[&6&l✩✩&7✩✩✩&8] &7➜ &8[&6&l✩✩✩&7✩✩&8]", player)
+	else if {tier.perk::%player%::meleedamage} is 3:
+		PermPerk(48, "meleedamage", 2250, red dye, "&cPoskozeni", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualni zvyseni o &a+&c3%%&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Zvysi tve poskozeni o &a+&c4%%&7.||||&eAktualni level  &8[&6&l✩✩✩&7✩✩&8] &7➜ &8[&6&l✩✩✩✩&7✩&8]", player)
+	else if {tier.perk::%player%::meleedamage} is 4:
+		PermPerk(48, "meleedamage", 3000, red dye, "&cPoskozeni", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualni zvyseni o &a+&c4%%&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Zvysi tve poskozeni o &a+&c5%%&7.||||&eAktualni level  &8[&6&l✩✩✩✩&7✩&8] &7➜ &8[&6&l✩✩✩✩✩&8]", player)
+	else if {tier.perk::%player%::meleedamage} is 5:
+		create a gui slot 48 of player with red dye with no nbt named "&cPoskozeni" with lore "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualni zvyseni o &a+&c5%%&7.||||&eAktualni level &8[&6&l✩✩✩✩✩&8]||||&eDosahl jsi maximalniho vylepseni||&epro &6Poskozeni&7."
+
+	if {tier.perk::%player%::bowdamage} is not set:
+		PermPerk(49, "bowdamage", 450, yellow dye, "&ePoskozeni Lukem", "||&5Info o &lvylepseni&5!||&8&l ▶ &7Zvysi tve poskozeni lukem o &a+&c3%%&7.||||&eAktualni level &8[&7✩✩✩✩✩&8] &7➜ &8[&6&l✩&7✩✩✩✩&8]", player)
+	else if {tier.perk::%player%::bowdamage} is 1:
+		PermPerk(49, "bowdamage", 1050, yellow dye, "&cPoskozeni Lukem", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualni zvyseni lukem o &a+&c3%%&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Zvysi tve poskozeni lukem o &a+&c6%%&7.||||&eAktualni level  &8[&6&l✩&7✩✩✩✩&8] &7➜ &8[&6&l✩✩&7✩✩✩&8]", player)
+	else if {tier.perk::%player%::bowdamage} is 2:
+		PermPerk(49, "bowdamage", 1500, yellow dye, "&cPoskozeni Lukem", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualni zvyseni lukem o &a+&c6%%&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Zvysi tve poskozeni lukem o &a+&c9%%&7.||||&eAktualni level  &8[&6&l✩✩&7✩✩✩&8] &7➜ &8[&6&l✩✩✩&7✩✩&8]", player)
+	else if {tier.perk::%player%::bowdamage} is 3:
+		PermPerk(49, "bowdamage", 2250, yellow dye, "&cPoskozeni Lukem", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualni zvyseni lukem o &a+&c9%%&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Zvysi tve poskozeni lukem o &a+&c12%%&7.||||&eAktualni level  &8[&6&l✩✩✩&7✩✩&8] &7➜ &8[&6&l✩✩✩✩&7✩&8]", player)
+	else if {tier.perk::%player%::bowdamage} is 4:
+		PermPerk(49, "bowdamage", 3000, yellow dye, "&cPoskozeni Lukem", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualni zvyseni lukem o &a+&c12%%&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Zvysi tve poskozeni lukem o &a+&c15%%&7.||||&eAktualni level  &8[&6&l✩✩✩✩&7✩&8] &7➜ &8[&6&l✩✩✩✩✩&8]", player)
+	else if {tier.perk::%player%::bowdamage} is 5:
+		create a gui slot 49 of player with yellow dye with no nbt named "&cPoskozeni Lukem" with lore "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualni zvyseni lukem o &a+&c15%%&7.||||&eAktualni level &8[&6&l✩✩✩✩✩&8]||||&eDosahl jsi maximalniho vylepseni||&epro &6Poskozeni&7."
+
+	if {tier.perk::%player%::damagereduction} is not set:
+		PermPerk(50, "damagereduction", 450, cyan dye, "&9Snizeni Poskozeni", "||&5Info o &lvylepseni&5!||&8&l ▶ &7Snizi poskozeni ostatnich do tebe o &c-&a1%%&7.||||&eAktualni level &8[&7✩✩✩✩✩&8] &7➜ &8[&6&l✩&7✩✩✩✩&8]", player)
+	else if {tier.perk::%player%::damagereduction} is 1:
+		PermPerk(50, "damagereduction", 1050, cyan dye, "&9Snizeni Poskozeni", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualni snizeni do tebe o &c-&a1%%&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Snizi poskozeni ostatnich do tebe o &c-&a2%%&7.||||&eAktualni level  &8[&6&l✩&7✩✩✩✩&8] &7➜ &8[&6&l✩✩&7✩✩✩&8]", player)
+	else if {tier.perk::%player%::damagereduction} is 2:
+		PermPerk(50, "damagereduction", 1500, cyan dye, "&9Snizeni Poskozeni", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualni snizeni do tebe o &c-&a2%%&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Zvysi tve poskozeni ostatnich do tebe o &c-&a3%%&7.||||&eAktualni level  &8[&6&l✩✩&7✩✩✩&8] &7➜ &8[&6&l✩✩✩&7✩✩&8]", player)
+	else if {tier.perk::%player%::damagereduction} is 3:
+		PermPerk(50, "damagereduction", 2250, cyan dye, "&9Snizeni Poskozeni", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualni snizeni do tebe o &c-&a3%%&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Zvysi tve poskozeni ostatnich do tebe o &c-&a4%%&7.||||&eAktualni level  &8[&6&l✩✩✩&7✩✩&8] &7➜ &8[&6&l✩✩✩✩&7✩&8]", player)
+	else if {tier.perk::%player%::damagereduction} is 4:
+		PermPerk(50, "damagereduction", 3000, cyan dye, "&9Snizeni Poskozeni", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualni snizeni do tebe o &c-&a4%%&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Zvysi tve poskozeni ostatnich do tebe o &c-&a5%%&7.||||&eAktualni level  &8[&6&l✩✩✩✩&7✩&8] &7➜ &8[&6&l✩✩✩✩✩&8]", player)
+	else if {tier.perk::%player%::damagereduction} is 5:
+		create a gui slot 50 of player with cyan dye with no nbt named "&9Snizeni Poskozeni" with lore "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualni snizeni do tebe o &c-&a5%%&7.||||&eAktualni level &8[&6&l✩✩✩✩✩&8]||||&eDosahl jsi maximalniho vylepseni||&epro &6Poskozeni&7."
+
+	if {tier.perk::%player%::buildbattler} is not set:
+		PermPerk(51, "buildbattler", 750, bone meal, "&eBorek Stavitel", "||&5Info o &lvylepseni&5!||&8&l ▶ &7Bloky, ktere postavis vydrzi||    &7dele o &a+&f50%% casu&7.||||&eAktualni level &8[&7✩✩✩✩✩&8] &7➜ &8[&6&l✩&7✩✩✩✩&8]", player)
+	else if {tier.perk::%player%::buildbattler} is 1:
+		PermPerk(51, "buildbattler", 1750, bone meal, "&eBorek Stavitel", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualne vydrzi dele o &a+&f50%% casu&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Bloky, ktere postavis vydrzi||    &7dele o &a+&f100%% casu&7.||||&eAktualni level  &8[&6&l✩&7✩✩✩✩&8] &7➜ &8[&6&l✩✩&7✩✩✩&8]", player)
+	else if {tier.perk::%player%::buildbattler} is 2:
+		PermPerk(51, "buildbattler", 2750, bone meal, "&eBorek Stavitel", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualne vydrzi dele o &a+&f100%% casu&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Bloky, ktere postavis vydrzi||    &7dele o &a+&f150%% casu&7.||||&eAktualni level  &8[&6&l✩✩&7✩✩✩&8] &7➜ &8[&6&l✩✩✩&7✩✩&8]", player)
+	else if {tier.perk::%player%::buildbattler} is 3:
+		PermPerk(51, "buildbattler", 3750, bone meal, "&eBorek Stavitel", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualne vydrzi dele o &a+&f150%% casu&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Bloky, ktere postavis vydrzi||    &7dele o &a+&f200%% casu&7.||||&eAktualni level  &8[&6&l✩✩✩&7✩✩&8] &7➜ &8[&6&l✩✩✩✩&7✩&8]", player)
+	else if {tier.perk::%player%::buildbattler} is 4:
+		PermPerk(51, "buildbattler", 5000, bone meal, "&eBorek Stavitel", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualne vydrzi dele o &a+&f200%% casu&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Bloky, ktere postavis vydrzi||    &7dele o &a+&f250%% casu&7.||||&eAktualni level  &8[&6&l✩✩✩✩&7✩&8] &7➜ &8[&6&l✩✩✩✩✩&8]", player)
+	else if {tier.perk::%player%::buildbattler} is 5:
+		create a gui slot 51 of player with bone meal with no nbt named "&eBorek Stavitel" with lore "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualne vydrzi dele o &a+&f250%% casu&7.||||&eAktualni level &8[&6&l✩✩✩✩✩&8]||||&eDosahl jsi maximalniho vylepseni||&epro &6Poskozeni&7."
+
+	if {tier.perk::%player%::elgato} is not set:
+		PermPerk(52, "elgato", 1000, cake_item, "&dEl Gato", "||&5Info o &lvylepseni&5!||&8&l ▶ &7Prvni &c1 zabiti &7ziskas bonus &6+&e5Ⓩ &3+&b5xp&7.||||&eAktualni level &8[&7✩✩✩✩✩&8] &7➜ &8[&6&l✩&7✩✩✩✩&8]", player)
+	else if {tier.perk::%player%::elgato} is 1:
+		PermPerk(52, "elgato", 2000, cake_item, "&dEl Gato", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualne ziskas bonus &6+&e5Ⓩ &3+&b5xp||    &7za prvni &c1 zabiti&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Prvni &c2 zabiti &7ziskas bonus &6+&e5Ⓩ &3+&b5xp&7.||||&eAktualni level  &8[&6&l✩&7✩✩✩✩&8] &7➜ &8[&6&l✩✩&7✩✩✩&8]", player)
+	else if {tier.perk::%player%::elgato} is 2:
+		PermPerk(52, "elgato", 3000, cake_item, "&dEl Gato", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualne ziskas bonus &6+&e5Ⓩ &3+&b5xp||    &7za prvni &c2 zabiti&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Prvni &c3 zabiti &7ziskas bonus &6+&e5Ⓩ &3+&b5xp&7.||||&eAktualni level  &8[&6&l✩✩&7✩✩✩&8] &7➜ &8[&6&l✩✩✩&7✩✩&8]", player)
+	else if {tier.perk::%player%::elgato} is 3:
+		PermPerk(52, "elgato", 4000, cake_item, "&dEl Gato", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualne ziskas bonus &6+&e5Ⓩ &3+&b5xp||    &7za prvni &c3 zabiti&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Prvni &c4 zabiti &7ziskas bonus &6+&e5Ⓩ &3+&b5xp&7.||||&eAktualni level  &8[&6&l✩✩✩&7✩✩&8] &7➜ &8[&6&l✩✩✩✩&7✩&8]", player)
+	else if {tier.perk::%player%::elgato} is 4:
+		PermPerk(52, "elgato", 5000, cake_item, "&dEl Gato", "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualne ziskas bonus &6+&e5Ⓩ &3+&b5xp||    &7za prvni &c4 zabiti&7.||||&5Info o &lvylepseni&5!||&8&l ▶ &7Prvnich &c5 zabiti &7ziskas bonus &6+&e5Ⓩ &3+&b5xp&7.||||&eAktualni level  &8[&6&l✩✩✩✩&7✩&8] &7➜ &8[&6&l✩✩✩✩✩&8]", player)
+	else if {tier.perk::%player%::elgato} is 5:
+		create a gui slot 52 of player with cake_item with no nbt named "&dEl Gato" with lore "||&5Aktualni &lvylepseni&5!||&8&l ▶ &7Aktualne ziskas bonus &6+&e5Ⓩ &3+&b5xp||    &7za prvnich &c5 zabiti&7.||||&eAktualni level &8[&6&l✩✩✩✩✩&8]||||&eDosahl jsi maximalniho vylepseni||&epro &6Poskozeni&7."
+
+	set {_num} to 0
+	loop 4 times:
+		add 1 to {_num}
+		if {_num} is 4:
+			if {renown::%player%::perkslot4} is not set:
+				stop
+		if {activatedperk%{_num}%::%player%} is not set:
+			create a gui slot 31 + {_num} of player with light green glass block named "&aPerk Slot ##%{_num}%" with lore "||&7Klikni zde pro vybrani &dperku&7.||&r" to run:
+				make player execute command "/perkmenuar %{_num}%"
+		if {_num} is 2:
+			if {level::%player%} is not higher or equal to 40:
+				create a gui slot 33 of player with bedrock named "&cPerk Slot ##%{_num}%" with lore "||&7Pro tento perk slot musis mit level &2+&a40&7.||&r"
+		if {_num} is 3:
+			if {level::%player%} is not higher or equal to 60:
+				create a gui slot 34 of player with bedrock named "&cPerk Slot ##3" with lore "||&7Pro tento perk slot musis mit level &a+&6&l60&7.||&r"
+
+
+		if {activatedperk%{_num}%::%player%} is "goldenhead":
+			create a gui slot 31 + {_num} of player with player head with custom nbt "{SkullOwner:{Id:""2dca1967-0d3e-4eb2-807b-daf8f735ad16"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGFiZDcwM2U1YjhjODhkNGIxZmNmYTk0YTkzNmEwZDZhNGY2YWJhNDQ1Njk2NjNkMzM5MWQ0ODgzMjIzYzUifX19""}]}}}" named "&aPerk Slot ##1" with lore "||&7Vybrano &8➜ &6Zlata Hlava||||&5Info o &lperku&5!||&8&l ▶ &7Pri zabiti dostanes &6Zlatou Hlavu&7.||&8&l ▶ &9Regenerace II (0:10)||&8&l ▶ &9Absorpce I (0:10)||||&7Klikni zde pro upravu &aPerk Slotu ##%{_num}%&7." to run:
+				make player execute command "/perkmenuar %{_num}%"
+		if {activatedperk%{_num}%::%player%} is "fishingrod":
+			create a gui slot 31 + {_num} of player with fishing rod named "&aPerk Slot ##%{_num}%" with lore "||&7Vybrano &8➜ &bRybarsky Prut||||&5Info o &lperku&5!||&8&l ▶ &7Ziskas permanentni &fRybarsky prut&7.||&8&l ▶ &7Lze upravit slot &d/inventar&7.||||&7Klikni zde pro upravu &aPerk Slotu ##%{_num}%&7." to run:
+				make player execute command "/perkmenuar %{_num}%"
+		if {activatedperk%{_num}%::%player%} is "lava":
+			create a gui slot 31 + {_num} of player with lava bucket named "&aPerk Slot ##%{_num}%" with lore "||&7Vybrano &8➜ &cLava||||&5Info o &lperku&5!||&8&l ▶ &7Ziskas &fkyblik lavy&7, ktery dostanes||    &7vzdy, kdy se vratis na spawn.||&8&l ▶ &7Lze upravit slot &d/inventar&7.||||&7Klikni zde pro upravu &aPerk Slotu ##%{_num}%&7." to run:
+				make player execute command "/perkmenuar %{_num}%"
+		if {activatedperk%{_num}%::%player%} is "arrow":
+			create a gui slot 31 + {_num} of player with arrow named "&aPerk Slot ##%{_num}%" with lore "||&7Vybrano &8➜ &7Sipy||||&5Info o &lperku&5!||&8&l ▶ &7Pri kazdem zasahu hrace sipem||    &7dostanes &a+2 &7sipy.||||&7Klikni zde pro upravu &aPerk Slotu ##%{_num}%&7." to run:
+				make player execute command "/perkmenuar %{_num}%"
+		if {activatedperk%{_num}%::%player%} is "gladiator":
+			create a gui slot 31 + {_num} of player with bone named "&aPerk Slot ##%{_num}%" with lore "||&7Vybrano &8➜ &9Gladiator||||&5Info o &lperku&5!||&8&l ▶ &7Obdrzis &c-3%% poskozeni &7za kazdeho||    &7hrace, ktery je v rozmezi &f12 bloku&7.||&8&l ▶ &7Minimalne &e3&7, max &e10 hracu&7.||||&7Klikni zde pro upravu &aPerk Slotu ##%{_num}%&7." to run:
+				make player execute command "/perkmenuar %{_num}%"
+		if {activatedperk%{_num}%::%player%} is "vampire":
+			create a gui slot 31 + {_num} of player with fermented spider eye named "&aPerk Slot ##%{_num}%" with lore "||&7Vybrano &8➜ &cVampire||||&5Info o &lperku&5!||&8&l ▶ &7Jiz neziskas uzdravovaci predmety,||    &7zasah uzdravi &c0.5&4❤&7, zasah lukem &c1.5&4❤&7,||    &7ale pouze pri &fplnem &7natazeni luku.||&8&l ▶ &7Zabitim hrace ziskas &dRegenerace I &7(&f8s&7).||||&7Klikni zde pro upravu &aPerk Slotu ##%{_num}%&7." to run:
+				make player execute command "/perkmenuar %{_num}%"
+		if {activatedperk%{_num}%::%player%} is "streaker":
+			create a gui slot 31 + {_num} of player with wheat item named "&aPerk Slot ##%{_num}%" with lore "||&7Vybrano &8➜ &9Streaker||||&5Info o &lperku&5!||&8&l ▶ &7Cim vyssi &fstreak&7, tim vice &bxp &7dostanes.||&8&l ▶ &7Struktura streaker bonusu||     &8▪ &7Streak &f3 &7➠ &f9&7: &b2xp||     &8▪ &7Streak &f10 &7➠ &f19&7: &b3xp||     &8▪ &7Streak &f20 &7➠ &f29&7: &b4xp||     &8▪ &7.. az do &f80&7: &b10xp&7/zabiti||||&7Klikni zde pro upravu &aPerk Slotu ##%{_num}%&7." to run:
+				make player execute command "/perkmenuar %{_num}%"
+		if {activatedperk%{_num}%::%player%} is "gold":
+			create a gui slot 31 + {_num} of player with gold ingot named "&aPerk Slot ##%{_num}%" with lore "||&7Vybrano &8➜ &6Gold Bonus||||&5Info o &lperku&5!||&8&l ▶ &7Pri sebrani zlataku dostanes &6+&e10 Ⓩ&7,||    &7a take jako bonus ti doplni &c2&4❤&7.||||&7Klikni zde pro upravu &aPerk Slotu ##%{_num}%&7." to run:
+				make player execute command "/perkmenuar %{_num}%"
+		if {activatedperk%{_num}%::%player%} is "bountyhunter":
+			create a gui slot 31 + {_num} of player with golden leggings with no nbt named "&aPerk Slot ##%{_num}%" with lore "||&7Vybrano &8➜ &cBounty Hunter||||&5Info o &lperku&5!||&8&l ▶ &7Za assist a zabiti ziskas &6+&e4 Ⓩ&7.||&8&l ▶ &c+1%%&7/&e50 Ⓩ &7poskozeni, pokud||    &7ma protihrac &ebounty&7.||||&7Klikni zde pro upravu &aPerk Slotu ##%{_num}%&7." to run:
+				make player execute command "/perkmenuar %{_num}%"
+		if {activatedperk%{_num}%::%player%} is "strength":
+			create a gui slot 31 + {_num} of player with diamond sword with no nbt named "&aPerk Slot ##%{_num}%" with lore "||&7Vybrano &8➜ &dSila||||&5Info o &lperku&5!||&8&l ▶ &7Za kazde zabiti hrace ziskas||    &dStrength &a+&fI &7(&f7s&7), max uroven &fV&7.||||&7Klikni zde pro upravu &aPerk Slotu ##%{_num}%&7." to run:
+				make player execute command "/perkmenuar %{_num}%"
+		if {activatedperk%{_num}%::%player%} is "obsidian":
+			create a gui slot 31 + {_num} of player with obsidian named "&aPerk Slot ##%{_num}%" with lore "||&7Vybrano &8➜ &eBorek Stavitel||||&5Info o &lperku&5!||&8&l ▶ &7Pri zabiti hrace dostanes||    &7dohromady &a+2 &7obsidiany.||||&7Klikni zde pro upravu &aPerk Slotu ##%{_num}%&7." to run:
+				make player execute command "/perkmenuar %{_num}%"
+		if {activatedperk%{_num}%::%player%} is "spammer":
+			create a gui slot 31 + {_num} of player with cobweb named "&aPerk Slot ##%{_num}%" with lore "||&7Vybrano &8➜ &4Spammer||||&5Info o &lperku&5!||&8&l ▶ &7Pokud zabijes hrace, ktereho jsi||    &7zasahl &fsipem&7 ziskas &62x &ezlataku&7.||&8&l ▶ &7Pri assistu ziskas &6+&e2 Ⓩ&7.||||&7Klikni zde pro upravu &aPerk Slotu ##%{_num}%&7." to run:
+				make player execute command "/perkmenuar %{_num}%"
+		if {activatedperk%{_num}%::%player%} is "overheal":
+			create a gui slot 31 + {_num} of player with mushroom stew named "&aPerk Slot ##%{_num}%" with lore "||&7Vybrano &8➜ &6Renown Perk&7: &eOverheal||||&5Info o &lperku&5!||&8&l ▶ &7Moznost mit u sebe &fdvojnasobek||    &7uzdravovacich predmetu (&f2&d×2 &7➠ &f4&7,||    &f1&d×2 &7➠ &f2&7).||||&7Klikni zde pro upravu &aPerk Slotu ##%{_num}%&7." to run:
+				make player execute command "/perkmenuar %{_num}%"
+		if {activatedperk%{_num}%::%player%} is "barbarian":
+			create a gui slot 31 + {_num} of player with iron axe with no nbt named "&aPerk Slot ##%{_num}%" with lore "||&7Vybrano &8➜ &6Renown Perk&7: &eBarbarian||||&5Info o &lperku&5!||&8&l ▶ &7Nahrazeni mece za silnejsi &fsekeru&7.||    &7&o(Zvyseni poskozeni o &a&o+15%%&7&o.)||||&7Klikni zde pro upravu &aPerk Slotu ##%{_num}%&7." to run:
+				make player execute command "/perkmenuar %{_num}%"
+		if {activatedperk%{_num}%::%player%} is "dirty":
+			create a gui slot 31 + {_num} of player with podzol named "&aPerk Slot ##%{_num}%" with lore "||&7Vybrano &8➜ &6Renown Perk&7: &eDirty||||&5Info o &lperku&5!||&8&l ▶ &7Pri zabiti ziskas &dResistance II &7(&f5s&7).||||&7Klikni zde pro upravu &aPerk Slotu ##%{_num}%&7." to run:
+				make player execute command "/perkmenuar %{_num}%"
+		if {activatedperk%{_num}%::%player%} is "rambo":
+			create a gui slot 31 + {_num} of player with stick named "&aPerk Slot ##%{_num}%" with lore "||&7Vybrano &8➜ &6Renown Perk&7: &eRambo||||&5Info o &lperku&5!||&8&l ▶ &7Jiz neziskas uzdravovaci predmety,||    &7pocet srdicek budes mit omezen na &c5&4❤&7.||&8&l ▶ &7&7Kazde zabiti te &duzdravi &7do maxima.||||&7Klikni zde pro upravu &aPerk Slotu ##%{_num}%&7." to run:
+				make player execute command "/perkmenuar %{_num}%"
+		if {activatedperk%{_num}%::%player%} is "olympus":
+			create a gui slot 31 + {_num} of player with water_bottle:8203 with no nbt named "&aPerk Slot ##%{_num}%" with lore "||&7Vybrano &8➜ &6Renown Perk&7: &eOlympus||||&5Info o &lperku&5!||&8&l ▶ &7Pri zabiti dostanes &bOlympus Potion&7.||&8&l ▶ &9Rychlost II (0:15)||&8&l ▶ &9Regenerace III (0:10)||&8&l ▶ &7Pri vypiti ziskas &3+&b20xp&7.||&7&o(Lze mit u sebe pouze jeden!)||||&7Klikni zde pro upravu &aPerk Slotu ##%{_num}%&7." to run:
+				make player execute command "/perkmenuar %{_num}%"
+		if {activatedperk%{_num}%::%player%} is "1ststrike":
+			create a gui slot 31 + {_num} of player with cooked chicken named "&aPerk Slot ##%{_num}%" with lore "||&7Vybrano &8➜ &6Renown Perk&7: &e1st Strike||||&5Info o &lperku&5!||&8&l ▶ &7Prvni zasah hrace prida &a+35%% &7poskozeni.||&7&o(K resetovani dojde pri objeveni se na spawnu.)||||&7Klikni zde pro upravu &aPerk Slotu ##%{_num}%&7." to run:
+				make player execute command "/perkmenuar %{_num}%"
+
+
+function PermPerk(s: number, v: text, zl: number, i: item, n: text, l: text, p: player):
+	set {_shop} to {gold::%{_p}%}
+	replace all "." in {_shop} with ""
+	set {_shop} to {_shop} parsed as number
+	
+	set {_x} to splitCoins("%{_zl}%")
+	if {_shop} is greater than or equal to {_zl}:	
+		create a gui slot {_s} of {_p} with {_i} with no nbt named "%{_n}%" with lore "%{_l}%||||&7Vylepseni stoji &e%{_x}% Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni vylepseni." to run:
+
+			add 1 to {tier.perk::%{_p}%::%{_v}%}
+			close inventory of {_p}
+			play "ORB_PICKUP" to {_p}
+			Zlataky("remove", {_zl}, {_p})
+			message ""
+			message "&aUspesne jsi vylepsil &8""%{_n}%&8""."
+			message "&f ➥ &7Z uctu ti bylo odebrano &e%{_x}% Ⓩ&7."
+			message ""
+
+			make {_p} execute "armory"
+	else:	
+		create a gui slot {_s} of {_p} with {_i} with no nbt named "%{_n}%" with lore "%{_l}%||||&7Vylepseni stoji &e%{_x}% Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+
+on command "market":
+	cancel event
+	open chest with 6 rows named "&eProhlízís si obchod.." to player
+	wait 2 ticks
+
+	set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52 and 53
+	format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+	create a gui slot 0 of player with rose red named "&cOpustit menu" with lore "||&eKlikni zde pro opusteni menu!||&r" to close
+
+	set {_tokeny::%player%} to placeholder "tm_tokens_raw" from player parsed as number
+	set {_token} to splitCoins("%{_tokeny::%player%}%")
+	create a gui slot 4 of player with skull of ("%player%" parsed as an offline player) named "&6Postava" with lore "||&5Tva &lekonomika&5!|| &8▪ &7Zlataky: &e%{gold::%player%}% Ⓩ|| &8▪ &7PvPCoiny: &6%{_token}% Ⓟ||&7&o(Lze zakoupit v obchode! &d&o/obchod&7&o)||&r"
+
+	create a gui slot 32 of player with player head with custom nbt "{SkullOwner:{Id:""c659cdd4-e436-4977-a6a7-d5518ebecfbb"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWFlMzg1NWY5NTJjZDRhMDNjMTQ4YTk0NmUzZjgxMmE1OTU1YWQzNWNiY2I1MjYyN2VhNGFjZDQ3ZDMwODEifX19=""}]}}}" named "&cObchod Masek" with lore "||&3» &7Momentalne je mozne zakoupit||&a   9 masek&7 v obchodu.||||&dKlikni zde pro otevreni obchodu masek." to run:
+		make player execute "maskice"
+
+
+	create a gui slot 31 of player with arrow named "&eObchod Sípu" with lore "||&3» &7Momentalne je mozne zakoupit||&a   5 specialních sípu&7 v obchodu.||||&dKlikni zde pro otevreni obchodu sipu." to run:
+		make player execute "arrows"
+
+
+	create a gui slot 33 of player with water_bottle:16421 with no nbt named "&3Obchod Potionu" with lore "||&3» &7Momentalne je mozne zakoupit||&a   5 potionu&7 v obchodu.||||&dKlikni zde pro otevreni obchodu potionu." to run:
+		make player execute "potions"
+
+
+	create a gui slot 29 of player with sunflower named "&bPremium Obchod" with lore "||&3» &7Moznost zakoupit si &fitemy&7,||&7   ktere nelze sehnat bezne.||||&dKlikni zde pro otevreni premium obchodu." to run:
+		make player execute "premiumobchod"
+
+
+
+
+
+on command "potions":
+	cancel event
+	open chest with 6 rows named "&eProhlízís si elixíry.." to player
+	wait 2 ticks
+
+	set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52 and 53
+	format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+
+	create a gui slot 0 of player with rose red named "&cJit zpatky" with lore "||&eKlikni zde pro hlavni menu!||&r" to run:
+		make player execute "market"
+
+	create a gui slot 8 of player with book and quill named "&4Upozorneni" with lore "||&7Kazdy potion je mozne koupit ||&cpouze &7jednou kazdych &e10 minut&7.||&r"
+
+	set {_tokeny::%player%} to placeholder "tm_tokens_raw" from player parsed as number
+	set {_token} to splitCoins("%{_tokeny::%player%}%")
+	create a gui slot 4 of player with skull of ("%player%" parsed as an offline player) named "&6Postava" with lore "||&5Tva &lekonomika&5!|| &8▪ &7Zlataky: &e%{gold::%player%}% Ⓩ|| &8▪ &7PvPCoiny: &6%{_token}% Ⓟ||&7&o(Lze zakoupit v obchode! &d&o/obchod&7&o)||&r"
+
+	set {_shop} to {gold::%player%}
+	replace all "." in {_shop} with ""
+	set {_shop} to {_shop} parsed as number
+
+	if {_shop} is greater than or equal to 180:	
+		create a gui slot 29 of player with water_bottle:8194 with no nbt named "&bElixír rychlosti" with lore "||&5Info o &lelixíru&5!||&8&l ▶ &9Rychlost I (3:00)||||&7Potion stoji &e180 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni potionu." to run:
+			
+			set {_wait.speed} to difference between {speedpotion.%player%.lastused} and now
+			if {_wait.speed} is less than 600 seconds:
+				close inventory of player
+				message "&7Musis pockat &e%difference between 600 seconds and {_wait.speed}%&7, aby jsi mohl znovu koupit Speed Potion."
+				stop
+
+			give player 1 water_bottle:8194 with no nbt named "&bElixír rychlosti" with lore "||&5Info o &lelixíru&5!||&8&l ▶ &9Rychlost I (3:00)||&r"
+			close inventory of player
+			play "ORB_PICKUP" to player
+			Zlataky("remove", 180, player)
+			message ""
+			message "&aUspesne jsi zakoupil Elixír rychlosti."
+			message "&f ➥ &7Z uctu ti bylo odebrano &e180 Ⓩ&7."
+			message ""
+			set {speedpotion.%player%.lastused} to now
+			make player execute "potions"
+
+	else:	
+		create a gui slot 29 of player with water_bottle:8194 with no nbt named "&bElixír rychlosti" with lore "||&5Info o &lelixíru&5!||&8&l ▶ &9Rychlost I (3:00)||||&7Potion stoji &e180 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+	
+	if {_shop} is greater than or equal to 260:	
+		create a gui slot 30 of player with water_bottle:8225 with no nbt named "&dElixír regenerace" with lore "||&5Info o &lelixíru&5!||&8&l ▶ &9Regenerace II (1:30)||||&7Potion stoji &e260 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni potionu." to run:
+			
+			set {_wait.regeneration} to difference between {regenerationpotion.%player%.lastused} and now
+			if {_wait.regeneration} is less than 600 seconds:
+				close inventory of player
+				message "&7Musis pockat &e%difference between 600 seconds and {_wait.regeneration}%&7, aby jsi mohl znovu koupit Regeneration Potion."
+				stop
+
+			give player 1 water_bottle:8225 with no nbt named "&dElixír regenerace" with lore "||&5Info o &lelixíru&5!||&8&l ▶ &9Regenerace II (1:30)||&r"
+			close inventory of player
+			play "ORB_PICKUP" to player
+			Zlataky("remove", 260, player)
+			message ""
+			message "&aUspesne jsi zakoupil Elixír regenerace."
+			message "&f ➥ &7Z uctu ti bylo odebrano &e260 Ⓩ&7."
+			message ""
+			set {regenerationpotion.%player%.lastused} to now
+			make player execute "potions"
+
+	else:	
+		create a gui slot 30 of player with water_bottle:8225 with no nbt named "&dElixír regenerace" with lore "||&5Info o &lelixíru&5!||&8&l ▶ &9Regenerace II (1:30)||||&7Potion stoji &e260 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+
+
+	if {_shop} is greater than or equal to 200:	
+		create a gui slot 31 of player with water_bottle:16388 with no nbt named "&2Elixír jedu" with lore "||&5Info o &lelixíru&5!||&8&l ▶ &9Jed I (0:33)||||&7Potion stoji &e200 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni potionu." to run:
+			
+			set {_wait.poison} to difference between {poison.%player%.lastused} and now
+			if {_wait.poison} is less than 600 seconds:
+				close inventory of player
+				message "&7Musis pockat &e%difference between 600 seconds and {_wait.poison}%&7, aby jsi mohl znovu koupit Poison Potion."
+				stop
+
+			give player 1 water_bottle:16388 with no nbt named "&2Elixír jedu" with lore "||&5Info o &lelixíru&5!||&8&l ▶ &9Jed I (0:33)||&r"
+			close inventory of player
+			play "ORB_PICKUP" to player
+			Zlataky("remove", 200, player)
+			message ""
+			message "&aUspesne jsi zakoupil Elixír jedu."
+			message "&f ➥ &7Z uctu ti bylo odebrano &e200 Ⓩ&7."
+			message ""
+			set {poison.%player%.lastused} to now
+			make player execute "potions"
+
+	else:	
+		create a gui slot 31 of player with water_bottle:16388 with no nbt named "&2Elixír jedu" with lore "||&5Info o &lelixíru&5!||&8&l ▶ &9Jed I (0:33)||||&7Potion stoji &e200 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+
+
+
+
+
+	if {_shop} is greater than or equal to 350:	
+		create a gui slot 32 of player with water_bottle:16453 with no nbt named "&dElixír uzdravení" with lore "||&5Info o &lelixíru&5!||&8&l ▶ &dUzdravení &c2&4❤||||&7Potion stoji &e350 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni potionu." to run:
+			
+			set {_wait.health} to difference between {health.%player%.lastused} and now
+			if {_wait.health} is less than 600 seconds:
+				close inventory of player
+				message "&7Musis pockat &e%difference between 600 seconds and {_wait.health}%&7, aby jsi mohl znovu koupit Health Potion."
+				stop
+
+			give player 1 water_bottle:16453 with no nbt named "&dElixír uzdravení" with lore "||&5Info o &lelixíru&5!||&8&l ▶ &dUzdravení &c2&4❤||&r"
+			close inventory of player
+			play "ORB_PICKUP" to player
+			Zlataky("remove", 350, player)
+			message ""
+			message "&aUspesne jsi zakoupil Elixír uzdravení."
+			message "&f ➥ &7Z uctu ti bylo odebrano &e350 Ⓩ&7."
+			message ""
+			set {health.%player%.lastused} to now
+			make player execute "potions"
+
+	else:	
+		create a gui slot 32 of player with water_bottle:16453 with no nbt named "&dElixír uzdravení" with lore "||&5Info o &lelixíru&5!||&8&l ▶ &dUzdravení &c2&4❤||||&7Potion stoji &e350 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+
+
+
+
+
+	if {_shop} is greater than or equal to 800:	
+		create a gui slot 33 of player with water_bottle:8233 with no nbt named "&5Elixír síly" with lore "||&5Info o &lelixíru&5!||&8&l ▶ &9Síla II (1:30)||||&7Potion stoji &e800 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni potionu." to run:
+			
+			set {_wait.strength} to difference between {strength.%player%.lastused} and now
+			if {_wait.strength} is less than 600 seconds:
+				close inventory of player
+				message "&7Musis pockat &e%difference between 600 seconds and {_wait.strength}%&7, aby jsi mohl znovu koupit Strength Potion."
+				stop
+
+			give player 1 water_bottle:8233 with no nbt named "&5Elixír síly" with lore "||&5Info o &lelixíru&5!||&8&l ▶ &9Síla II (1:30)||&r"
+			close inventory of player
+			play "ORB_PICKUP" to player
+			Zlataky("remove", 800, player)
+			message ""
+			message "&aUspesne jsi zakoupil Elixír síly."
+			message "&f ➥ &7Z uctu ti bylo odebrano &e800 Ⓩ&7."
+			message ""
+			set {strength.%player%.lastused} to now
+			make player execute "potions"
+
+	else:	
+		create a gui slot 33 of player with water_bottle:8233 with no nbt named "&5Elixír síly" with lore "||&5Info o &lelixíru&5!||&8&l ▶ &9Síla II (1:30)||||&7Potion stoji &e800 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+
+on consume:
+	if lore of event-item contains "&9Regenerace II (1:30)":
+		cancel event
+		remove event-item from the player's tool
+		if player has regeneration:
+			set {_tier} to tier of potion effect regeneration of player
+			set {_duration} to duration of potion effect regeneration of player
+			if {_tier} is less or equal to 2:
+				if {_duration} is less or equal to 90 seconds:
+					remove regeneration from player
+					apply potion of regeneration of tier 2 to player for 90 seconds
+		else:
+			apply potion of regeneration of tier 2 to player for 90 seconds
+
+
+on command "arrows":
+	cancel event
+	open chest with 6 rows named "&eProhlízís si sípy.." to player
+	wait 2 ticks
+
+	set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52 and 53
+	format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+	create a gui slot 0 of player with rose red named "&cJit zpatky" with lore "||&eKlikni zde pro hlavni menu!||&r" to run:
+		make player execute "market"
+
+	create a gui slot 8 of player with book and quill named "&5Vysvetlivka" with lore "||&d&nJed||&f ➥ &7Sip &2otravi &7protihrace.||&d&nOhen||&f ➥ &7Sip &czapali &7protihrace.||&d&nBlesk||&f ➥ &7Sip &fzahrzmi &7nad protihracem.||&d&nExploze||&f ➥ &7Sip &evybouchne&7.||&d&nMolotov||&f ➥ &7Sip &4zapali &7ostatni protihrace.||&r"
+
+	set {_tokeny::%player%} to placeholder "tm_tokens_raw" from player parsed as number
+	set {_token} to splitCoins("%{_tokeny::%player%}%")
+	create a gui slot 4 of player with skull of ("%player%" parsed as an offline player) named "&6Postava" with lore "||&5Tva &lekonomika&5!|| &8▪ &7Zlataky: &e%{gold::%player%}% Ⓩ|| &8▪ &7PvPCoiny: &6%{_token}% Ⓟ||&7&o(Lze zakoupit v obchode! &d&o/obchod&7&o)||&r"
+
+	set {_shop} to {gold::%player%}
+	replace all "." in {_shop} with ""
+	set {_shop} to {_shop} parsed as number
+
+	if {_shop} is greater than or equal to 60:	
+		create a gui slot 29 of player with arrow named "&2Síp Jedu" with lore "||&5Vlastnosti &lsipu&5!||&d&l ▶ &dJed||||&eHodnocení sípu &8[&6&l✩✩&7✩✩✩&8]||||&7Sip stoji &e60 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni sipu." to run:
+			
+			#give player 1 arrow with nbt "{jed:1}" named "&2Síp Jedu" with lore "||&5Vlastnosti &lsipu&5!||&d&l ▶ &dJed||||&eHodnocení sípu &8[&6&l✩✩&7✩✩✩&8]"
+			close inventory of player
+			play "ORB_PICKUP" to player
+			Zlataky("remove", 60, player)
+			make player run command "/ca give poison" as op
+			message ""
+			message "&aUspesne jsi zakoupil Síp Jedu."
+			message "&f ➥ &7Z uctu ti bylo odebrano &e60 Ⓩ&7."
+			message ""
+			make player execute "arrows"
+	else:	
+		create a gui slot 29 of player with arrow named "&2Síp Jedu" with lore "||&5Vlastnosti &lsipu&5!||&d&l ▶ &dJed||||&eHodnocení sípu &8[&6&l✩✩&7✩✩✩&8]||||&7Sip stoji &e60 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+	
+
+
+	if {_shop} is greater than or equal to 60:	
+		create a gui slot 30 of player with arrow named "&cSíp Ohne" with lore "||&5Vlastnosti &lsipu&5!||&d&l ▶ &dOhen||||&eHodnocení sípu &8[&6&l✩✩✩&7✩✩&8]||||&7Sip stoji &e60 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni sipu." to run:
+			
+			#give player 1 arrow with nbt "{ohen:2}" named "&cSíp Ohne" with lore "||&5Vlastnosti &lsipu&5!||&d&l ▶ &dOhen||||&eHodnocení sípu &8[&6&l✩✩✩&7✩✩&8]"
+			close inventory of player
+			play "ORB_PICKUP" to player
+			Zlataky("remove", 60, player)
+			make player run command "/ca give hellfire" as op
+			message ""
+			message "&aUspesne jsi zakoupil Síp Ohne."
+			message "&f ➥ &7Z uctu ti bylo odebrano &e60 Ⓩ&7."
+			message ""
+			make player execute "arrows"
+
+	else:	
+		create a gui slot 30 of player with arrow named "&cSíp Ohne" with lore "||&5Vlastnosti &lsipu&5!||&d&l ▶ &dOhen||||&eHodnocení sípu &8[&6&l✩✩✩&7✩✩&8]||||&7Sip stoji &e60 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+
+
+
+	if {_shop} is greater than or equal to 80:	
+		create a gui slot 31 of player with arrow named "&bSíp Thora" with lore "||&5Vlastnosti &lsipu&5!||&d&l ▶ &dBlesk||||&eHodnocení sípu &8[&6&l✩✩✩&7✩✩&8]||||&7Sip stoji &e80 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni sipu." to run:
+			
+			#give player 1 arrow with nbt "{thor:3}" named "&bSíp Thora" with lore "||&5Vlastnosti &lsipu&5!||&d&l ▶ &dBlesk||||&eHodnocení sípu &8[&6&l✩✩✩&7✩✩&8]"
+			close inventory of player
+			play "ORB_PICKUP" to player
+			Zlataky("remove", 80, player)
+			make player run command "/ca give thor" as op
+			message ""
+			message "&aUspesne jsi zakoupil Síp Thora."
+			message "&f ➥ &7Z uctu ti bylo odebrano &e80 Ⓩ&7."
+			message ""
+			make player execute "arrows"
+
+	else:	
+		create a gui slot 31 of player with arrow named "&bSíp Thora" with lore "||&5Vlastnosti &lsipu&5!||&d&l ▶ &dBlesk||||&eHodnocení sípu &8[&6&l✩✩✩&7✩✩&8]||||&7Sip stoji &e80 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+
+
+	if {_shop} is greater than or equal to 100:	
+		create a gui slot 32 of player with arrow named "&6Síp Vybuchu" with lore "||&5Vlastnosti &lsipu&5!||&d&l ▶ &dExploze||||&eHodnocení sípu &8[&6&l✩✩✩✩&7✩&8]||||&7Sip stoji &e100 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni sipu." to run:
+			
+			#give player 1 arrow with nbt "{vybuch:4}" named "&6Síp Vybuchu" with lore "||&5Vlastnosti &lsipu&5!||&d&l ▶ &dExploze||||&eHodnocení sípu &8[&6&l✩✩✩✩&7✩&8]"
+			close inventory of player
+			play "ORB_PICKUP" to player
+			Zlataky("remove", 100, player)
+			make player run command "/ca give explosive" as op
+			message ""
+			message "&aUspesne jsi zakoupil Síp Vybuchu."
+			message "&f ➥ &7Z uctu ti bylo odebrano &e100 Ⓩ&7."
+			message ""
+			make player execute "arrows"
+
+	else:	
+		create a gui slot 32 of player with arrow named "&6Síp Vybuchu" with lore "||&5Vlastnosti &lsipu&5!||&d&l ▶ &dExploze||||&eHodnocení sípu &8[&6&l✩✩✩✩&7✩&8]||||&7Sip stoji &e100 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+
+
+	if {_shop} is greater than or equal to 150:	
+		create a gui slot 33 of player with arrow named "&8Síp Hromu" with lore "||&5Vlastnosti &lsipu&5!||&d&l ▶ &dExploze||&d&l ▶ &dMolotov||&d&l ▶ &dBlesk||||&eHodnocení sípu &8[&6&l✩✩✩✩✩&8]||||&7Sip stoji &e150 Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni sipu." to run:
+			
+			#give player 1 arrow with nbt "{hrom:5}" named "&8Síp Hromu" with lore "||&5Vlastnosti &lsipu&5!||&d&l ▶ &dExploze||&d&l ▶ &dMolotov||&d&l ▶ &dBlesk||||&eHodnocení sípu &8[&6&l✩✩✩✩✩&8]"
+			close inventory of player
+			play "ORB_PICKUP" to player
+			Zlataky("remove", 150, player)
+			make player run command "/ca give thundergod" as op
+			message ""
+			message "&aUspesne jsi zakoupil Síp Hromu."
+			message "&f ➥ &7Z uctu ti bylo odebrano &e150 Ⓩ&7."
+			message ""
+			if "%now%" contains "Thu":
+				Quest("thursday2", 20, player)
+			make player execute "arrows"
+				
+
+	else:	
+		create a gui slot 33 of player with arrow named "&8Síp Hromu" with lore "||&5Vlastnosti &lsipu&5!||&d&l ▶ &dExploze||&d&l ▶ &dMolotov||&d&l ▶ &dBlesk||||&eHodnocení sípu &8[&6&l✩✩✩✩✩&8]||||&7Sip stoji &e150 Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+
+
+function PremiumGUI(zl: number, pvpc: number, i: item, output: text, n: text, l: text, p: player):
+	set {_x} to 0
+	loop 54 times:
+		format a gui slot {_x} of {_p} with air
+		add 1 to {_x}
+
+	if {_p} has permission "pit.premiumobchod.access":
+		set {_v} to "&7Klikni zde pro zaplaceni PvPCoiny."
+	else:
+		set {_v} to "&cNemas dostatecne opravneni."
+
+	set {_shop} to {gold::%{_p}%}
+	replace all "." in {_shop} with ""
+	set {_shop} to {_shop} parsed as number
+
+	set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52, 53, 22 and 40
+	format a gui slot {_blackSlots::*} of {_p} with Black Stained Glass Pane named "&7:^)" 
+
+	create a gui slot 0 of {_p} with rose red named "&cJit zpatky" with lore "||&eKlikni zde pro hlavni menu!||&r" to run:
+		make {_p} execute "premiumobchod"
+	set {_tokeny::%{_p}%} to placeholder "tm_tokens_raw" from {_p} parsed as number
+	set {_token} to splitCoins("%{_tokeny::%{_p}%}%")
+	create a gui slot 4 of {_p} with skull of ("%{_p}%" parsed as an offline player) named "&6Postava" with lore "||&5Tva &lekonomika&5!|| &8▪ &7Zlataky: &e%{gold::%{_p}%}% Ⓩ|| &8▪ &7PvPCoiny: &6%{_token}% Ⓟ||&7&o(Lze zakoupit v obchode! &d&o/obchod&7&o)||&r"
+
+	create a gui slot 31 of {_p} with {_i} named "%{_n}%" with lore "%{_l}%"
+
+	set {_x} to splitCoins("%{_zl}%")
+	set {_goldslot::*} to 18, 19, 20, 21, 27, 28, 29, 30, 36, 37, 38 and 39
+	create a gui slot {_goldslot::*} of {_p} with Yellow Stained Glass Pane named "&e&lZaplatit Zlataky" with lore "||&7Predmet stoji &e%{_x}% Ⓩ&7.||&f ➥ &7Klikni zde pro zaplaceni zlataky." to run:
+		if {_p} doesn't have permission "pit.premiumobchod.access":
+			stop
+		if {_shop} is not higher or equal to {_zl}:
+			stop
+		close {_p}'s inventory
+		play "ORB_PICKUP" to {_p}
+		if "%{_n}%" doesn't contain "Booster Zlataku" or "XP Booster" or "Upiri lektvar":
+			give {_p} {_i} named "%{_n}%" with lore "%{_l}%"
+		else if "%{_n}%" contains "Upiri lektvar":
+			give {_p} {_i} with no nbt named "%{_n}%" with lore "%{_l}%"
+		else if "%{_n}%" contains "Booster Zlataku":
+			add 60 to {%{_p}%.gbooster}
+		else if "%{_n}%" contains "XP Booster":
+			add 60 to {%{_p}%.xpbooster}
+		Zlataky("remove", {_zl}, {_p})
+		message ""
+		message "&aUspesne jsi zakoupil %{_output}%&a."
+		message "&f ➥ &7Z uctu ti bylo odebrano &e%{_x}% Ⓩ&7."
+		message ""
+		if "%now%" contains "Sun":
+			Quest("sunday3", 50, {_p})
+		make {_p} execute "premiumobchod"
+
+	set {_y} to splitCoins("%{_pvpc}%")
+	set {_pvpcslot::*} to 23, 24, 25, 26, 32, 33, 34, 35, 41, 42, 43  and 44
+	create a gui slot {_pvpcslot::*} of {_p} with Orange Stained Glass Pane named "&6&lZaplatit PvPCoiny" with lore "||&7Predmet stoji &6%{_y}% Ⓟ&7.||&f ➥ %{_v}%" to run:
+		if {_tokeny::%{_p}%} is not higher or equal to {_pvpc}:
+			stop
+		close {_p}'s inventory
+		play "ORB_PICKUP" to {_p}
+		if "%{_n}%" doesn't contain "Booster Zlataku" or "XP Booster":
+			give {_p} {_i} named "%{_n}%" with lore "%{_l}%"
+		else if "%{_n}%" contains "Booster Zlataku":
+			add 60 to {%{_p}%.gbooster}
+		else if "%{_n}%" contains "XP Booster":
+			add 60 to {%{_p}%.xpbooster}
+		message ""
+		message "&aUspesne jsi zakoupil %{_output}%&a."
+		make console execute command "/tm remove %{_p}% %{_pvpc}%"
+		message ""
+		if "%now%" contains "Sun":
+			Quest("sunday3", 50, {_p})
+		make {_p} execute "premiumobchod"
+
+#---------------------------------------------------------------------------------------------------------
+function PremiumMenu(s: number, zl: number, pvpc: number, i: item, output: text, n: text, l: text, p: player):
+	set {_tokeny::%{_p}%} to placeholder "tm_tokens_raw" from {_p} parsed as number
+
+	set {_shop} to {gold::%{_p}%}
+	replace all "." in {_shop} with ""
+	set {_shop} to {_shop} parsed as number
+
+	set {_x} to splitCoins("%{_zl}%")
+
+	if {_p} has permission "pit.premiumobchod.access":
+		if {_tokeny::%{_p}%} is greater than or equal to {_pvpc}:
+			if {_shop} is greater than or equal to {_zl}:
+				create a gui slot {_s} of {_p} with {_i} named "%{_n}%" with lore "%{_l}%||||&7Predmet stoji &6%{_pvpc}% Ⓟ&7.||&8 ➥ &aKlikni zde pro zakoupeni itemu.||||||&8&l⚔ &7Pouze pro rank &2+&aHeroic&7. &8&l⚔||&7Predmet lze koupit za &e%{_x}% Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni itemu." to run:
+					PremiumGUI({_zl}, {_pvpc}, {_i}, "%{_output}%", "%{_n}%", "%{_l}%", {_p})
+					
+			else:
+				create a gui slot {_s} of {_p} with {_i} named "%{_n}%" with lore "%{_l}%||||&7Predmet stoji &6%{_pvpc}% Ⓟ&7.||&8 ➥ &aKlikni zde pro zakoupeni itemu.||||||&8&l⚔ &7Pouze pro rank &2+&aHeroic&7. &8&l⚔||&7Predmet lze koupit za &e%{_x}% Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni." to run:
+					PremiumGUI({_zl}, {_pvpc}, {_i}, "%{_output}%", "%{_n}%", "%{_l}%", {_p})
+				
+		else:
+			if {_shop} is greater than or equal to {_zl}:
+				create a gui slot {_s} of {_p} with {_i} named "%{_n}%" with lore "%{_l}%||||&7Predmet stoji &6%{_pvpc}% Ⓟ&7.||&8 ➥ &cNemas dostatek Ⓟ pro zakoupeni.||||||&8&l⚔ &7Pouze pro rank &2+&aHeroic&7. &8&l⚔||&7Predmet lze koupit za &e%{_x}% Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni itemu." to run:
+					PremiumGUI({_zl}, {_pvpc}, {_i}, "%{_output}%", "%{_n}%", "%{_l}%", {_p})
+			else:
+				create a gui slot {_s} of {_p} with {_i} named "%{_n}%" with lore "%{_l}%||||&7Predmet stoji &6%{_pvpc}% Ⓟ&7.||&8 ➥ &cNemas dostatek Ⓟ pro zakoupeni.||||||&8&l⚔ &7Pouze pro rank &2+&aHeroic&7. &8&l⚔||&7Predmet lze koupit za &e%{_x}% Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+	else:
+		if {_tokeny::%{_p}%} is greater than or equal to {_pvpc}:
+			create a gui slot {_s} of {_p} with {_i} named "%{_n}%" with lore "%{_l}%||||&7Predmet stoji &6%{_pvpc}% Ⓟ&7.||&8 ➥ &aKlikni zde pro zakoupeni itemu.||||||&8&l⚔ &7Pouze pro rank &2+&aHeroic&7. &8&l⚔||&7Predmet lze koupit za &e%{_x}% Ⓩ&7.||&8 ➥ &cNemas dostatecne opravneni." to run:
+				PremiumGUI({_zl}, {_pvpc}, {_i}, "%{_output}%", "%{_n}%", "%{_l}%", {_p})
+
+		else:
+			create a gui slot {_s} of {_p} with {_i} named "%{_n}%" with lore "%{_l}%||||&7Predmet stoji &6%{_pvpc}% Ⓟ&7.||&8 ➥ &cNemas dostatek Ⓟ pro zakoupeni.||||||&8&l⚔ &7Pouze pro rank &2+&aHeroic&7. &8&l⚔||&7Predmet lze koupit za &e%{_x}% Ⓩ&7.||&8 ➥ &cNemas dostatecne opravneni."	
+
+
+
+
+
+on command "premiumobchod":
+	cancel event
+	open chest with 6 rows named "&eProhlízís si obchod.." to player
+	wait 2 ticks
+	set {_slot} to 9
+	set {_tokeny::%player%} to placeholder "tm_tokens_raw" from player parsed as number
+
+	set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52 and 53
+	format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+	create a gui slot 0 of player with rose red named "&cJit zpatky" with lore "||&eKlikni zde pro hlavni menu!||&r" to run:
+		make player execute "market"
+
+	set {_tokeny::%player%} to placeholder "tm_tokens_raw" from player parsed as number
+	set {_token} to splitCoins("%{_tokeny::%player%}%")
+	create a gui slot 4 of player with skull of ("%player%" parsed as an offline player) named "&6Postava" with lore "||&5Tva &lekonomika&5!|| &8▪ &7Zlataky: &e%{gold::%player%}% Ⓩ|| &8▪ &7PvPCoiny: &6%{_token}% Ⓟ||&7&o(Lze zakoupit v obchode! &d&o/obchod&7&o)||&r"
+
+
+	PremiumMenu(19, 250, 18, 16 obsidian, "&f16 &8Obsidianu", "&8Obsidian", "||&7Obsidian vydrzi &f60 sekund&7.||&r", player)
+	PremiumMenu(20, 320, 25, 6 cobweb, "&f6 &7Pavucin", "", "", player)
+	PremiumMenu(21, 500, 40, 5 snowball, "&f5 &6Prohazovacich snehovych kouli", "&6Prohazovaci snehove koule", "||&7Prohod svoji lokaci s &fostatnimi&7.||&r", player)
+	PremiumMenu(22, 580, 50, 12 tnt, "&f12 &6Vybusnych TNT", "&6Vybusne TNT", "||&7Vyhodi do vzduchu vsechny||&7v okruhu &f7 bloku&7.||&r", player)
+	PremiumMenu(23, 580, 50, 1 shears, "&bNuzky omraceni", "&bNuzky omraceni", "||&5Info o &lnuzkach&5!||&d&l ▶ &dSlowness III||&d&l ▶ &dBlindness X||&d&l ▶ &dOtoceni o &f180°||||&eMoznych pouziti &8[&f5&8]||||&7Omraceni hrace trva &e10 sekund&7.", player)
+	PremiumMenu(24, 460, 25, 1 ink sack, "&bOchranny stit", "&bOchranny stit", "||&5Info o &lstitu&5!||&8&l ▶ &7Postav okolo sebe &fstit||    &7a schovej se pred ostatnimi.||||&eMoznych pouziti &8[&f3&8]||||&7Stit zmizi za &e15 sekund&7.", player)
+	PremiumMenu(25, 400, 25, glowing unbreakable fishing rod, "&cCatcher", "&cCatcher", "&8 ➥ &7Zivotu&7: &a3&8/&f3||||&7Pritahni ostatni &chrace &7k sobe,||&7cooldown &f10 sekund&7.", player)
+
+	PremiumMenu(28, 580, 40, 8 clay bricks stairs, "&f8 &6Schodu", "&6Schody", "||&5Info o &lschodech&5!||&8&l ▶ &7Postav schody o vysce &f3 bloku&7.||||&7Schody zmizi za &e20 sekund&7.", player)
+	PremiumMenu(29, 580, 40, 8 clay bricks block, "&f8 &6Zdi", "&6Zed", "||&5Info o &lzdi&5!||&8&l ▶ &7Postav zed o rozmerech &f3x3&7.||||&7Zed zmizi za &e20 sekund&7.", player)
+	PremiumMenu(30, 900, 60, 1 water bottle, "&cUpiri lektvar", "&cUpiri lektvar", "||&5Info o &llektvaru&5!||&8&l ▶ &9Rychlost III (3:00)||&8&l ▶ &9Sila II (3:00)||&8&l ▶ &9Jump Boost III (3:00)||&7&o(Stan se upirem a zabij vsechy!)", player)
+	PremiumMenu(31, 1650, 120, 1 bottle o' enchanting, "&bXP Booster", "&bXP Booster", "||&5Info o &lBoosteru&5!||&8&l ▶ &7Zabijej ostatni a ziskej||    &7z nich &bdvojnasobek XP&7.||&8&l ▶ &7Cas boosteru &8[&f1 hodina&8]|||| &e&o,,Kolik mi zbyva casu?"" &f➜ &d/booster", player)
+	PremiumMenu(32, 1650, 120, 1 bottle o' enchanting, "&6Booster Zlataku", "&6Booster Zlataku", "||&5Info o &lBoosteru&5!||&8&l ▶ &7Zabijej ostatni a ziskej||    &7z nich &6dvojnasobek zlataku&7.||&8&l ▶ &7Cas boosteru &8[&f1 hodina&8]|||| &e&o,,Kolik mi zbyva casu?"" &f➜ &d/booster", player)
+	PremiumMenu(33, 3800, 160, 1 player head with custom nbt "{SkullOwner:{Id:""2c43fd70-4e96-4d1c-bb85-f44d2eb3f563"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWJhMDlkZDRiMTU2ZjRjZTJlODk3ZjRjMzZhYmRiZDQ2YTk1OTNhNjE4NDU4NjE2ZThkYTM5YTEwYTg1M2Y2In19fQ==""}]}}}", "&cRandom Box", "&cRandom Box", "||&5Obsah &lboxu&5!||&d&l ▶ &dNahodna maska||&d&l ▶ &dNovy level||&d&l ▶ &dBooster Zlataku||&d&l ▶ &dXP Booster||||&eKvalita boxu &8[&6&l✩✩✩✩✩&8]||&eZakoupeno uzivatelem &f%player%&7.", player)
+	PremiumMenu(34, 5500, 320, unbreakable golden sword, "&eZlaty Mec", "&eZlaty Mec", "||&5Info o &lzlatem meci&5!||&8&l ▶ &7&7Lze aplikovat v &6&lMystickem Vylepsení&7.||&8&l ▶ &7Pri vylepsení &94 &7➠ &96.5 Attack Damge&7.||&7&o(Pri smrti nezmizi z inventare.)", player)
+
+
+#---------------------------------------------------------------------------------------------------------
+function MaskReloader(p: player):
+	MaskMenu(20, 800, "&aZelví Maska", "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dAnti-Poison||||&eHodnoceni masky &8[&6&l✩&7✩✩✩✩&8]", "{antistack:%{maska}%,SkullOwner:{Id:""cdca4b84-3c2d-49e5-8752-b8903cbae26b"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmMzNzhiZGFmNDQ1ZTRjZGNlOGVlMzJjNDBjNjg5YTQ5YjJlOTEzZTgxZTllMWUxZTRlNGU1ZjU4ZTZhYzY2MCJ9fX0=""}]}}}", {_p})
+	MaskMenu(22, 1250, "&2Krokodylí Maska", "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dGold Boost||&d&l ▶ &dAnti-Blind||&d&l ▶ &dAnti-Poison||||&eHodnoceni masky &8[&6&l✩✩&7✩✩✩&8]", "{antistack:%{maska}%,SkullOwner:{Id:""f1598454-d04b-4449-925c-a6056efd9cc3"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODhjZjQ4NTZmOTdiNmViNDMxNzFlZDkxYTdkYTJjYTdlZjljOGQ0MTI5ZGFlNTQ3NTc2NzM1YzQ5OGM5ZTgifX19""}]}}}", {_p})
+	MaskMenu(21, 950, "&6Dynová Maska", "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dGold Boost||&d&l ▶ &dAnti-Blind||||&eHodnoceni masky &8[&6&l✩&7✩✩✩✩&8]", "{antistack:%{maska}%,SkullOwner:{Id:""b37ecc95-54eb-482e-b0a3-8bde2c634452"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODE0Y2YyN2U5Y2Q0MDJiZWM0ZmI4Y2JhOTFhZjUwZWI5NzI2MmQ0ODU1MDYxMTk5NzBjZDhlZWQ0ZjdlY2VkZiJ9fX0=""}]}}}", {_p})
+	MaskMenu(30, 3400, "&9Enderova Maska", "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dGold Boost||&d&l ▶ &dAnti-Blind||&d&l ▶ &dAnti-Poison||&d&l ▶ &dOchrana||&d&l ▶ &dFire Resistence||&d&l ▶ &dRychlost||||&eHodnoceni masky &8[&6&l✩✩✩✩&7✩&8]", "{antistack:%{maska}%,SkullOwner:{Id:""3bcfeb02-2f3e-4ebe-965f-c599472ef095"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTc3ZTZmZDNiOTMxNzE5ZDQ0ZWYwZjU3MThhMGZlMzQ2NDg2YmQzZTVlOTgwMGRmYmZjMjQ4YThjZjE0MDBiZSJ9fX0=""}]}}}", {_p})
+	MaskMenu(24, 2400, "&4Démonická Maska", "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dAnti-Blind||&d&l ▶ &dAnti-Poison||&d&l ▶ &dOchrana||&d&l ▶ &dKaktus||||&eHodnoceni masky &8[&6&l✩✩✩&7✩✩&8]", "{antistack:%{maska}%,SkullOwner:{Id:""01ba5ea4-0a76-478e-8996-24e513c1d06c"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzc3Y2Q1ZWQzYWQwYjgwMDczODc1Y2ZjMmE2OTk1NDAyZWEwZTExNDVhNzg4YTVjYTY2NjZhNjZlZGE4ZGM4YyJ9fX0=""}]}}}", {_p})
+	MaskMenu(29, 2800, "&bOlihnová Maska", "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dGold Boost||&d&l ▶ &dAnti-Blind||&d&l ▶ &dAnti-Poison||&d&l ▶ &dFire Resistence||&d&l ▶ &dRychlost||||&eHodnoceni masky &8[&6&l✩✩✩✩&7✩&8]", "{antistack:%{maska}%,SkullOwner:{Id:""9495ea2a-f3ad-4942-8527-c11389bad9df"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzg2NjYwYWQ3YmVmZWM2OGI1YmMzZWU2MjZlOGUyYjgzOTRhYmRmMjdkNmRjNGUxNmZlNGFlN2I0MWFiZmE0In19fQ==""}]}}}", {_p})
+	MaskMenu(23, 1700, "&eBycí Maska", "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dGold Boost||&d&l ▶ &dOchrana||&d&l ▶ &dFire Resistence||||&eHodnoceni masky &8[&6&l✩✩✩&7✩✩&8]", "{antistack:%{maska}%,SkullOwner:{Id:""c1d05a0c-824d-4145-8a2c-ad1d9d7c8442"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGNhMGNiNjE1OWQyMzUwZDcyMGEyYmMyMDlhMjk1NDkyZjM4MGM3ZmU3NzYzOTFiMjg0MTRhZTIyOTU4OSJ9fX0=""}]}}}", {_p})
+	MaskMenu(31, 4250, "&aBiohazard Maska", "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dGold Boost||&d&l ▶ &dAnti-Blind||&d&l ▶ &dAnti-Poison||&d&l ▶ &dOchrana||&d&l ▶ &dRychlost||||&eHodnoceni masky &8[&6&l✩✩✩✩✩&8]", "{antistack:%{maska}%,SkullOwner:{Id:""d121a144-a2af-4376-ac3b-258644120706"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWE1NzMyN2JhYTE0YTNjMTI2YTQyNzdkMzAxZjc1MjJkMjI1MWEzMWFhNjlhZGViYmJmMTkxZmRiOGY1In19fQ==""}]}}}", {_p})
+	MaskMenu(32, 5500, "&cLiscí Maska", "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dGold Boost||&d&l ▶ &dAnti-Blind||&d&l ▶ &dAnti-Poison||&d&l ▶ &dOchrana||&d&l ▶ &dFire Resistence||&d&l ▶ &dKaktus||&d&l ▶ &dRychlost||||&eHodnoceni masky &8[&6&l✩✩✩✩✩&8]", "{antistack:%{maska}%,SkullOwner:{Id:""43395c-6db2-488e-8587-317532e8f9b4"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzJkNGI4MzM4MDE0MTk0MGQ2OTVjZTFkZmQ1NTUwNDk2YWY0ZmJjNGFlNGM1ZWZmOWM1ODUwMjgxODNlNDViNCJ9fX0=""}]}}}", {_p})
+	
+
+function MaskMenu(s: number, t: number, n: text, l: text, nbt: text, p: player):
+	set {_shop} to {gold::%{_p}%}
+	replace all "." in {_shop} with ""
+	set {_shop} to {_shop} parsed as number
+
+	set {_x} to splitCoins("%{_t}%")
+	if {_shop} is greater than or equal to {_t}:	
+		create a gui slot {_s} of {_p} with 1 player head with nbt "%{_nbt}%" named "%{_n}%" with lore "%{_l}%||||&7Maska stoji &e%{_x}% Ⓩ&7.||&8 ➥ &aKlikni zde pro zakoupeni masky." to run:
+
+			give {_p} 1 player head with nbt "%{_nbt}%" named "%{_n}%" with lore "%{_l}%||||&eZakoupeno uzivatelem &f%{_p}%&7."
+			Zlataky("remove", {_t}, {_p})
+			message "&aPredmet &8""%{_n}%&8"" &azakoupen. &7Bylo odebrano &e%{_x}% Ⓩ&7."
+			add 1 to {maska}
+			play "ORB_PICKUP" to {_p}
+			MaskReloader({_p})
+	else:	
+		create a gui slot {_s} of {_p} with 1 player head with nbt "%{_nbt}%" named "%{_n}%" with lore "%{_l}%||||&7Maska stoji &e%{_x}% Ⓩ&7.||&8 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+
+
+
+on command "maskice":
+	cancel event
+	open chest with 6 rows named "&eProhlízís si masky.." to player
+	wait 2 ticks
+
+	set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52 and 53
+	format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+	create a gui slot 0 of player with rose red named "&cJit zpatky" with lore "||&eKlikni zde pro hlavni menu!||&r" to run:
+		make player execute "market"
+
+	create a gui slot 8 of player with book and quill named "&5Vysvetlivka" with lore "||&d&nXP Boost||&f ➥ &7Ziskani vice &bXP &7pri &czabiti&7.||&d&nGold Boost||&f ➥ &7Ziskani vice &6zlataku &7pri &czabiti&7.||&d&nAnti-Blind||&f ➥ &7Odolnost vuci &fslepote&7.||&d&nAnti-Poison||&f ➥ &7Odolnost vuci &2jedu&7.||&d&nOchrana||&f ➥ &7Sance pro ziskani &4srdicek navic&7.||&d&nFire Resistence||&f ➥ &7Odolnost vuci &cohni&7.||&d&nKaktus||&f ➥ &7Sance pro vraceni &fposkozeni&7.||&d&nRychlost||&f ➥ &7Nekonecna &arychlost I&7.||&r"
+
+	set {_tokeny::%player%} to placeholder "tm_tokens_raw" from player parsed as number
+	set {_token} to splitCoins("%{_tokeny::%player%}%")
+	create a gui slot 4 of player with skull of ("%player%" parsed as an offline player) named "&6Postava" with lore "||&5Tva &lekonomika&5!|| &8▪ &7Zlataky: &e%{gold::%player%}% Ⓩ|| &8▪ &7PvPCoiny: &6%{_token}% Ⓟ||&7&o(Lze zakoupit v obchode! &d&o/obchod&7&o)||&r"
+
+
+	MaskMenu(20, 800, "&aZelví Maska", "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dAnti-Poison||||&eHodnoceni masky &8[&6&l✩&7✩✩✩✩&8]", "{antistack:%{maska}%,SkullOwner:{Id:""cdca4b84-3c2d-49e5-8752-b8903cbae26b"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmMzNzhiZGFmNDQ1ZTRjZGNlOGVlMzJjNDBjNjg5YTQ5YjJlOTEzZTgxZTllMWUxZTRlNGU1ZjU4ZTZhYzY2MCJ9fX0=""}]}}}", player)
+	MaskMenu(22, 1250, "&2Krokodylí Maska", "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dGold Boost||&d&l ▶ &dAnti-Blind||&d&l ▶ &dAnti-Poison||||&eHodnoceni masky &8[&6&l✩✩&7✩✩✩&8]", "{antistack:%{maska}%,SkullOwner:{Id:""f1598454-d04b-4449-925c-a6056efd9cc3"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODhjZjQ4NTZmOTdiNmViNDMxNzFlZDkxYTdkYTJjYTdlZjljOGQ0MTI5ZGFlNTQ3NTc2NzM1YzQ5OGM5ZTgifX19""}]}}}", player)
+	MaskMenu(21, 950, "&6Dynová Maska", "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dGold Boost||&d&l ▶ &dAnti-Blind||||&eHodnoceni masky &8[&6&l✩&7✩✩✩✩&8]", "{antistack:%{maska}%,SkullOwner:{Id:""b37ecc95-54eb-482e-b0a3-8bde2c634452"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODE0Y2YyN2U5Y2Q0MDJiZWM0ZmI4Y2JhOTFhZjUwZWI5NzI2MmQ0ODU1MDYxMTk5NzBjZDhlZWQ0ZjdlY2VkZiJ9fX0=""}]}}}", player)
+	MaskMenu(30, 3400, "&9Enderova Maska", "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dGold Boost||&d&l ▶ &dAnti-Blind||&d&l ▶ &dAnti-Poison||&d&l ▶ &dOchrana||&d&l ▶ &dFire Resistence||&d&l ▶ &dRychlost||||&eHodnoceni masky &8[&6&l✩✩✩✩&7✩&8]", "{antistack:%{maska}%,SkullOwner:{Id:""3bcfeb02-2f3e-4ebe-965f-c599472ef095"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTc3ZTZmZDNiOTMxNzE5ZDQ0ZWYwZjU3MThhMGZlMzQ2NDg2YmQzZTVlOTgwMGRmYmZjMjQ4YThjZjE0MDBiZSJ9fX0=""}]}}}", player)
+	MaskMenu(24, 2400, "&4Démonická Maska", "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dAnti-Blind||&d&l ▶ &dAnti-Poison||&d&l ▶ &dOchrana||&d&l ▶ &dKaktus||||&eHodnoceni masky &8[&6&l✩✩✩&7✩✩&8]", "{antistack:%{maska}%,SkullOwner:{Id:""01ba5ea4-0a76-478e-8996-24e513c1d06c"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzc3Y2Q1ZWQzYWQwYjgwMDczODc1Y2ZjMmE2OTk1NDAyZWEwZTExNDVhNzg4YTVjYTY2NjZhNjZlZGE4ZGM4YyJ9fX0=""}]}}}", player)
+	MaskMenu(29, 2800, "&bOlihnová Maska", "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dGold Boost||&d&l ▶ &dAnti-Blind||&d&l ▶ &dAnti-Poison||&d&l ▶ &dFire Resistence||&d&l ▶ &dRychlost||||&eHodnoceni masky &8[&6&l✩✩✩✩&7✩&8]", "{antistack:%{maska}%,SkullOwner:{Id:""9495ea2a-f3ad-4942-8527-c11389bad9df"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzg2NjYwYWQ3YmVmZWM2OGI1YmMzZWU2MjZlOGUyYjgzOTRhYmRmMjdkNmRjNGUxNmZlNGFlN2I0MWFiZmE0In19fQ==""}]}}}", player)
+	MaskMenu(23, 1700, "&eBycí Maska", "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dGold Boost||&d&l ▶ &dOchrana||&d&l ▶ &dFire Resistence||||&eHodnoceni masky &8[&6&l✩✩✩&7✩✩&8]", "{antistack:%{maska}%,SkullOwner:{Id:""c1d05a0c-824d-4145-8a2c-ad1d9d7c8442"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGNhMGNiNjE1OWQyMzUwZDcyMGEyYmMyMDlhMjk1NDkyZjM4MGM3ZmU3NzYzOTFiMjg0MTRhZTIyOTU4OSJ9fX0=""}]}}}", player)
+	MaskMenu(31, 4250, "&aBiohazard Maska", "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dGold Boost||&d&l ▶ &dAnti-Blind||&d&l ▶ &dAnti-Poison||&d&l ▶ &dOchrana||&d&l ▶ &dRychlost||||&eHodnoceni masky &8[&6&l✩✩✩✩✩&8]", "{antistack:%{maska}%,SkullOwner:{Id:""d121a144-a2af-4376-ac3b-258644120706"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWE1NzMyN2JhYTE0YTNjMTI2YTQyNzdkMzAxZjc1MjJkMjI1MWEzMWFhNjlhZGViYmJmMTkxZmRiOGY1In19fQ==""}]}}}", player)
+	MaskMenu(32, 5500, "&cLiscí Maska", "&8 ➥ &7Zivotu&7: &a2&8/&f2||||&5Schopnosti &lmasky&5!||&d&l ▶ &dXP Boost||&d&l ▶ &dGold Boost||&d&l ▶ &dAnti-Blind||&d&l ▶ &dAnti-Poison||&d&l ▶ &dOchrana||&d&l ▶ &dFire Resistence||&d&l ▶ &dKaktus||&d&l ▶ &dRychlost||||&eHodnoceni masky &8[&6&l✩✩✩✩✩&8]", "{antistack:%{maska}%,SkullOwner:{Id:""43395c-6db2-488e-8587-317532e8f9b4"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzJkNGI4MzM4MDE0MTk0MGQ2OTVjZTFkZmQ1NTUwNDk2YWY0ZmJjNGFlNGM1ZWZmOWM1ODUwMjgxODNlNDViNCJ9fX0=""}]}}}", player)
+	

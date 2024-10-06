@@ -1,0 +1,43 @@
+on fishing:
+	player has permission "pit.fishingrod"
+	fishing state is "FISHING"
+	set {p-r-heart.%player%} to 1
+	loop 80 times:
+		if {p-r-heart.%player%} is 1:
+			wait 2 ticks
+			spawn 2 of particle "HEART" for player at hook offset by 0.2, 0.2, 0.2 with speed 0.05
+on tool change:
+	player has permission "pit.fishingrod"
+	if {p-r-heart.%player%} is 1:
+		set {p-r-heart.%player%} to 0
+
+on fishing:
+	player has permission "pit.fishingrod"
+	fishing state is "failed_attempt" or "in_ground" or "caught_fish" or "caught_entity"
+	set {p-r-heart.%player%} to 0
+
+command /vip:
+	trigger:
+		open chest with 5 rows named "&eKoukás na VIP.." to player
+		wait 2 ticks
+		set {_tokeny::%player%} to placeholder "tm_tokens_raw" from player parsed as number
+		set {_slot} to 0
+		loop 9 times:
+			format a gui slot {_slot} of player with Black Stained Glass Pane named "&7:^)" 
+			add 1 to {_slot}
+		set {_slot} to 9
+		loop 3 times:
+			format a gui slot {_slot} of player with Black Stained Glass Pane named "&7:^)" 
+			add 9 to {_slot}
+
+		set {_slot} to 17
+		loop 3 times:
+			format a gui slot {_slot} of player with Black Stained Glass Pane named "&7:^)" 
+			add 9 to {_slot}
+
+		set {_slot} to 36
+		loop 9 times:
+			format a gui slot {_slot} of player with Black Stained Glass Pane named "&7:^)" 
+			add 1 to {_slot}
+
+		create a gui slot 22 of player with book_and_quill named "&d&lAktivace pouze na Lobby!" with lore " &f➥ &7Rank si lze aktivovat pouze na &fLobby&7,||&7    kde je take seznam vsech vyhod.||||&7PvPCoiny si lze zakoupit na stránkách||&7   &d✷ &fobchod.pvpcraft.cz &d✷||||&aMomentálne más &f%{_tokeny::%player%}% &aPvPCoinu."

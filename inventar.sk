@@ -1,0 +1,836 @@
+on first join:
+	set {inventoryslot::%player%::sword} to 0
+
+command /inventar:
+	aliases: /inv, /inventory
+	trigger:
+		close player's inventory
+		wait 2 ticks	
+		open chest with 6 rows named "&eUpravujes si inventar.." to player
+		wait 1 tick
+
+		set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52 and 53
+		format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+		format a gui slot 0 of player with rose red named "&cOpustit menu" with lore "||&eKlikni zde pro hlavni menu!||&r" to run:
+			make player execute "/menu"
+		format a gui slot 4 of player with clock named "&cResetovat inventar" with lore "||&eKlikni zde pro resetovani inventare!||&r" to run:
+			close player's inventory
+			set {inventoryslot::%player%::sword} to 0
+			if {inventoryslot::%player%::bow} is set:
+				set {inventoryslot::%player%::bow} to 1
+			if {inventoryslot::%player%::fishingrod} is set:
+				set {inventoryslot::%player%::fishingrod} to 2
+			if {inventoryslot::%player%::lava} is set:
+				set {inventoryslot::%player%::lava} to 3
+			if {inventoryslot::%player%::pickaxe} is set:
+				set {inventoryslot::%player%::pickaxe} to 4
+			if {inventoryslot::%player%::arrow} is set:
+				set {inventoryslot::%player%::arrow} to 8
+			make player execute "inventar"
+
+		set {_slot} to 27
+		set {_inventory} to 1
+		loop 9 times:
+			format a gui slot {_slot} of player with Red Stained Glass named "&eSlot &6##%{_inventory}%" with lore "||&8&l ▶ &7Klikni zde pro nastaveni||    &7predmetu pro tento &dslot&7.||&r" to run:
+				close player's inventory
+				open chest with 6 rows named "&eUpravujes slot &6##%{_inventory}%&e.." to player
+				wait 2 ticks
+
+				set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52 and 53
+				format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+				format a gui slot 0 of player with rose red named "&cJit zpatky" with lore "||&eKlikni zde pro hlavni menu!||&r" to run:
+					make player execute "inventar"
+				
+				format a gui slot 28 of player with iron sword with no nbt named "&eSlot &6##%{_inventory}%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fmec&7.||||&aKlikni zde pro aktivaci." to run:
+					close player's inventory
+					set {inventoryslot::%player%::sword} to {_inventory} - 1
+					make player execute "inventar"
+
+
+				if {%player%.bow} is set:
+					format a gui slot 29 of player with bow named "&eSlot &6##%{_inventory}%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fluk&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						set {inventoryslot::%player%::bow} to {_inventory} - 1
+						make player execute "inventar"
+
+					format a gui slot 34 of player with glowing ("%{%player%.arrow}% arrow" parsed as item) named "&eSlot &6##%{_inventory}%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fsípy&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						set {inventoryslot::%player%::arrow} to {_inventory} - 1
+						make player execute "inventar"
+
+
+				if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "fishingrod":
+					format a gui slot 30 of player with fishing rod named "&eSlot &6##%{_inventory}%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &brybarsky prut&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						set {inventoryslot::%player%::fishingrod} to {_inventory} - 1
+						make player execute "inventar"
+
+
+				if {%player%.pickaxe} is set:
+					format a gui slot 31 of player with iron pickaxe named "&eSlot &6##%{_inventory}%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fkrumpac&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						set {inventoryslot::%player%::pickaxe} to {_inventory} - 1
+						make player execute "inventar"
+
+
+				if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "lava":
+					format a gui slot 33 of player with lava bucket named "&eSlot &6##%{_inventory}%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &ckyblík lavy&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						set {inventoryslot::%player%::lava} to {_inventory} - 1
+						make player execute "inventar"
+
+			add 1 to {_slot}
+			add 1 to {_inventory}
+
+
+
+		format a gui slot {inventoryslot::%player%::sword} + 27 of player with iron sword with no nbt named "&eSlot &6##%{inventoryslot::%player%::sword} + 1%" with lore "||&8&l ▶ &7Pro tento slot mas||    &7nastaveny &fmec&7.||||&aKlikni zde pro prenastaveni." to run:
+			close player's inventory
+			open chest with 6 rows named "&eUpravujes slot &6##%{inventoryslot::%player%::sword} + 1%&e.." to player
+			wait 2 ticks
+
+			set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52 and 53
+			format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+			format a gui slot 0 of player with rose red named "&cJit zpatky" with lore "||&eKlikni zde pro hlavni menu!||&r" to run:
+				make player execute "inventar"
+			
+			format a gui slot 28 of player with iron sword with no nbt named "&eSlot &6##%{inventoryslot::%player%::sword} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fmec&7.||||&aKlikni zde pro aktivaci." to run:
+				close player's inventory
+				make player execute "inventar"
+
+			if {%player%.bow} is set:
+				format a gui slot 29 of player with bow named "&eSlot &6##%{inventoryslot::%player%::sword} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fluk&7.||||&aKlikni zde pro aktivaci." to run:
+					close player's inventory
+					set {inventoryslot::%player%::bow} to {inventoryslot::%player%::sword}
+					make player execute "inventar"
+					set {_num} to {inventoryslot::%player%::sword} + 1
+					loop 9 times:
+						if {inventoryslot::%player%::bow} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+							set {inventoryslot::%player%::sword} to {_num}
+							if {_num} is 9:
+								set {_num} to 0
+								loop 9 times:
+									if {inventoryslot::%player%::bow} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+										set {inventoryslot::%player%::sword} to {_num}
+										stop loop
+									add 1 to {_num}
+								stop loop
+							else:
+								stop loop
+						add 1 to {_num}
+
+							
+
+
+				format a gui slot 34 of player with glowing ("%{%player%.arrow}% arrow" parsed as item) named "&eSlot &6##%{inventoryslot::%player%::sword} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fsípy&7.||||&aKlikni zde pro aktivaci." to run:
+					close player's inventory
+					set {inventoryslot::%player%::arrow} to {inventoryslot::%player%::sword}
+					make player execute "inventar"
+					set {_num} to {inventoryslot::%player%::sword} + 1
+					loop 9 times:
+						if {inventoryslot::%player%::bow} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+							set {inventoryslot::%player%::sword} to {_num}
+							if {_num} is 9:
+								set {_num} to 0
+								loop 9 times:
+									if {inventoryslot::%player%::bow} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+										set {inventoryslot::%player%::sword} to {_num}
+										stop loop
+									add 1 to {_num}
+								stop loop
+							else:
+								stop loop
+						add 1 to {_num}
+
+
+			if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "fishingrod":
+				format a gui slot 30 of player with fishing rod named "&eSlot &6##%{inventoryslot::%player%::sword} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &brybarsky prut&7.||||&aKlikni zde pro aktivaci." to run:
+					close player's inventory
+					set {inventoryslot::%player%::fishingrod} to {inventoryslot::%player%::sword}
+					make player execute "inventar"
+					set {_num} to {inventoryslot::%player%::sword} + 1
+					loop 9 times:
+						if {inventoryslot::%player%::bow} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+							set {inventoryslot::%player%::sword} to {_num}
+							if {_num} is 9:
+								set {_num} to 0
+								loop 9 times:
+									if {inventoryslot::%player%::bow} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+										set {inventoryslot::%player%::sword} to {_num}
+										stop loop
+									add 1 to {_num}
+								stop loop
+							else:
+								stop loop
+						add 1 to {_num}
+
+
+			if {%player%.pickaxe} is set:
+				format a gui slot 31 of player with iron pickaxe named "&eSlot &6##%{inventoryslot::%player%::sword} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fkrumpac&7.||||&aKlikni zde pro aktivaci." to run:
+					close player's inventory
+					set {inventoryslot::%player%::pickaxe} to {inventoryslot::%player%::sword}
+					make player execute "inventar"
+					set {_num} to {inventoryslot::%player%::sword} + 1
+					loop 9 times:
+						if {inventoryslot::%player%::bow} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+							set {inventoryslot::%player%::sword} to {_num}
+							if {_num} is 9:
+								set {_num} to 0
+								loop 9 times:
+									if {inventoryslot::%player%::bow} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+										set {inventoryslot::%player%::sword} to {_num}
+										stop loop
+									add 1 to {_num}
+								stop loop
+							else:
+								stop loop
+						add 1 to {_num}
+
+
+			if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "lava":
+				format a gui slot 33 of player with lava bucket named "&eSlot &6##%{inventoryslot::%player%::sword} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &ckyblík lavy&7.||||&aKlikni zde pro aktivaci." to run:
+					close player's inventory
+					set {inventoryslot::%player%::lava} to {inventoryslot::%player%::sword}
+					make player execute "inventar"
+					set {_num} to {inventoryslot::%player%::sword} + 1
+					loop 9 times:
+						if {inventoryslot::%player%::bow} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+							set {inventoryslot::%player%::sword} to {_num}
+							if {_num} is 9:
+								set {_num} to 0
+								loop 9 times:
+									if {inventoryslot::%player%::bow} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+										set {inventoryslot::%player%::sword} to {_num}
+										stop loop
+									add 1 to {_num}
+								stop loop
+							else:
+								stop loop
+						add 1 to {_num}
+
+
+		if {%player%.bow} is set:
+			format a gui slot {inventoryslot::%player%::bow} + 27 of player with bow named "&eSlot &6##%{inventoryslot::%player%::bow} + 1%" with lore "||&8&l ▶ &7Pro tento slot mas||    &7nastaveny &fluk&7.||||&aKlikni zde pro prenastaveni." to run:
+				close player's inventory
+				open chest with 6 rows named "&eUpravujes slot &6##%{inventoryslot::%player%::bow} + 1%&e.." to player
+				wait 2 ticks
+
+				set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52 and 53
+				format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+				format a gui slot 0 of player with rose red named "&cJit zpatky" with lore "||&eKlikni zde pro hlavni menu!||&r" to run:
+					make player execute "inventar"
+				
+				format a gui slot 28 of player with iron sword with no nbt named "&eSlot &6##%{inventoryslot::%player%::bow} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fmec&7.||||&aKlikni zde pro aktivaci." to run:
+					close player's inventory
+					set {inventoryslot::%player%::sword} to {inventoryslot::%player%::bow}
+					make player execute "inventar"
+					set {_num} to {inventoryslot::%player%::bow} + 1
+					loop 9 times:
+						if {inventoryslot::%player%::sword} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+							set {inventoryslot::%player%::bow} to {_num}
+							if {_num} is 9:
+								set {_num} to 0
+								loop 9 times:
+									if {inventoryslot::%player%::sword} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+										set {inventoryslot::%player%::bow} to {_num}
+										stop loop
+									add 1 to {_num}
+								stop loop
+							else:
+								stop loop
+						add 1 to {_num}
+
+
+
+				if {%player%.bow} is set:
+					format a gui slot 29 of player with bow named "&eSlot &6##%{inventoryslot::%player%::bow} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fluk&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						make player execute "inventar"
+
+					format a gui slot 34 of player with glowing ("%{%player%.arrow}% arrow" parsed as item) named "&eSlot &6##%{inventoryslot::%player%::bow} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fsípy&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						set {inventoryslot::%player%::arrow} to {inventoryslot::%player%::bow}
+						make player execute "inventar"
+						set {_num} to {inventoryslot::%player%::bow} + 1
+						loop 9 times:
+							if {inventoryslot::%player%::sword} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+								set {inventoryslot::%player%::bow} to {_num}
+								if {_num} is 9:
+									set {_num} to 0
+									loop 9 times:
+										if {inventoryslot::%player%::sword} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+											set {inventoryslot::%player%::bow} to {_num}
+											stop loop
+										add 1 to {_num}
+									stop loop
+								else:
+									stop loop
+							add 1 to {_num}
+
+
+				if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "fishingrod":
+					format a gui slot 30 of player with fishing rod named "&eSlot &6##%{inventoryslot::%player%::bow} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &brybarsky prut&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						set {inventoryslot::%player%::fishingrod} to {inventoryslot::%player%::bow}
+						make player execute "inventar"
+						set {_num} to {inventoryslot::%player%::bow} + 1
+						loop 9 times:
+							if {inventoryslot::%player%::sword} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+								set {inventoryslot::%player%::bow} to {_num}
+								if {_num} is 9:
+									set {_num} to 0
+									loop 9 times:
+										if {inventoryslot::%player%::sword} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+											set {inventoryslot::%player%::bow} to {_num}
+											stop loop
+										add 1 to {_num}
+									stop loop
+								else:
+									stop loop
+							add 1 to {_num}
+
+
+				if {%player%.pickaxe} is set:
+					format a gui slot 31 of player with iron pickaxe named "&eSlot &6##%{inventoryslot::%player%::bow} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fkrumpac&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						set {inventoryslot::%player%::pickaxe} to {inventoryslot::%player%::bow}
+						make player execute "inventar"
+						set {_num} to {inventoryslot::%player%::bow} + 1
+						loop 9 times:
+							if {inventoryslot::%player%::sword} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+								set {inventoryslot::%player%::bow} to {_num}
+								if {_num} is 9:
+									set {_num} to 0
+									loop 9 times:
+										if {inventoryslot::%player%::sword} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+											set {inventoryslot::%player%::bow} to {_num}
+											stop loop
+										add 1 to {_num}
+									stop loop
+								else:
+									stop loop
+							add 1 to {_num}
+
+
+				if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "lava":
+					format a gui slot 33 of player with lava bucket named "&eSlot &6##%{inventoryslot::%player%::bow} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &ckyblík lavy&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						set {inventoryslot::%player%::lava} to {inventoryslot::%player%::bow}
+						make player execute "inventar"
+						set {_num} to {inventoryslot::%player%::bow} + 1
+						loop 9 times:
+							if {inventoryslot::%player%::sword} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+								set {inventoryslot::%player%::bow} to {_num}
+								if {_num} is 9:
+									set {_num} to 0
+									loop 9 times:
+										if {inventoryslot::%player%::sword} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+											set {inventoryslot::%player%::bow} to {_num}
+											stop loop
+										add 1 to {_num}
+									stop loop
+								else:
+									stop loop
+							add 1 to {_num}
+
+
+			format a gui slot {inventoryslot::%player%::arrow} + 27 of player with glowing ("%{%player%.arrow}% arrow" parsed as item) named "&eSlot &6##%{inventoryslot::%player%::arrow} + 1%" with lore "||&8&l ▶ &7Pro tento slot mas||    &7nastavene &fsípy&7.||||&aKlikni zde pro prenastaveni." to run:
+				close player's inventory
+				open chest with 6 rows named "&eUpravujes slot &6##%{inventoryslot::%player%::sword} + 1%&e.." to player
+				wait 2 ticks
+
+				set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52 and 53
+				format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+				format a gui slot 0 of player with rose red named "&cJit zpatky" with lore "||&eKlikni zde pro hlavni menu!||&r" to run:
+					make player execute "inventar"
+				
+				format a gui slot 28 of player with iron sword with no nbt named "&eSlot &6##%{inventoryslot::%player%::arrow} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fmec&7.||||&aKlikni zde pro aktivaci." to run:
+					close player's inventory
+					set {inventoryslot::%player%::sword} to {inventoryslot::%player%::arrow}
+					make player execute "inventar"
+					set {_num} to 0
+					loop 9 times:
+						if {inventoryslot::%player%::bow} or {inventoryslot::%player%::sword} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+							set {inventoryslot::%player%::arrow} to {_num}
+							stop loop
+						add 1 to {_num}
+
+
+
+				if {%player%.bow} is set:
+					format a gui slot 29 of player with bow named "&eSlot &6##%{inventoryslot::%player%::arrow} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fluk&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						set {inventoryslot::%player%::bow} to {inventoryslot::%player%::arrow}
+						make player execute "inventar"
+						set {_num} to {inventoryslot::%player%::arrow} + 1
+						loop 9 times:
+							if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+								set {inventoryslot::%player%::arrow} to {_num}
+								if {_num} is 9:
+									set {_num} to 0
+									loop 9 times:
+										if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+											set {inventoryslot::%player%::arrow} to {_num}
+											stop loop
+										add 1 to {_num}
+									stop loop
+								else:
+									stop loop
+							add 1 to {_num}
+
+
+					format a gui slot 34 of player with glowing ("%{%player%.arrow}% arrow" parsed as item) named "&eSlot &6##%{inventoryslot::%player%::arrow} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fsípy&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						make player execute "inventar"
+
+
+				if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "fishingrod":
+					format a gui slot 30 of player with fishing rod named "&eSlot &6##%{inventoryslot::%player%::arrow} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &brybarsky prut&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						set {inventoryslot::%player%::fishingrod} to {inventoryslot::%player%::arrow}
+						make player execute "inventar"
+						set {_num} to {inventoryslot::%player%::arrow} + 1
+						loop 9 times:
+							if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+								set {inventoryslot::%player%::arrow} to {_num}
+								if {_num} is 9:
+									set {_num} to 0
+									loop 9 times:
+										if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+											set {inventoryslot::%player%::arrow} to {_num}
+											stop loop
+										add 1 to {_num}
+									stop loop
+								else:
+									stop loop
+							add 1 to {_num}
+
+
+				if {%player%.pickaxe} is set:
+					format a gui slot 31 of player with iron pickaxe named "&eSlot &6##%{inventoryslot::%player%::arrow} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fkrumpac&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						set {inventoryslot::%player%::pickaxe} to {inventoryslot::%player%::arrow}
+						make player execute "inventar"
+						set {_num} to {inventoryslot::%player%::arrow} + 1
+						loop 9 times:
+							if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+								set {inventoryslot::%player%::arrow} to {_num}
+								if {_num} is 9:
+									set {_num} to 0
+									loop 9 times:
+										if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+											set {inventoryslot::%player%::arrow} to {_num}
+											stop loop
+										add 1 to {_num}
+									stop loop
+								else:
+									stop loop
+							add 1 to {_num}
+
+
+				if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "lava":
+					format a gui slot 33 of player with lava bucket named "&eSlot &6##%{inventoryslot::%player%::arrow} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &ckyblík lavy&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						set {inventoryslot::%player%::lava} to {inventoryslot::%player%::arrow}
+						make player execute "inventar"
+						set {_num} to {inventoryslot::%player%::arrow} + 1
+						loop 9 times:
+							if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+								set {inventoryslot::%player%::arrow} to {_num}
+								if {_num} is 9:
+									set {_num} to 0
+									loop 9 times:
+										if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} or {inventoryslot::%player%::lava} is not {_num}:
+											set {inventoryslot::%player%::arrow} to {_num}
+											stop loop
+										add 1 to {_num}
+									stop loop
+								else:
+									stop loop
+							add 1 to {_num}
+
+
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "fishingrod":
+			format a gui slot {inventoryslot::%player%::fishingrod} + 27 of player with fishing rod named "&eSlot &6##%{inventoryslot::%player%::fishingrod} + 1%" with lore "||&8&l ▶ &7Pro tento slot mas||    &7nastaveny &brybarsky prut&7.||||&aKlikni zde pro prenastaveni." to run:
+				close player's inventory
+				open chest with 6 rows named "&eUpravujes slot &6##%{inventoryslot::%player%::fishingrod} + 1%&e.." to player
+				wait 2 ticks
+
+				set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52 and 53
+				format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+				format a gui slot 0 of player with rose red named "&cJit zpatky" with lore "||&eKlikni zde pro hlavni menu!||&r" to run:
+					make player execute "inventar"
+				
+				format a gui slot 28 of player with iron sword with no nbt named "&eSlot &6##%{inventoryslot::%player%::fishingrod} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fmec&7.||||&aKlikni zde pro aktivaci." to run:
+					close player's inventory
+					set {inventoryslot::%player%::sword} to {inventoryslot::%player%::fishingrod}
+					make player execute "inventar"
+					set {_num} to {inventoryslot::%player%::fishingrod} + 1
+					loop 9 times:
+						if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::lava} is not {_num}:
+							set {inventoryslot::%player%::fishingrod} to {_num}
+							if {_num} is 9:
+								set {_num} to 0
+								loop 9 times:
+									if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::lava} is not {_num}:
+										set {inventoryslot::%player%::fishingrod} to {_num}
+										stop loop
+									add 1 to {_num}
+								stop loop
+							else:
+								stop loop
+						add 1 to {_num}
+
+
+
+				if {%player%.bow} is set:
+					format a gui slot 29 of player with bow named "&eSlot &6##%{inventoryslot::%player%::fishingrod} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fluk&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						set {inventoryslot::%player%::bow} to {inventoryslot::%player%::fishingrod}
+						make player execute "inventar"
+						set {_num} to {inventoryslot::%player%::fishingrod} + 1
+						loop 9 times:
+							if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::lava} is not {_num}:
+								set {inventoryslot::%player%::fishingrod} to {_num}
+								if {_num} is 9:
+									set {_num} to 0
+									loop 9 times:
+										if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::lava} is not {_num}:
+											set {inventoryslot::%player%::fishingrod} to {_num}
+											stop loop
+										add 1 to {_num}
+									stop loop
+								else:
+									stop loop
+							add 1 to {_num}
+
+
+					format a gui slot 34 of player with glowing ("%{%player%.arrow}% arrow" parsed as item) named "&eSlot &6##%{inventoryslot::%player%::fishingrod} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fsípy&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						set {inventoryslot::%player%::arrow} to {inventoryslot::%player%::fishingrod}
+						make player execute "inventar"
+						set {_num} to {inventoryslot::%player%::fishingrod} + 1
+						loop 9 times:
+							if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::lava} is not {_num}:
+								set {inventoryslot::%player%::fishingrod} to {_num}
+								if {_num} is 9:
+									set {_num} to 0
+									loop 9 times:
+										if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::lava} is not {_num}:
+											set {inventoryslot::%player%::fishingrod} to {_num}
+											stop loop
+										add 1 to {_num}
+									stop loop
+								else:
+									stop loop
+							add 1 to {_num}
+
+
+				if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "fishingrod":
+					format a gui slot 30 of player with fishing rod named "&eSlot &6##%{inventoryslot::%player%::fishingrod} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &brybarsky prut&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						make player execute "inventar"
+
+
+				if {%player%.pickaxe} is set:
+					format a gui slot 31 of player with iron pickaxe named "&eSlot &6##%{inventoryslot::%player%::fishingrod} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fkrumpac&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						set {inventoryslot::%player%::pickaxe} to {inventoryslot::%player%::fishingrod}
+						make player execute "inventar"
+						set {_num} to {inventoryslot::%player%::fishingrod} + 1
+						loop 9 times:
+							if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::lava} is not {_num}:
+								set {inventoryslot::%player%::fishingrod} to {_num}
+								if {_num} is 9:
+									set {_num} to 0
+									loop 9 times:
+										if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::lava} is not {_num}:
+											set {inventoryslot::%player%::fishingrod} to {_num}
+											stop loop
+										add 1 to {_num}
+									stop loop
+								else:
+									stop loop
+							add 1 to {_num}
+
+
+				if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "lava":
+					format a gui slot 33 of player with lava bucket named "&eSlot &6##%{inventoryslot::%player%::fishingrod} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &ckyblík lavy&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						set {inventoryslot::%player%::lava} to {inventoryslot::%player%::fishingrod}
+						make player execute "inventar"
+						set {_num} to {inventoryslot::%player%::fishingrod} + 1
+						loop 9 times:
+							if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::lava} is not {_num}:
+								set {inventoryslot::%player%::fishingrod} to {_num}
+								if {_num} is 9:
+									set {_num} to 0
+									loop 9 times:
+										if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::lava} is not {_num}:
+											set {inventoryslot::%player%::fishingrod} to {_num}
+											stop loop
+										add 1 to {_num}
+									stop loop
+								else:
+									stop loop
+							add 1 to {_num}
+
+
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "lava":
+			format a gui slot {inventoryslot::%player%::lava} + 27 of player with lava bucket named "&eSlot &6##%{inventoryslot::%player%::lava} + 1%" with lore "||&8&l ▶ &7Pro tento slot mas||    &7nastaveny &ckyblík lavy&7.||||&aKlikni zde pro prenastaveni." to run:
+				close player's inventory
+				open chest with 6 rows named "&eUpravujes slot &6##%{inventoryslot::%player%::lava} + 1%&e.." to player
+				wait 2 ticks
+
+				set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52 and 53
+				format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+				format a gui slot 0 of player with rose red named "&cJit zpatky" with lore "||&eKlikni zde pro hlavni menu!||&r" to run:
+					make player execute "inventar"
+				
+				format a gui slot 28 of player with iron sword with no nbt named "&eSlot &6##%{inventoryslot::%player%::lava} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fmec&7.||||&aKlikni zde pro aktivaci." to run:
+					close player's inventory
+					set {inventoryslot::%player%::sword} to {inventoryslot::%player%::lava}
+					make player execute "inventar"
+					set {_num} to {inventoryslot::%player%::lava} + 1
+					loop 9 times:
+						if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::fishingrod} is not {_num}:
+							set {inventoryslot::%player%::lava} to {_num}
+							if {_num} is 9:
+								set {_num} to 0
+								loop 9 times:
+									if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::fishingrod} is not {_num}:
+										set {inventoryslot::%player%::lava} to {_num}
+										stop loop
+									add 1 to {_num}
+								stop loop
+							else:
+								stop loop
+						add 1 to {_num}
+
+
+
+				if {%player%.bow} is set:
+					format a gui slot 29 of player with bow named "&eSlot &6##%{inventoryslot::%player%::lava} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fluk&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						set {inventoryslot::%player%::bow} to {inventoryslot::%player%::lava}
+						make player execute "inventar"
+						set {_num} to {inventoryslot::%player%::lava} + 1
+						loop 9 times:
+							if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::fishingrod} is not {_num}:
+								set {inventoryslot::%player%::lava} to {_num}
+								if {_num} is 9:
+									set {_num} to 0
+									loop 9 times:
+										if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::fishingrod} is not {_num}:
+											set {inventoryslot::%player%::lava} to {_num}
+											stop loop
+										add 1 to {_num}
+									stop loop
+								else:
+									stop loop
+							add 1 to {_num}
+
+
+					format a gui slot 34 of player with glowing ("%{%player%.arrow}% arrow" parsed as item) named "&eSlot &6##%{inventoryslot::%player%::lava} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fsípy&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						set {inventoryslot::%player%::arrow} to {inventoryslot::%player%::lava}
+						make player execute "inventar"
+						set {_num} to {inventoryslot::%player%::lava} + 1
+						loop 9 times:
+							if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::fishingrod} is not {_num}:
+								set {inventoryslot::%player%::lava} to {_num}
+								if {_num} is 9:
+									set {_num} to 0
+									loop 9 times:
+										if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::fishingrod} is not {_num}:
+											set {inventoryslot::%player%::lava} to {_num}
+											stop loop
+										add 1 to {_num}
+									stop loop
+								else:
+									stop loop
+							add 1 to {_num}
+
+
+				if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "fishingrod":
+					format a gui slot 30 of player with fishing rod named "&eSlot &6##%{inventoryslot::%player%::lava} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &brybarsky prut&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						set {inventoryslot::%player%::fishingrod} to {inventoryslot::%player%::lava}
+						make player execute "inventar"
+						set {_num} to {inventoryslot::%player%::lava} + 1
+						loop 9 times:
+							if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::fishingrod} is not {_num}:
+								set {inventoryslot::%player%::lava} to {_num}
+								if {_num} is 9:
+									set {_num} to 0
+									loop 9 times:
+										if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::fishingrod} is not {_num}:
+											set {inventoryslot::%player%::lava} to {_num}
+											stop loop
+										add 1 to {_num}
+									stop loop
+								else:
+									stop loop
+							add 1 to {_num}
+
+
+				if {%player%.pickaxe} is set:
+					format a gui slot 31 of player with iron pickaxe named "&eSlot &6##%{inventoryslot::%player%::lava} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fkrumpac&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						set {inventoryslot::%player%::pickaxe} to {inventoryslot::%player%::lava}
+						make player execute "inventar"
+						set {_num} to {inventoryslot::%player%::lava} + 1
+						loop 9 times:
+							if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::fishingrod} is not {_num}:
+								set {inventoryslot::%player%::lava} to {_num}
+								if {_num} is 9:
+									set {_num} to 0
+									loop 9 times:
+										if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::fishingrod} is not {_num}:
+											set {inventoryslot::%player%::lava} to {_num}
+											stop loop
+										add 1 to {_num}
+									stop loop
+								else:
+									stop loop
+							add 1 to {_num}
+
+
+				if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "lava":
+					format a gui slot 33 of player with lava bucket named "&eSlot &6##%{inventoryslot::%player%::lava} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &ckyblík lavy&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						make player execute "inventar"
+
+
+		if {%player%.pickaxe} is set:
+			format a gui slot {inventoryslot::%player%::pickaxe} + 27 of player with iron pickaxe named "&eSlot &6##%{inventoryslot::%player%::pickaxe} + 1%" with lore "||&8&l ▶ &7Pro tento slot mas||    &7nastaveny &fkrumpac&7.||||&aKlikni zde pro prenastaveni." to run:
+				close player's inventory
+				open chest with 6 rows named "&eUpravujes slot &6##%{inventoryslot::%player%::pickaxe} + 1%&e.." to player
+				wait 2 ticks
+
+				set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52 and 53
+				format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+				format a gui slot 0 of player with rose red named "&cJit zpatky" with lore "||&eKlikni zde pro hlavni menu!||&r" to run:
+					make player execute "inventar"
+				
+				format a gui slot 28 of player with iron sword with no nbt named "&eSlot &6##%{inventoryslot::%player%::pickaxe} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fmec&7.||||&aKlikni zde pro aktivaci." to run:
+					close player's inventory
+					set {inventoryslot::%player%::sword} to {inventoryslot::%player%::pickaxe}
+					make player execute "inventar"
+					set {_num} to {inventoryslot::%player%::pickaxe} + 1
+					loop 9 times:
+						if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::lava} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::fishingrod} is not {_num}:
+							set {inventoryslot::%player%::pickaxe} to {_num}
+							if {_num} is 9:
+								set {_num} to 0
+								loop 9 times:
+									if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::lava} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::fishingrod} is not {_num}:
+										set {inventoryslot::%player%::pickaxe} to {_num}
+										stop loop
+									add 1 to {_num}
+								stop loop
+							else:
+								stop loop
+						add 1 to {_num}
+
+
+
+				if {%player%.bow} is set:
+					format a gui slot 29 of player with bow named "&eSlot &6##%{inventoryslot::%player%::pickaxe} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fluk&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						set {inventoryslot::%player%::bow} to {inventoryslot::%player%::pickaxe}
+						make player execute "inventar"
+						set {_num} to {inventoryslot::%player%::pickaxe} + 1
+						loop 9 times:
+							if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::lava} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::fishingrod} is not {_num}:
+								set {inventoryslot::%player%::pickaxe} to {_num}
+								if {_num} is 9:
+									set {_num} to 0
+									loop 9 times:
+										if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::lava} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::fishingrod} is not {_num}:
+											set {inventoryslot::%player%::pickaxe} to {_num}
+											stop loop
+										add 1 to {_num}
+									stop loop
+								else:
+									stop loop
+							add 1 to {_num}
+
+
+					format a gui slot 34 of player with glowing ("%{%player%.arrow}% arrow" parsed as item) named "&eSlot &6##%{inventoryslot::%player%::pickaxe} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fsípy&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						set {inventoryslot::%player%::arrow} to {inventoryslot::%player%::pickaxe}
+						make player execute "inventar"
+						set {_num} to {inventoryslot::%player%::pickaxe} + 1
+						loop 9 times:
+							if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::lava} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::fishingrod} is not {_num}:
+								set {inventoryslot::%player%::pickaxe} to {_num}
+								if {_num} is 9:
+									set {_num} to 0
+									loop 9 times:
+										if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::lava} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::fishingrod} is not {_num}:
+											set {inventoryslot::%player%::pickaxe} to {_num}
+											stop loop
+										add 1 to {_num}
+									stop loop
+								else:
+									stop loop
+							add 1 to {_num}
+
+
+				if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "fishingrod":
+					format a gui slot 30 of player with fishing rod named "&eSlot &6##%{inventoryslot::%player%::pickaxe} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &brybarsky prut&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						set {inventoryslot::%player%::fishingrod} to {inventoryslot::%player%::pickaxe}
+						make player execute "inventar"
+						set {_num} to {inventoryslot::%player%::pickaxe} + 1
+						loop 9 times:
+							if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::lava} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::fishingrod} is not {_num}:
+								set {inventoryslot::%player%::pickaxe} to {_num}
+								if {_num} is 9:
+									set {_num} to 0
+									loop 9 times:
+										if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::lava} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::fishingrod} is not {_num}:
+											set {inventoryslot::%player%::pickaxe} to {_num}
+											stop loop
+										add 1 to {_num}
+									stop loop
+								else:
+									stop loop
+							add 1 to {_num}
+
+
+				if {%player%.pickaxe} is set:
+					format a gui slot 31 of player with iron pickaxe named "&eSlot &6##%{inventoryslot::%player%::pickaxe} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &fkrumpac&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						make player execute "inventar"
+
+
+				if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "lava":
+					format a gui slot 33 of player with lava bucket named "&eSlot &6##%{inventoryslot::%player%::pickaxe} + 1%" with lore "||&8&l ▶ &7Kliknutim zde vyberes||    &7predmet &ckyblík lavy&7.||||&aKlikni zde pro aktivaci." to run:
+						close player's inventory
+						set {inventoryslot::%player%::lava} to {inventoryslot::%player%::pickaxe}
+						make player execute "inventar"
+						set {_num} to {inventoryslot::%player%::pickaxe} + 1
+						loop 9 times:
+							if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::lava} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::fishingrod} is not {_num}:
+								set {inventoryslot::%player%::pickaxe} to {_num}
+								if {_num} is 9:
+									set {_num} to 0
+									loop 9 times:
+										if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::lava} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::fishingrod} is not {_num}:
+											set {inventoryslot::%player%::pickaxe} to {_num}
+											stop loop
+										add 1 to {_num}
+									stop loop
+								else:
+									stop loop
+							add 1 to {_num}

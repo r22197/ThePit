@@ -1,0 +1,2253 @@
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	set damage to damage / 100 * (100 + 1 * {tier.perk::%attacker%::meleedamage})
+
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	set damage to damage / 100 * (100 + 1 * {tier.perk::%attacker%::damagereduction})
+
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	projectile exists
+	projectile is arrow
+	set damage to damage / 100 * (100 + 3 * {tier.perk::%attacker%::bowdamage})
+
+	if {activatedperk1::%attacker%} or {activatedperk2::%attacker%} or {activatedperk3::%attacker%} or {activatedperk4::%attacker%} is "spammer":
+		set {double.spammer::%attacker%::%victim%} to 1
+
+
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	{activatedperk1::%attacker%} or {activatedperk2::%attacker%} or {activatedperk3::%attacker%} or {activatedperk4::%attacker%} is "bountyhunter"
+	{strknumb::%victim%} is set
+	set {_x} to damage
+	set {_z} to {strknumb::%victim%}
+	replace all "." in {_z} with ""
+	set {_z} to {_z} parsed as number
+	set damage to damage / 100 * (100 + ({_z} / 50))
+	send actionbar "&cBounty Reaper&7: &c%{_x}%4❤ &7➠ &c%damage%4❤" to attacker
+on quit:
+	delete {double.spammer::%player%::*}
+
+on skript start:
+	delete {double.spammer::*}
+
+command /perkmenuar [<number>]:
+	trigger:
+		if arg-1 is not 1 or 2 or 3 or 4:
+			stop
+		else:
+			set {_nperk} to arg-1
+
+		if arg-1 is 4:
+			if {renown::%player%::perkslot4} is not set:
+				stop
+
+		close player's inventory
+		wait 2 ticks
+		open chest with 6 rows named "&eKoukás na perky.." to player
+		wait 2 ticks
+
+		set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52 and 53
+		format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+
+		create a gui slot 0 of player with rose red named "&cJit zpatky" with lore "||&eKlikni zde pro hlavni menu!||&r" to run:
+			make player execute command "/armory"
+
+		set {_tokeny::%player%} to placeholder "tm_tokens_raw" from player parsed as number
+		set {_token} to splitCoins("%{_tokeny::%player%}%")
+		create a gui slot 4 of player with skull of ("%player%" parsed as an offline player) named "&6Postava" with lore "||&5Tva &lekonomika&5!|| &8▪ &7Zlataky: &e%{gold::%player%}% Ⓩ|| &8▪ &7PvPCoiny: &6%{_token}% Ⓟ||&7&o(Lze zakoupit v obchode! &d&o/obchod&7&o)||&r"
+#-----------------------------------
+		set {_goldenhead} to ""
+		set {_olympus} to ""
+		set {_overheal} to "||||&6TIP&7: Plati pro &eZlate Jablka&7, &6Zlate Hlavy&7,||    &7a pro &bOlympus Potiony&7."
+		set {_vampire} to ""
+		set {_rambo} to ""
+
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "goldenhead":
+			{activatedperk%{_nperk}%::%player%} is not "goldenhead"
+			set {_rambo} to "||||&4⚠ &cJiz mas aktivni perk Golden Head.||&7&oPozor, s perkem Rambo nebude fungovat."
+			set {_vampire} to "||||&4⚠ &cJiz mas aktivni perk Golden Head.||&7&oPozor, s perkem Vampire nebude fungovat."
+			set {_olympus} to "||||&4⚠ &cJiz mas aktivni perk Golden Head.||&7&oPozor, s perkem Olympus nebude fungovat."
+
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "olympus":
+			{activatedperk%{_nperk}%::%player%} is not "olympus"
+			set {_goldenhead} to "||||&4⚠ &cJiz mas aktivni perk Olympus.||&7&oPozor, perk Golden Head nebude fungovat."
+			set {_vampire} to "||||&4⚠ &cJiz mas aktivni perk Olympus.||&7&oPozor, s perkem Vampire nebude fungovat."
+			set {_rambo} to "||||&4⚠ &cJiz mas aktivni perk Olympus.||&7&oPozor, s perkem Rambo nebude fungovat."
+
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "overheal":
+			{activatedperk%{_nperk}%::%player%} is not "overheal"
+			set {_vampire} to "||||&4⚠ &cJiz mas aktivni perk Overheal.||&7&oPozor, s perkem Vampire nebude fungovat."
+			set {_rambo} to "||||&4⚠ &cJiz mas aktivni perk Overheal.||&7&oPozor, s perkem Rambo nebude fungovat."
+
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "vampire":
+			{activatedperk%{_nperk}%::%player%} is not "vampire"
+			set {_goldenhead} to "||||&4⚠ &cJiz mas aktivni perk Vampire.||&7&oPozor, perk Golden Head nebude fungovat."
+			set {_olympus} to "||||&4⚠ &cJiz mas aktivni perk Vampire.||&7&oPozor, perk Olympus nebude fungovat."
+			set {_overheal} to "||||&4⚠ &cJiz mas aktivni perk Vampire.||&7&oPozor, perk Overheal nebude fungovat."
+
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "rambo":
+			{activatedperk%{_nperk}%::%player%} is not "rambo"
+			set {_goldenhead} to "||||&4⚠ &cJiz mas aktivni perk Rambo.||&7&oPozor, perk Golden Head nebude fungovat."
+			set {_olympus} to "||||&4⚠ &cJiz mas aktivni perk Rambo.||&7&oPozor, perk Olympus nebude fungovat."
+			set {_overheal} to "||||&4⚠ &cJiz mas aktivni perk Rambo.||&7&oPozor, perk Overheal nebude fungovat."
+
+#-----------------------------------
+		set {_shop} to {gold::%player%}
+		replace all "." in {_shop} with ""
+		set {_shop} to {_shop} parsed as number
+
+		if {perk::%player%::goldenhead} is not set:
+			if {_shop} is greater than or equal to 1500:
+				create a gui slot 19 of player with player head with custom nbt "{SkullOwner:{Id:""2dca1967-0d3e-4eb2-807b-daf8f735ad16"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGFiZDcwM2U1YjhjODhkNGIxZmNmYTk0YTkzNmEwZDZhNGY2YWJhNDQ1Njk2NjNkMzM5MWQ0ODgzMjIzYzUifX19""}]}}}" named "&6Zlata Hlava" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pri zabiti dostanes &6Zlatou Hlavu&7.||&8&l ▶ &9Regenerace II (0:10)||&8&l ▶ &9Absorpce I (0:10)%{_goldenhead}%||||&7Perk stoji &e1.500 Ⓩ&7.||&7 ➥ &aKlikni zde pro zakoupeni perku." to run:
+					close player's inventory
+					close inventory of player
+					Zlataky("remove", 1500, player)
+					play "ORB_PICKUP" to player
+					message ""
+					message "&aUspesne jsi zakoupil perk &8""&6Zlata Hlava&8""&7."
+					message "&f ➥ &7Z uctu ti bylo odebrano &e1.500 Ⓩ&7."
+					message ""
+
+					if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+						loop items in player's inventory:
+							if loop-item is fishing rod:
+								name of loop-item is not "&cCatcher"
+								delete loop-item
+						delete {inventoryslot::%player%::fishingrod}
+					if {activatedperk%{_nperk}%::%player%} is "lava":
+						loop items in player's inventory:
+							if loop-item is lava bucket:
+								delete loop-item
+						delete {inventoryslot::%player%::lava}
+					if {activatedperk%{_nperk}%::%player%} is "barbarian":
+						set {_num} to 0
+						loop 36 times:
+							set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+							set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+							if {enderchest::%{_num}%::%player%} is diamond axe:
+								set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+							if {enderchest::%{_num}%::%player%} is iron axe:
+								set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+
+							add 1 to {_num}
+						loop all items in player's inventory:
+							set {_name} to name of loop-item
+							set {_lore} to lore of loop-item
+							if loop-item is diamond axe:
+								set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+							if loop-item is iron axe:
+								set loop-item to unbreakable iron sword named "%{_name}%"
+					if {activatedperk%{_nperk}%::%player%} is "rambo":
+						if {ragepit} is set:
+							set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+						else:
+							set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+						wait 1 tick
+						heal player
+
+					set {activatedperk%{_nperk}%::%player%} to "goldenhead"
+					set {perk::%player%::goldenhead} to true
+			else:
+				create a gui slot 19 of player with player head with custom nbt "{SkullOwner:{Id:""2dca1967-0d3e-4eb2-807b-daf8f735ad16"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGFiZDcwM2U1YjhjODhkNGIxZmNmYTk0YTkzNmEwZDZhNGY2YWJhNDQ1Njk2NjNkMzM5MWQ0ODgzMjIzYzUifX19""}]}}}" named "&6Zlata Hlava" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pri zabiti dostanes &6Zlatou Hlavu&7.||&8&l ▶ &9Regenerace II (0:10)||&8&l ▶ &9Absorpce I (0:10)%{_goldenhead}%||||&7Perk stoji &e1.500 Ⓩ&7.||&7 ➥ &cNemas dostatek zlataku pro zakoupeni."
+		else:
+			if {activatedperk%{_nperk}%::goldenhead::%player%} is not set:
+				create a gui slot 19 of player with player head with custom nbt "{SkullOwner:{Id:""2dca1967-0d3e-4eb2-807b-daf8f735ad16"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGFiZDcwM2U1YjhjODhkNGIxZmNmYTk0YTkzNmEwZDZhNGY2YWJhNDQ1Njk2NjNkMzM5MWQ0ODgzMjIzYzUifX19""}]}}}" named "&6Zlata Hlava" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pri zabiti dostanes &6Zlatou Hlavu&7.||&8&l ▶ &9Regenerace II (0:10)||&8&l ▶ &9Absorpce I (0:10)%{_goldenhead}%||||&aKlikni zde pro aktivaci perku." to run:
+					close player's inventory
+					play "ORB_PICKUP" to player
+					message ""
+					message "&aUspesne jsi aktivoval perk &8""&6Zlata Hlava&8""&7."
+					message ""
+
+					if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+						loop items in player's inventory:
+							if loop-item is fishing rod:
+								name of loop-item is not "&cCatcher"
+								delete loop-item
+						delete {inventoryslot::%player%::fishingrod}
+					if {activatedperk%{_nperk}%::%player%} is "lava":
+						loop items in player's inventory:
+							if loop-item is lava bucket:
+								delete loop-item
+						delete {inventoryslot::%player%::lava}
+					if {activatedperk%{_nperk}%::%player%} is "barbarian":
+						set {_num} to 0
+						loop 36 times:
+							set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+							set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+							if {enderchest::%{_num}%::%player%} is diamond axe:
+								set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+							if {enderchest::%{_num}%::%player%} is iron axe:
+								set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+							add 1 to {_num}
+						loop all items in player's inventory:
+							set {_name} to name of loop-item
+							set {_lore} to lore of loop-item
+							if loop-item is diamond axe:
+								set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+							if loop-item is iron axe:
+								set loop-item to unbreakable iron sword named "%{_name}%"
+					if {activatedperk%{_nperk}%::%player%} is "rambo":
+						if {ragepit} is set:
+							set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+						else:
+							set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+						wait 1 tick
+						heal player
+
+					set {activatedperk%{_nperk}%::%player%} to "goldenhead"
+#-----------------------------------
+		if {perk::%player%::fishingrod} is not set:
+			if {_shop} is greater than or equal to 1300:
+				create a gui slot 20 of player with fishing rod named "&bRybarsky Prut" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Ziskas permanentni &fRybarsky prut&7.||&8&l ▶ &7Lze upravit slot &d/inventar&7.||||&7Perk stoji &e1.300 Ⓩ&7.||&7 ➥ &aKlikni zde pro zakoupeni perku." to run:
+					close player's inventory
+					close inventory of player
+					Zlataky("remove", 1300, player)
+					play "ORB_PICKUP" to player
+					message ""
+					message "&aUspesne jsi zakoupil perk &8""&bRybarsky Prut&8""&7."
+					message "&f ➥ &7Z uctu ti bylo odebrano &e1.300 Ⓩ&7."
+					message ""
+
+					if {activatedperk%{_nperk}%::%player%} is "lava":
+						loop items in player's inventory:
+							if loop-item is lava bucket:
+								delete loop-item
+						delete {inventoryslot::%player%::lava}
+					if {activatedperk%{_nperk}%::%player%} is "barbarian":
+						set {_num} to 0
+						loop 36 times:
+							set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+							set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+							if {enderchest::%{_num}%::%player%} is diamond axe:
+								set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+							if {enderchest::%{_num}%::%player%} is iron axe:
+								set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+							add 1 to {_num}
+						loop all items in player's inventory:
+							set {_name} to name of loop-item
+							set {_lore} to lore of loop-item
+							if loop-item is diamond axe:
+								set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+							if loop-item is iron axe:
+								set loop-item to unbreakable iron sword named "%{_name}%"
+					if {activatedperk%{_nperk}%::%player%} is "rambo":
+						if {ragepit} is set:
+							set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+						else:
+							set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+						wait 1 tick
+						heal player
+
+					if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::lava} is 2:
+						set {_num} to 0
+						loop 9 times:
+							if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::lava} is not {_num}:
+								set {inventoryslot::%player%::fishingrod} to {_num}
+								stop loop
+							add 1 to {_num}
+					else:
+						set {inventoryslot::%player%::fishingrod} to 2
+					if slot 2 of player is air:
+						set slot 2 of player to unbreakable fishing rod named "&bRybarsky Prut"
+					else:
+						give player unbreakable fishing rod named "&bRybarsky Prut"
+					set {activatedperk%{_nperk}%::%player%} to "fishingrod"
+					set {perk::%player%::fishingrod} to true
+			else:
+				create a gui slot 20 of player with fishing rod named "&bRybarsky Prut" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Ziskas permanentni &fRybarsky prut&7.||&8&l ▶ &7Lze upravit slot &d/inventar&7.||||&7Perk stoji &e1.300 Ⓩ&7.||&7 ➥ &cNemas dostatek zlataku pro zakoupeni."
+		else:
+			if {activatedperk%{_nperk}%::fishingrod::%player%} is not set:
+				create a gui slot 20 of player with fishing rod named "&bRybarsky Prut" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Ziskas permanentni &fRybarsky prut&7.||&8&l ▶ &7Lze upravit slot &d/inventar&7.||||&aKlikni zde pro aktivaci perku." to run:
+					close player's inventory
+					play "ORB_PICKUP" to player
+					message ""
+					message "&aUspesne jsi aktivoval perk &8""&bRybarsky Prut&8""&7."
+					message ""
+					if {activatedperk%{_nperk}%::%player%} is "lava":
+						loop items in player's inventory:
+							if loop-item is lava bucket:
+								delete loop-item
+						delete {inventoryslot::%player%::lava}
+					if {activatedperk%{_nperk}%::%player%} is "barbarian":
+						set {_num} to 0
+						loop 36 times:
+							set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+							set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+							if {enderchest::%{_num}%::%player%} is diamond axe:
+								set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+							if {enderchest::%{_num}%::%player%} is iron axe:
+								set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+							add 1 to {_num}
+						loop all items in player's inventory:
+							set {_name} to name of loop-item
+							set {_lore} to lore of loop-item
+							if loop-item is diamond axe:
+								set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+							if loop-item is iron axe:
+								set loop-item to unbreakable iron sword named "%{_name}%"
+					if {activatedperk%{_nperk}%::%player%} is "rambo":
+						if {ragepit} is set:
+							set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+						else:
+							set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+						wait 1 tick
+						heal player
+
+					if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::lava} is 2:
+						set {_num} to 0
+						loop 9 times:
+							if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::lava} is not {_num}:
+								set {inventoryslot::%player%::fishingrod} to {_num}
+								stop loop
+							add 1 to {_num}
+					else:
+						set {inventoryslot::%player%::fishingrod} to 2
+					if slot 2 of player is air:
+						set slot 2 of player to unbreakable fishing rod named "&bRybarsky Prut"
+					else:
+						give player unbreakable fishing rod named "&bRybarsky Prut"
+					set {activatedperk%{_nperk}%::%player%} to "fishingrod"
+#-----------------------------------
+		if {perk::%player%::lava} is not set:
+			if {_shop} is greater than or equal to 1900:
+				create a gui slot 21 of player with lava bucket named "&cLava" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Ziskas &fkyblik lavy&7, ktery dostanes||    &7vzdy, kdy se vratis na spawn.||&8&l ▶ &7Lze upravit slot &d/inventar&7.||||&7Perk stoji &e1.900 Ⓩ&7.||&7 ➥ &aKlikni zde pro zakoupeni perku." to run:
+					close player's inventory
+					close inventory of player
+					Zlataky("remove", 1900, player)
+					play "ORB_PICKUP" to player
+					message ""
+					message "&aUspesne jsi zakoupil perk &8""&cLava&8""&7."
+					message "&f ➥ &7Z uctu ti bylo odebrano &e1.900 Ⓩ&7."
+					message ""
+
+					if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+						loop items in player's inventory:
+							if loop-item is fishing rod:
+								name of loop-item is not "&cCatcher"
+								delete loop-item
+						delete {inventoryslot::%player%::fishingrod}
+					if {activatedperk%{_nperk}%::%player%} is "barbarian":
+						set {_num} to 0
+						loop 36 times:
+							set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+							set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+							if {enderchest::%{_num}%::%player%} is diamond axe:
+								set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+							if {enderchest::%{_num}%::%player%} is iron axe:
+								set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+							add 1 to {_num}
+						loop all items in player's inventory:
+							set {_name} to name of loop-item
+							set {_lore} to lore of loop-item
+
+							if loop-item is diamond axe:
+								set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+							if loop-item is iron axe:
+								set loop-item to unbreakable iron sword named "%{_name}%"
+					if {activatedperk%{_nperk}%::%player%} is "rambo":
+						if {ragepit} is set:
+							set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+						else:
+							set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+						wait 1 tick
+						heal player
+
+					if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} is 3:
+						set {_num} to 0
+						loop 9 times:
+							if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} is not {_num}:
+								set {inventoryslot::%player%::lava} to {_num}
+								stop loop
+							add 1 to {_num}
+					else:
+						set {inventoryslot::%player%::lava} to 3
+					if slot 3 of player is air:
+						set slot 3 of player to lava bucket named "&cLava"
+					else:
+						give player lava bucket named "&cLava"
+					set {activatedperk%{_nperk}%::%player%} to "lava"
+					set {perk::%player%::lava} to true
+			else:
+				create a gui slot 21 of player with lava bucket named "&cLava" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Ziskas &fkyblik lavy&7, ktery dostanes||    &7vzdy, kdy se vratis na spawn.||&8&l ▶ &7Lze upravit slot &d/inventar&7.||||&7Perk stoji &e1.900 Ⓩ&7.||&7 ➥ &cNemas dostatek zlataku pro zakoupeni."
+		else:
+			if {activatedperk%{_nperk}%::lava::%player%} is not set:
+				create a gui slot 21 of player with lava bucket named "&cLava" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Ziskas &fkyblik lavy&7, ktery dostanes||    &7vzdy, kdy se vratis na spawn.||&8&l ▶ &7Lze upravit slot &d/inventar&7.||||&aKlikni zde pro aktivaci perku." to run:
+					close player's inventory
+					play "ORB_PICKUP" to player
+					message ""
+					message "&aUspesne jsi aktivoval perk &8""&cLava&8""&7."
+					message ""
+
+					if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+						loop items in player's inventory:
+							if loop-item is fishing rod:
+								name of loop-item is not "&cCatcher"
+								delete loop-item
+						delete {inventoryslot::%player%::fishingrod}
+					if {activatedperk%{_nperk}%::%player%} is "barbarian":
+						set {_num} to 0
+						loop 36 times:
+							set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+							set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+							if {enderchest::%{_num}%::%player%} is diamond axe:
+								set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+							if {enderchest::%{_num}%::%player%} is iron axe:
+								set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+							add 1 to {_num}
+						loop all items in player's inventory:
+							set {_name} to name of loop-item
+							set {_lore} to lore of loop-item
+
+							if loop-item is diamond axe:
+								set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+							if loop-item is iron axe:
+								set loop-item to unbreakable iron sword named "%{_name}%"
+					if {activatedperk%{_nperk}%::%player%} is "rambo":
+						if {ragepit} is set:
+							set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+						else:
+							set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+						wait 1 tick
+						heal player
+
+					if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} is 3:
+						set {_num} to 0
+						loop 9 times:
+							if {inventoryslot::%player%::sword} or {inventoryslot::%player%::bow} or {inventoryslot::%player%::arrow} or {inventoryslot::%player%::pickaxe} or {inventoryslot::%player%::fishingrod} is not {_num}:
+								set {inventoryslot::%player%::lava} to {_num}
+								stop loop
+							add 1 to {_num}
+					else:
+						set {inventoryslot::%player%::lava} to 3
+					if slot 3 of player is air:
+						set slot 3 of player to lava bucket named "&cLava"
+					else:
+						give player lava bucket named "&cLava"
+					set {activatedperk%{_nperk}%::%player%} to "lava"
+#-----------------------------------
+		if {perk::%player%::arrow} is not set:
+			if {_shop} is greater than or equal to 3200:
+				create a gui slot 22 of player with arrow named "&7Sipy" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pri kazdem zasahu hrace sipem||    &7dostanes &a+2 &7sipy.||||&7Perk stoji &e3.200 Ⓩ&7.||&7 ➥ &aKlikni zde pro zakoupeni perku." to run:
+					close player's inventory
+					close inventory of player
+					Zlataky("remove", 3200, player)
+					play "ORB_PICKUP" to player
+					message ""
+					message "&aUspesne jsi zakoupil perk &8""&7Sipy&8""&7."
+					message "&f ➥ &7Z uctu ti bylo odebrano &e3.200 Ⓩ&7."
+					message ""
+
+					if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+						loop items in player's inventory:
+							if loop-item is fishing rod:
+								name of loop-item is not "&cCatcher"
+								delete loop-item
+						delete {inventoryslot::%player%::fishingrod}
+					if {activatedperk%{_nperk}%::%player%} is "lava":
+						loop items in player's inventory:
+							if loop-item is lava bucket:
+								delete loop-item
+						delete {inventoryslot::%player%::lava}
+					if {activatedperk%{_nperk}%::%player%} is "barbarian":
+						set {_num} to 0
+						loop 36 times:
+							set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+							set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+							if {enderchest::%{_num}%::%player%} is diamond axe:
+								set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+							if {enderchest::%{_num}%::%player%} is iron axe:
+								set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+
+							add 1 to {_num}
+						loop all items in player's inventory:
+							set {_name} to name of loop-item
+							set {_lore} to lore of loop-item
+
+							if loop-item is diamond axe:
+								set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+							if loop-item is iron axe:
+								set loop-item to unbreakable iron sword named "%{_name}%"
+					if {activatedperk%{_nperk}%::%player%} is "rambo":
+						if {ragepit} is set:
+							set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+						else:
+							set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+						wait 1 tick
+						heal player
+
+					set {activatedperk%{_nperk}%::%player%} to "arrow"
+					set {perk::%player%::arrow} to true
+			else:
+				create a gui slot 22 of player with arrow named "&7Sipy" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pri kazdem zasahu hrace sipem||    &7dostanes &a+2 &7sipy.||||&7Perk stoji &e3.200 Ⓩ&7.||&7 ➥ &cNemas dostatek zlataku pro zakoupeni."
+		else:
+			if {activatedperk%{_nperk}%::arrow::%player%} is not set:
+				create a gui slot 22 of player with arrow named "&7Sipy" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pri kazdem zasahu hrace sipem||    &7dostanes &a+2 &7sipy.||||&aKlikni zde pro aktivaci perku." to run:
+					close player's inventory
+					play "ORB_PICKUP" to player
+					message ""
+					message "&aUspesne jsi aktivoval perk &8""&7Sipy&8""&7."
+					message ""
+
+					if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+						loop items in player's inventory:
+							if loop-item is fishing rod:
+								name of loop-item is not "&cCatcher"
+								delete loop-item
+						delete {inventoryslot::%player%::fishingrod}
+					if {activatedperk%{_nperk}%::%player%} is "lava":
+						loop items in player's inventory:
+							if loop-item is lava bucket:
+								delete loop-item
+						delete {inventoryslot::%player%::lava}
+					if {activatedperk%{_nperk}%::%player%} is "barbarian":
+						set {_num} to 0
+						loop 36 times:
+							set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+							set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+							if {enderchest::%{_num}%::%player%} is diamond axe:
+								set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+							if {enderchest::%{_num}%::%player%} is iron axe:
+								set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+							add 1 to {_num}
+						loop all items in player's inventory:
+							set {_name} to name of loop-item
+							set {_lore} to lore of loop-item
+
+							if loop-item is diamond axe:
+								set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+							if loop-item is iron axe:
+								set loop-item to unbreakable iron sword named "%{_name}%"
+					if {activatedperk%{_nperk}%::%player%} is "rambo":
+						if {ragepit} is set:
+							set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+						else:
+							set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+						wait 1 tick
+						heal player
+
+					set {activatedperk%{_nperk}%::%player%} to "arrow"
+#-----------------------------------
+		if {level::%player%} is higher or equal to 20:
+
+			if {perk::%player%::obsidian} is not set:
+				if {_shop} is greater than or equal to 2900:
+					create a gui slot 23 of player with obsidian named "&eBorek Stavitel" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pri zabiti hrace dostanes||    &7dohromady &a+2 &7obsidiany.||||&7Perk stoji &e2.900 Ⓩ&7.||&7 ➥ &aKlikni zde pro zakoupeni perku." to run:
+						close player's inventory
+						close inventory of player
+						Zlataky("remove", 2900, player)
+						play "ORB_PICKUP" to player
+						message ""
+						message "&aUspesne jsi zakoupil perk &8""&eBorek Stavitel&8""&7."
+						message "&f ➥ &7Z uctu ti bylo odebrano &e2.900 Ⓩ&7."
+						message ""
+
+						if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+							loop items in player's inventory:
+								if loop-item is fishing rod:
+									name of loop-item is not "&cCatcher"
+									delete loop-item
+							delete {inventoryslot::%player%::fishingrod}
+						if {activatedperk%{_nperk}%::%player%} is "lava":
+							loop items in player's inventory:
+								if loop-item is lava bucket:
+									delete loop-item
+							delete {inventoryslot::%player%::lava}
+						if {activatedperk%{_nperk}%::%player%} is "barbarian":
+							set {_num} to 0
+							loop 36 times:
+								set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+								set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+								if {enderchest::%{_num}%::%player%} is diamond axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+								if {enderchest::%{_num}%::%player%} is iron axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+								add 1 to {_num}
+							loop all items in player's inventory:
+								set {_name} to name of loop-item
+								set {_lore} to lore of loop-item
+
+								if loop-item is diamond axe:
+									set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+								if loop-item is iron axe:
+									set loop-item to unbreakable iron sword named "%{_name}%"
+						if {activatedperk%{_nperk}%::%player%} is "rambo":
+							if {ragepit} is set:
+								set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+							else:
+								set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+							wait 1 tick
+							heal player
+
+						set {activatedperk%{_nperk}%::%player%} to "obsidian"
+						set {perk::%player%::obsidian} to true
+				else:
+					create a gui slot 23 of player with obsidian named "&eBorek Stavitel" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pri zabiti hrace dostanes||    &7dohromady &a+2 &7obsidiany.||||&7Perk stoji &e2.900 Ⓩ&7.||&7 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+			else:
+				if {activatedperk%{_nperk}%::obsidian::%player%} is not set:
+					create a gui slot 23 of player with obsidian named "&eBorek Stavitel" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pri zabiti hrace dostanes||    &7dohromady &a+2 &7obsidiany.||||&aKlikni zde pro aktivaci perku." to run:
+						close player's inventory
+						play "ORB_PICKUP" to player
+						message ""
+						message "&aUspesne jsi aktivoval perk &8""&eBorek Stavitel&8""&7."
+						message ""
+
+						if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+							loop items in player's inventory:
+								if loop-item is fishing rod:
+									name of loop-item is not "&cCatcher"
+									delete loop-item
+							delete {inventoryslot::%player%::fishingrod}
+						if {activatedperk%{_nperk}%::%player%} is "lava":
+							loop items in player's inventory:
+								if loop-item is lava bucket:
+									delete loop-item
+							delete {inventoryslot::%player%::lava}
+						if {activatedperk%{_nperk}%::%player%} is "barbarian":
+							set {_num} to 0
+							loop 36 times:
+								set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+								set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+								if {enderchest::%{_num}%::%player%} is diamond axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+								if {enderchest::%{_num}%::%player%} is iron axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+								add 1 to {_num}
+							loop all items in player's inventory:
+								set {_name} to name of loop-item
+								set {_lore} to lore of loop-item
+
+								if loop-item is diamond axe:
+									set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+								if loop-item is iron axe:
+									set loop-item to unbreakable iron sword named "%{_name}%"
+						if {activatedperk%{_nperk}%::%player%} is "rambo":
+							if {ragepit} is set:
+								set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+							else:
+								set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+							wait 1 tick
+							heal player
+						set {activatedperk%{_nperk}%::%player%} to "obsidian"
+		else:
+			create a gui slot 23 of player with bedrock named "&eBorek Stavitel" with lore "||&7Pro tento perk potrebujes level &a+&320&7.||&r"	
+#-----------------------------------
+		if {level::%player%} is higher or equal to 20:
+
+			if {perk::%player%::spammer} is not set:
+				if {_shop} is greater than or equal to 2100:
+					create a gui slot 24 of player with cobweb named "&4Spammer" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pokud zabijes hrace, ktereho jsi||    &7zasahl &fsipem&7 ziskas &62x &ezlataku&7.||&8&l ▶ &7Pri assistu ziskas &6+&e2 Ⓩ&7.||||&7Perk stoji &e2.100 Ⓩ&7.||&7 ➥ &aKlikni zde pro zakoupeni perku." to run:
+						close player's inventory
+						close inventory of player
+						Zlataky("remove", 2100, player)
+						play "ORB_PICKUP" to player
+						message ""
+						message "&aUspesne jsi zakoupil perk &8""&4Spammer&8""&7."
+						message "&f ➥ &7Z uctu ti bylo odebrano &e2.100 Ⓩ&7."
+						message ""
+
+						if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+							loop items in player's inventory:
+								if loop-item is fishing rod:
+									name of loop-item is not "&cCatcher"
+									delete loop-item
+							delete {inventoryslot::%player%::fishingrod}
+						if {activatedperk%{_nperk}%::%player%} is "lava":
+							loop items in player's inventory:
+								if loop-item is lava bucket:
+									delete loop-item
+							delete {inventoryslot::%player%::lava}
+						if {activatedperk%{_nperk}%::%player%} is "barbarian":
+							set {_num} to 0
+							loop 36 times:
+								set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+								set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+								if {enderchest::%{_num}%::%player%} is diamond axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+								if {enderchest::%{_num}%::%player%} is iron axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+								add 1 to {_num}
+							loop all items in player's inventory:
+								set {_name} to name of loop-item
+								set {_lore} to lore of loop-item
+
+								if loop-item is diamond axe:
+									set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+								if loop-item is iron axe:
+									set loop-item to unbreakable iron sword named "%{_name}%"
+						if {activatedperk%{_nperk}%::%player%} is "rambo":
+							if {ragepit} is set:
+								set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+							else:
+								set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+							wait 1 tick
+							heal player
+
+						set {activatedperk%{_nperk}%::%player%} to "spammer"
+						set {perk::%player%::spammer} to true
+				else:
+					create a gui slot 24 of player with cobweb named "&4Spammer" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pokud zabijes hrace, ktereho jsi||    &7zasahl &fsipem&7 ziskas &62x &ezlataku&7.||&8&l ▶ &7Pri assistu ziskas &6+&e2 Ⓩ&7.||||&7Perk stoji &e2.100 Ⓩ&7.||&7 ➥ &cNemas dostatek zlataku pro zakoupeni."
+
+			else:
+				if {activatedperk%{_nperk}%::spammer::%player%} is not set:
+					create a gui slot 24 of player with cobweb named "&4Spammer" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pokud zabijes hrace, ktereho jsi||    &7zasahl &fsipem&7 ziskas &62x &ezlataku&7.||&8&l ▶ &7Pri assistu ziskas &6+&e2 Ⓩ&7.||||&aKlikni zde pro aktivaci perku." to run:
+						close player's inventory
+						play "ORB_PICKUP" to player
+						message ""
+						message "&aUspesne jsi aktivoval perk &8""&4Spammer&8""&7."
+						message ""
+
+						if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+							loop items in player's inventory:
+								if loop-item is fishing rod:
+									name of loop-item is not "&cCatcher"
+									delete loop-item
+							delete {inventoryslot::%player%::fishingrod}
+						if {activatedperk%{_nperk}%::%player%} is "lava":
+							loop items in player's inventory:
+								if loop-item is lava bucket:
+									delete loop-item
+							delete {inventoryslot::%player%::lava}
+						if {activatedperk%{_nperk}%::%player%} is "barbarian":
+							set {_num} to 0
+							loop 36 times:
+								set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+								set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+								if {enderchest::%{_num}%::%player%} is diamond axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+								if {enderchest::%{_num}%::%player%} is iron axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+								add 1 to {_num}
+							loop all items in player's inventory:
+								set {_name} to name of loop-item
+								set {_lore} to lore of loop-item
+
+								if loop-item is diamond axe:
+									set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+								if loop-item is iron axe:
+									set loop-item to unbreakable iron sword named "%{_name}%"
+						if {activatedperk%{_nperk}%::%player%} is "rambo":
+							if {ragepit} is set:
+								set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+							else:
+								set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+							wait 1 tick
+							heal player
+						set {activatedperk%{_nperk}%::%player%} to "spammer"
+		else:
+			create a gui slot 24 of player with cobweb named "&4Spammer" with lore "||&7Pro tento perk potrebujes level &a+&320&7.||&r"	
+#-----------------------------------
+		if {level::%player%} is higher or equal to 30:
+			if {perk::%player%::bountyhunter} is not set:
+				if {_shop} is greater than or equal to 3500:
+					create a gui slot 28 of player with golden leggings with no nbt named "&cBounty Hunter" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Za assist a zabiti ziskas &6+&e4 Ⓩ&7.||&8&l ▶ &c+1%%&7/&e50 Ⓩ &7poskozeni, pokud||    &7ma protihrac &ebounty&7.||||&7Perk stoji &e3.500 Ⓩ&7.||&7 ➥ &aKlikni zde pro zakoupeni perku." to run:
+						close player's inventory
+						close inventory of player
+						Zlataky("remove", 3500, player)
+						play "ORB_PICKUP" to player
+						message ""
+						message "&aUspesne jsi zakoupil perk &8""&cBounty Hunter&8""&7."
+						message "&f ➥ &7Z uctu ti bylo odebrano &e3.500 Ⓩ&7."
+						message ""
+
+						if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+							loop items in player's inventory:
+								if loop-item is fishing rod:
+									name of loop-item is not "&cCatcher"
+									delete loop-item
+							delete {inventoryslot::%player%::fishingrod}
+						if {activatedperk%{_nperk}%::%player%} is "lava":
+							loop items in player's inventory:
+								if loop-item is lava bucket:
+									delete loop-item
+							delete {inventoryslot::%player%::lava}
+						if {activatedperk%{_nperk}%::%player%} is "barbarian":
+							set {_num} to 0
+							loop 36 times:
+								set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+								set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+								if {enderchest::%{_num}%::%player%} is diamond axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+								if {enderchest::%{_num}%::%player%} is iron axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+								add 1 to {_num}
+							loop all items in player's inventory:
+								set {_name} to name of loop-item
+								set {_lore} to lore of loop-item
+
+								if loop-item is diamond axe:
+									set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+								if loop-item is iron axe:
+									set loop-item to unbreakable iron sword named "%{_name}%"
+						if {activatedperk%{_nperk}%::%player%} is "rambo":
+							if {ragepit} is set:
+								set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+							else:
+								set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+							wait 1 tick
+							heal player
+						set {activatedperk%{_nperk}%::%player%} to "bountyhunter"
+						set {perk::%player%::bountyhunter} to true
+				else:
+					create a gui slot 28 of player with golden leggings with no nbt named "&cBounty Hunter" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Za assist a zabiti ziskas &6+&e4 Ⓩ&7.||&8&l ▶ &c+1%%&7/&e50 Ⓩ &7poskozeni, pokud||    &7ma protihrac &ebounty&7.||||&7Perk stoji &e3.500 Ⓩ&7.||&7 ➥ &cNemas dostatek zlataku pro zakoupeni."
+			else:
+				if {activatedperk%{_nperk}%::bountyhunter::%player%} is not set:
+					create a gui slot 28 of player with golden leggings with no nbt named "&cBounty Hunter" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Za assist a zabiti ziskas &6+&e4 Ⓩ&7.||&8&l ▶ &c+1%%&7/&e50 Ⓩ &7poskozeni, pokud||    &7ma protihrac &ebounty&7.||||&aKlikni zde pro aktivaci perku." to run:
+						close player's inventory
+						play "ORB_PICKUP" to player
+						message ""
+						message "&aUspesne jsi aktivoval perk &8""&cBounty Hunter&8""&7."
+						message ""
+
+						if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+							loop items in player's inventory:
+								if loop-item is fishing rod:
+									name of loop-item is not "&cCatcher"
+									delete loop-item
+							delete {inventoryslot::%player%::fishingrod}
+						if {activatedperk%{_nperk}%::%player%} is "lava":
+							loop items in player's inventory:
+								if loop-item is lava bucket:
+									delete loop-item
+							delete {inventoryslot::%player%::lava}
+						if {activatedperk%{_nperk}%::%player%} is "barbarian":
+							set {_num} to 0
+							loop 36 times:
+								set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+								set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+								if {enderchest::%{_num}%::%player%} is diamond axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+								if {enderchest::%{_num}%::%player%} is iron axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+								add 1 to {_num}
+							loop all items in player's inventory:
+								set {_name} to name of loop-item
+								set {_lore} to lore of loop-item
+
+								if loop-item is diamond axe:
+									set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+								if loop-item is iron axe:
+									set loop-item to unbreakable iron sword named "%{_name}%"
+						if {activatedperk%{_nperk}%::%player%} is "rambo":
+							if {ragepit} is set:
+								set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+							else:
+								set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+							wait 1 tick
+							heal player
+						set {activatedperk%{_nperk}%::%player%} to "bountyhunter"
+		else:
+			create a gui slot 28 of player with bedrock with no nbt named "&cBounty Hunter" with lore "||&7Pro tento perk potrebujes level &a+&230&7.||&r"
+
+		
+#-----------------------------------
+		if {level::%player%} is higher or equal to 30:
+			if {perk::%player%::strength} is not set:
+				if {_shop} is greater than or equal to 5800:
+					create a gui slot 29 of player with diamond sword with no nbt named "&dSila" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Za kazde zabiti hrace ziskas||    &dStrength &a+&fI &7(&f7s&7), max uroven &fV&7.||||&6TIP&7: Postupne se vylepsuje, ale||    &7musis si davat &cpozor &7na cas.||||&7Perk stoji &e5.800 Ⓩ&7.||&7 ➥ &aKlikni zde pro zakoupeni perku." to run:
+						close player's inventory
+						close inventory of player
+						Zlataky("remove", 5800, player)
+						play "ORB_PICKUP" to player
+						message ""
+						message "&aUspesne jsi zakoupil perk &8""&dSila&8""&7."
+						message "&f ➥ &7Z uctu ti bylo odebrano &e5.800 Ⓩ&7."
+						message ""
+
+						if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+							loop items in player's inventory:
+								if loop-item is fishing rod:
+									name of loop-item is not "&cCatcher"
+									delete loop-item
+							delete {inventoryslot::%player%::fishingrod}
+						if {activatedperk%{_nperk}%::%player%} is "lava":
+							loop items in player's inventory:
+								if loop-item is lava bucket:
+									delete loop-item
+							delete {inventoryslot::%player%::lava}
+						if {activatedperk%{_nperk}%::%player%} is "barbarian":
+							set {_num} to 0
+							loop 36 times:
+								set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+								set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+								if {enderchest::%{_num}%::%player%} is diamond axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+								if {enderchest::%{_num}%::%player%} is iron axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+								add 1 to {_num}
+							loop all items in player's inventory:
+								set {_name} to name of loop-item
+								set {_lore} to lore of loop-item
+
+								if loop-item is diamond axe:
+									set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+								if loop-item is iron axe:
+									set loop-item to unbreakable iron sword named "%{_name}%"
+						if {activatedperk%{_nperk}%::%player%} is "rambo":
+							if {ragepit} is set:
+								set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+							else:
+								set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+							wait 1 tick
+							heal player
+						set {activatedperk%{_nperk}%::%player%} to "strength"
+						set {perk::%player%::strength} to true
+				else:
+					create a gui slot 29 of player with diamond sword with no nbt named "&dSila" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Za kazde zabiti hrace ziskas||    &dStrength &a+&fI &7(&f7s&7), max uroven &fV&7.||||&6TIP&7: Postupne se vylepsuje, ale||    &7musis si davat &cpozor &7na cas.||||&7Perk stoji &e5.800 Ⓩ&7.||&7 ➥ &cNemas dostatek zlataku pro zakoupeni."
+			else:
+				if {activatedperk%{_nperk}%::strength::%player%} is not set:
+					create a gui slot 29 of player with diamond sword with no nbt named "&dSila" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Za kazde zabiti hrace ziskas||    &dStrength &a+&fI &7(&f7s&7), max uroven &fV&7.||||&6TIP&7: Postupne se vylepsuje, ale||    &7musis si davat &cpozor &7na cas.||||&aKlikni zde pro aktivaci perku." to run:
+						close player's inventory
+						play "ORB_PICKUP" to player
+						message ""
+						message "&aUspesne jsi aktivoval perk &8""&dSila&8""&7."
+						message ""
+
+						if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+							loop items in player's inventory:
+								if loop-item is fishing rod:
+									name of loop-item is not "&cCatcher"
+									delete loop-item
+							delete {inventoryslot::%player%::fishingrod}
+						if {activatedperk%{_nperk}%::%player%} is "lava":
+							loop items in player's inventory:
+								if loop-item is lava bucket:
+									delete loop-item
+							delete {inventoryslot::%player%::lava}
+						if {activatedperk%{_nperk}%::%player%} is "barbarian":
+							set {_num} to 0
+							loop 36 times:
+								set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+								set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+								if {enderchest::%{_num}%::%player%} is diamond axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+								if {enderchest::%{_num}%::%player%} is iron axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+								add 1 to {_num}
+							loop all items in player's inventory:
+								set {_name} to name of loop-item
+								set {_lore} to lore of loop-item
+
+								if loop-item is diamond axe:
+									set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+								if loop-item is iron axe:
+									set loop-item to unbreakable iron sword named "%{_name}%"
+						if {activatedperk%{_nperk}%::%player%} is "rambo":
+							if {ragepit} is set:
+								set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+							else:
+								set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+							wait 1 tick
+							heal player
+						set {activatedperk%{_nperk}%::%player%} to "strength"
+		else:
+			create a gui slot 29 of player with bedrock with no nbt named "&dSila" with lore "||&7Pro tento perk potrebujes level &a+&230&7.||&r"
+
+#-----------------------------------
+		if {level::%player%} is higher or equal to 40:
+			if {perk::%player%::vampire} is not set:
+				if {_shop} is greater than or equal to 8300:
+					create a gui slot 31 of player with fermented spider eye named "&cVampire" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Jiz neziskas uzdravovaci predmety,||    &7zasah uzdravi &c0.5&4❤&7, zasah lukem &c1.5&4❤&7,||    &7ale pouze pri &fplnem &7natazeni luku.||&8&l ▶ &7Zabitim hrace ziskas &dRegenerace I &7(&f8s&7).%{_vampire}%||||&7Perk stoji &e8.300 Ⓩ&7.||&7 ➥ &aKlikni zde pro zakoupeni perku." to run:
+						close player's inventory
+						close inventory of player
+						Zlataky("remove", 8300, player)
+						play "ORB_PICKUP" to player
+						message ""
+						message "&aUspesne jsi zakoupil perk &8""&cVampire&8""&7."
+						message "&f ➥ &7Z uctu ti bylo odebrano &e8.300 Ⓩ&7."
+						message ""
+
+						if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+							loop items in player's inventory:
+								if loop-item is fishing rod:
+									name of loop-item is not "&cCatcher"
+									delete loop-item
+							delete {inventoryslot::%player%::fishingrod}
+						if {activatedperk%{_nperk}%::%player%} is "lava":
+							loop items in player's inventory:
+								if loop-item is lava bucket:
+									delete loop-item
+							delete {inventoryslot::%player%::lava}
+						if {activatedperk%{_nperk}%::%player%} is "barbarian":
+							set {_num} to 0
+							loop 36 times:
+								set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+								set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+								if {enderchest::%{_num}%::%player%} is diamond axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+								if {enderchest::%{_num}%::%player%} is iron axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+								add 1 to {_num}
+							loop all items in player's inventory:
+								set {_name} to name of loop-item
+								set {_lore} to lore of loop-item
+
+								if loop-item is diamond axe:
+									set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+								if loop-item is iron axe:
+									set loop-item to unbreakable iron sword named "%{_name}%"
+						if {activatedperk%{_nperk}%::%player%} is "rambo":
+							if {ragepit} is set:
+								set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+							else:
+								set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+							wait 1 tick
+							heal player
+						set {activatedperk%{_nperk}%::%player%} to "vampire"
+						set {perk::%player%::vampire} to true
+				else:
+					create a gui slot 31 of player with fermented spider eye named "&cVampire" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Jiz neziskas uzdravovaci predmety,||    &7zasah uzdravi &c0.5&4❤&7, zasah lukem &c1.5&4❤&7,||    &7ale pouze pri &fplnem &7natazeni luku.||&8&l ▶ &7Zabitim hrace ziskas &dRegenerace I &7(&f8s&7).%{_vampire}%||||&7Perk stoji &e8.300 Ⓩ&7.||&7 ➥ &cNemas dostatek zlataku pro zakoupeni."
+			else:
+				if {activatedperk%{_nperk}%::vampire::%player%} is not set:
+					create a gui slot 31 of player with fermented spider eye named "&cVampire" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Jiz neziskas uzdravovaci predmety,||    &7zasah uzdravi &c0.5&4❤&7, zasah lukem &c1.5&4❤&7,||    &7ale pouze pri &fplnem &7natazeni luku.||&8&l ▶ &7Zabitim hrace ziskas &dRegenerace I &7(&f8s&7).%{_vampire}%||||&aKlikni zde pro aktivaci perku." to run:
+						close player's inventory
+						play "ORB_PICKUP" to player
+						message ""
+						message "&aUspesne jsi zakoupil perk &8""&cVampire&8""&7."
+						message ""
+
+						if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+							loop items in player's inventory:
+								if loop-item is fishing rod:
+									name of loop-item is not "&cCatcher"
+									delete loop-item
+							delete {inventoryslot::%player%::fishingrod}
+						if {activatedperk%{_nperk}%::%player%} is "lava":
+							loop items in player's inventory:
+								if loop-item is lava bucket:
+									delete loop-item
+							delete {inventoryslot::%player%::lava}
+						if {activatedperk%{_nperk}%::%player%} is "barbarian":
+							set {_num} to 0
+							loop 36 times:
+								set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+								set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+								if {enderchest::%{_num}%::%player%} is diamond axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+								if {enderchest::%{_num}%::%player%} is iron axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+								add 1 to {_num}
+							loop all items in player's inventory:
+								set {_name} to name of loop-item
+								set {_lore} to lore of loop-item
+
+								if loop-item is diamond axe:
+									set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+								if loop-item is iron axe:
+									set loop-item to unbreakable iron sword named "%{_name}%"
+						if {activatedperk%{_nperk}%::%player%} is "rambo":
+							if {ragepit} is set:
+								set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+							else:
+								set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+							wait 1 tick
+							heal player
+						set {activatedperk%{_nperk}%::%player%} to "vampire"
+		else:
+			create a gui slot 31 of player with bedrock named "&cVampire" with lore "||&7Pro tento perk potrebujes level &2+&a40&7.||&r"
+			
+
+#-----------------------------------
+
+		if {level::%player%} is higher or equal to 35:
+			if {perk::%player%::gladiator} is not set:
+				if {_shop} is greater than or equal to 7250:
+					create a gui slot 30 of player with bone named "&9Gladiator" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Obdrzis &c-3%% poskozeni &7za kazdeho||    &7hrace, ktery je v rozmezi &f12 bloku&7.||&8&l ▶ &7Minimalne &e3&7, max &e10 hracu&7.||||&7Perk stoji &e7.250 Ⓩ&7.||&7 ➥ &aKlikni zde pro zakoupeni perku." to run:
+						close player's inventory
+						close inventory of player
+						Zlataky("remove", 7250, player)
+						play "ORB_PICKUP" to player
+						message ""
+						message "&aUspesne jsi zakoupil perk &8""&9Gladiator&8""&7."
+						message "&f ➥ &7Z uctu ti bylo odebrano &e7.250 Ⓩ&7."
+						message ""
+
+						if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+							loop items in player's inventory:
+								if loop-item is fishing rod:
+									name of loop-item is not "&cCatcher"
+									delete loop-item
+							delete {inventoryslot::%player%::fishingrod}
+						if {activatedperk%{_nperk}%::%player%} is "lava":
+							loop items in player's inventory:
+								if loop-item is lava bucket:
+									delete loop-item
+							delete {inventoryslot::%player%::lava}
+						if {activatedperk%{_nperk}%::%player%} is "barbarian":
+							set {_num} to 0
+							loop 36 times:
+								set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+								set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+								if {enderchest::%{_num}%::%player%} is diamond axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+								if {enderchest::%{_num}%::%player%} is iron axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+								add 1 to {_num}
+							loop all items in player's inventory:
+								set {_name} to name of loop-item
+								set {_lore} to lore of loop-item
+
+								if loop-item is diamond axe:
+									set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+								if loop-item is iron axe:
+									set loop-item to unbreakable iron sword named "%{_name}%"
+						if {activatedperk%{_nperk}%::%player%} is "rambo":
+							if {ragepit} is set:
+								set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+							else:
+								set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+							wait 1 tick
+							heal player
+						set {activatedperk%{_nperk}%::%player%} to "gladiator"
+						set {perk::%player%::gladiator} to true
+				else:
+					create a gui slot 30 of player with bone named "&9Gladiator" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Obdrzis &c-3%% poskozeni &7za kazdeho||    &7hrace, ktery je v rozmezi &f12 bloku&7.||&8&l ▶ &7Minimalne &e3&7, max &e10 hracu&7.||||&7Perk stoji &e7.250 Ⓩ&7.||&7 ➥ &cNemas dostatek zlataku pro zakoupeni."
+			else:
+				if {activatedperk%{_nperk}%::gladiator::%player%} is not set:
+					create a gui slot 30 of player with bone named "&9Gladiator" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Obdrzis &c-3%% poskozeni &7za kazdeho||    &7hrace, ktery je v rozmezi &f12 bloku&7.||&8&l ▶ &7Minimalne &e3&7, max &e10 hracu&7.||||&aKlikni zde pro aktivaci perku." to run:
+						close player's inventory
+						play "ORB_PICKUP" to player
+						message ""
+						message "&aUspesne jsi zakoupil perk &8""&9Gladiator&8""&7."
+						message ""
+
+						if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+							loop items in player's inventory:
+								if loop-item is fishing rod:
+									name of loop-item is not "&cCatcher"
+									delete loop-item
+							delete {inventoryslot::%player%::fishingrod}
+						if {activatedperk%{_nperk}%::%player%} is "lava":
+							loop items in player's inventory:
+								if loop-item is lava bucket:
+									delete loop-item
+							delete {inventoryslot::%player%::lava}
+						if {activatedperk%{_nperk}%::%player%} is "barbarian":
+							set {_num} to 0
+							loop 36 times:
+								set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+								set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+								if {enderchest::%{_num}%::%player%} is diamond axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+								if {enderchest::%{_num}%::%player%} is iron axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+								add 1 to {_num}
+							loop all items in player's inventory:
+								set {_name} to name of loop-item
+								set {_lore} to lore of loop-item
+
+								if loop-item is diamond axe:
+									set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+								if loop-item is iron axe:
+									set loop-item to unbreakable iron sword named "%{_name}%"
+						if {activatedperk%{_nperk}%::%player%} is "rambo":
+							if {ragepit} is set:
+								set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+							else:
+								set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+							wait 1 tick
+							heal player
+						set {activatedperk%{_nperk}%::%player%} to "gladiator"
+		else:
+			create a gui slot 30 of player with bedrock named "&9Gladiator" with lore "||&7Pro tento perk potrebujes level &a+&235&7.||&r"
+			
+#-----------------------------------
+
+		if {level::%player%} is higher or equal to 50:
+			if {perk::%player%::streaker} is not set:
+				if {_shop} is greater than or equal to 9000:
+					create a gui slot 32 of player with wheat item named "&9Streaker" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Cim vyssi &fstreak&7, tim vice &bxp &7dostanes.||&8&l ▶ &7Struktura streaker bonusu||     &8▪ &7Streak &f3 &7➠ &f9&7: &b2xp||     &8▪ &7Streak &f10 &7➠ &f19&7: &b3xp||     &8▪ &7Streak &f20 &7➠ &f29&7: &b4xp||     &8▪ &7.. az do &f80&7: &b10xp&7/zabiti||||&7Perk stoji &e9.000 Ⓩ&7.||&7 ➥ &aKlikni zde pro zakoupeni perku." to run:
+						close player's inventory
+						close inventory of player
+						Zlataky("remove", 9000, player)
+						play "ORB_PICKUP" to player
+						message ""
+						message "&aUspesne jsi zakoupil perk &8""&9Streaker&8""&7."
+						message "&f ➥ &7Z uctu ti bylo odebrano &e9.000 Ⓩ&7."
+						message ""
+
+						if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+							loop items in player's inventory:
+								if loop-item is fishing rod:
+									name of loop-item is not "&cCatcher"
+									delete loop-item
+							delete {inventoryslot::%player%::fishingrod}
+						if {activatedperk%{_nperk}%::%player%} is "lava":
+							loop items in player's inventory:
+								if loop-item is lava bucket:
+									delete loop-item
+							delete {inventoryslot::%player%::lava}
+						if {activatedperk%{_nperk}%::%player%} is "barbarian":
+							set {_num} to 0
+							loop 36 times:
+								set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+								set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+								if {enderchest::%{_num}%::%player%} is diamond axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+								if {enderchest::%{_num}%::%player%} is iron axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+								add 1 to {_num}
+							loop all items in player's inventory:
+								set {_name} to name of loop-item
+								set {_lore} to lore of loop-item
+
+								if loop-item is diamond axe:
+									set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+								if loop-item is iron axe:
+									set loop-item to unbreakable iron sword named "%{_name}%"
+						if {activatedperk%{_nperk}%::%player%} is "rambo":
+							if {ragepit} is set:
+								set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+							else:
+								set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+							wait 1 tick
+							heal player
+						set {activatedperk%{_nperk}%::%player%} to "streaker"
+						set {perk::%player%::streaker} to true
+				else:
+					create a gui slot 32 of player with wheat item named "&9Streaker" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Cim vyssi &fstreak&7, tim vice &bxp &7dostanes.||&8&l ▶ &7Struktura streaker bonusu||     &8▪ &7Streak &f3 &7➠ &f9&7: &b2xp||     &8▪ &7Streak &f10 &7➠ &f19&7: &b3xp||     &8▪ &7Streak &f20 &7➠ &f29&7: &b4xp||     &8▪ &7.. az do &f80&7: &b10xp&7/zabiti||||&7Perk stoji &e9.000 Ⓩ&7.||&7 ➥ &cNemas dostatek zlataku pro zakoupeni."
+			else:
+				if {activatedperk%{_nperk}%::streaker::%player%} is not set:
+					create a gui slot 32 of player with wheat item named "&9Streaker" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Cim vyssi &fstreak&7, tim vice &bxp &7dostanes.||&8&l ▶ &7Struktura streaker bonusu||     &8▪ &7Streak &f3 &7➠ &f9&7: &b2xp||     &8▪ &7Streak &f10 &7➠ &f19&7: &b3xp||     &8▪ &7Streak &f20 &7➠ &f29&7: &b4xp||     &8▪ &7.. az do &f80&7: &b10xp&7/zabiti||||&aKlikni zde pro aktivaci perku." to run:
+						close player's inventory
+						play "ORB_PICKUP" to player
+						message ""
+						message "&aUspesne jsi zakoupil perk &8""&9Streaker&8""&7."
+						message ""
+
+						if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+							loop items in player's inventory:
+								if loop-item is fishing rod:
+									name of loop-item is not "&cCatcher"
+									delete loop-item
+							delete {inventoryslot::%player%::fishingrod}
+						if {activatedperk%{_nperk}%::%player%} is "lava":
+							loop items in player's inventory:
+								if loop-item is lava bucket:
+									delete loop-item
+							delete {inventoryslot::%player%::lava}
+						if {activatedperk%{_nperk}%::%player%} is "barbarian":
+							set {_num} to 0
+							loop 36 times:
+								set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+								set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+								if {enderchest::%{_num}%::%player%} is diamond axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+								if {enderchest::%{_num}%::%player%} is iron axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+								add 1 to {_num}
+							loop all items in player's inventory:
+								set {_name} to name of loop-item
+								set {_lore} to lore of loop-item
+
+								if loop-item is diamond axe:
+									set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+								if loop-item is iron axe:
+									set loop-item to unbreakable iron sword named "%{_name}%"
+						if {activatedperk%{_nperk}%::%player%} is "rambo":
+							if {ragepit} is set:
+								set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+							else:
+								set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+							wait 1 tick
+							heal player
+						set {activatedperk%{_nperk}%::%player%} to "streaker"
+		else:
+			create a gui slot 32 of player with bedrock named "&9Streaker" with lore "||&7Pro tento perk potrebujes level &a+&e50&7.||&r"
+			
+#-----------------------------------
+		if {level::%player%} is higher or equal to 50:
+			if {perk::%player%::gold} is not set:
+				if {_shop} is greater than or equal to 9400:
+					create a gui slot 33 of player with gold ingot named "&6Gold Bonus" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pri sebrani goldu dostanes &6+&e10 Ⓩ&7,||    &7a take jako bonus ti doplni &c2&4❤&7.||||&7Perk stoji &e9.400 Ⓩ&7.||&7 ➥ &aKlikni zde pro zakoupeni perku." to run:
+						close player's inventory
+						close inventory of player
+						Zlataky("remove", 9400, player)
+						play "ORB_PICKUP" to player
+						message ""
+						message "&aUspesne jsi zakoupil perk &8""&6Gold Bonus&8""&7."
+						message "&f ➥ &7Z uctu ti bylo odebrano &e9.400 Ⓩ&7."
+						message ""
+
+						if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+							loop items in player's inventory:
+								if loop-item is fishing rod:
+									name of loop-item is not "&cCatcher"
+									delete loop-item
+							delete {inventoryslot::%player%::fishingrod}
+						if {activatedperk%{_nperk}%::%player%} is "lava":
+							loop items in player's inventory:
+								if loop-item is lava bucket:
+									delete loop-item
+							delete {inventoryslot::%player%::lava}
+						if {activatedperk%{_nperk}%::%player%} is "barbarian":
+							set {_num} to 0
+							loop 36 times:
+								set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+								set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+								if {enderchest::%{_num}%::%player%} is diamond axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+								if {enderchest::%{_num}%::%player%} is iron axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+								add 1 to {_num}
+							loop all items in player's inventory:
+								set {_name} to name of loop-item
+								set {_lore} to lore of loop-item
+
+								if loop-item is diamond axe:
+									set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+								if loop-item is iron axe:
+									set loop-item to unbreakable iron sword named "%{_name}%"
+						if {activatedperk%{_nperk}%::%player%} is "rambo":
+							if {ragepit} is set:
+								set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+							else:
+								set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+							wait 1 tick
+							heal player
+						set {activatedperk%{_nperk}%::%player%} to "gold"
+						set {perk::%player%::gold} to true
+				else:
+					create a gui slot 33 of player with gold ingot named "&6Gold Bonus" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pri sebrani goldu dostanes &6+&e10 Ⓩ&7,||    &7a take jako bonus ti doplni &c2&4❤&7.||||&7Perk stoji &e9.400 Ⓩ&7.||&7 ➥ &cNemas dostatek zlataku pro zakoupeni."
+			else:
+				if {activatedperk%{_nperk}%::gold::%player%} is not set:
+					create a gui slot 33 of player with gold ingot named "&6Gold Bonus" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pri sebrani goldu dostanes &6+&e10 Ⓩ&7,||    &7a take jako bonus ti doplni &c2&4❤&7.||||&aKlikni zde pro aktivaci perku." to run:
+						close player's inventory
+						play "ORB_PICKUP" to player
+						message ""
+						message "&aUspesne jsi zakoupil perk &8""&6Gold Bonus&8""&7."
+						message ""
+
+						if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+							loop items in player's inventory:
+								if loop-item is fishing rod:
+									name of loop-item is not "&cCatcher"
+									delete loop-item
+							delete {inventoryslot::%player%::fishingrod}
+						if {activatedperk%{_nperk}%::%player%} is "lava":
+							loop items in player's inventory:
+								if loop-item is lava bucket:
+									delete loop-item
+							delete {inventoryslot::%player%::lava}
+						if {activatedperk%{_nperk}%::%player%} is "barbarian":
+							set {_num} to 0
+							loop 36 times:
+								set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+								set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+								if {enderchest::%{_num}%::%player%} is diamond axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+								if {enderchest::%{_num}%::%player%} is iron axe:
+									set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+								add 1 to {_num}
+							loop all items in player's inventory:
+								set {_name} to name of loop-item
+								set {_lore} to lore of loop-item
+
+								if loop-item is diamond axe:
+									set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+								if loop-item is iron axe:
+									set loop-item to unbreakable iron sword named "%{_name}%"
+						if {activatedperk%{_nperk}%::%player%} is "rambo":
+							if {ragepit} is set:
+								set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+							else:
+								set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+							wait 1 tick
+							heal player
+						set {activatedperk%{_nperk}%::%player%} to "gold"
+		else:
+			create a gui slot 33 of player with bedrock named "&6Gold Bonus" with lore "||&7Pro tento perk potrebujes level &a+&e50&7.||&r"
+			
+#-----------------------------------
+		if {renown::%player%::overheal} is set:	
+			if {level::%player%} is higher or equal to 30:
+				if {perk::%player%::overheal} is not set:
+					if {_shop} is greater than or equal to 4150:
+						create a gui slot 37 of player with mushroom stew named "&6Renown Perk&7: &eOverheal" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Moznost mit u sebe &fdvojnasobek||    &7uzdravovacich predmetu (&f2&d×2 &7➠ &f4&7,||    &f1&d×2 &7➠ &f2&7).%{_overheal}%||||&7Perk stoji &e4.150 Ⓩ&7.||&7 ➥ &aKlikni zde pro zakoupeni perku." to run:
+							close player's inventory
+							close inventory of player
+							Zlataky("remove", 4150, player)
+							play "ORB_PICKUP" to player
+							message ""
+							message "&aUspesne jsi zakoupil perk &8""&6Renown Perk&7: &eOverheal&8""&7."
+							message "&f ➥ &7Z uctu ti bylo odebrano &e4.150 Ⓩ&7."
+							message ""
+
+							if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+								loop items in player's inventory:
+									if loop-item is fishing rod:
+										name of loop-item is not "&cCatcher"
+										delete loop-item
+								delete {inventoryslot::%player%::fishingrod}
+							if {activatedperk%{_nperk}%::%player%} is "lava":
+								loop items in player's inventory:
+									if loop-item is lava bucket:
+										delete loop-item
+								delete {inventoryslot::%player%::lava}
+							if {activatedperk%{_nperk}%::%player%} is "barbarian":
+								set {_num} to 0
+								loop 36 times:
+									set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+									set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+									if {enderchest::%{_num}%::%player%} is diamond axe:
+										set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+									if {enderchest::%{_num}%::%player%} is iron axe:
+										set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+									add 1 to {_num}
+								loop all items in player's inventory:
+									set {_name} to name of loop-item
+									set {_lore} to lore of loop-item
+
+									if loop-item is diamond axe:
+										set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+									if loop-item is iron axe:
+										set loop-item to unbreakable iron sword named "%{_name}%"
+							if {activatedperk%{_nperk}%::%player%} is "rambo":
+								if {ragepit} is set:
+									set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+								else:
+									set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+								wait 1 tick
+								heal player
+							set {activatedperk%{_nperk}%::%player%} to "overheal"
+							set {perk::%player%::overheal} to true
+					else:
+						create a gui slot 37 of player with mushroom stew named "&6Renown Perk&7: &eOverheal" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Moznost mit u sebe &fdvojnasobek||    &7uzdravovacich predmetu (&f2&d×2 &7➠ &f4&7,||    &f1&d×2 &7➠ &f2&7).%{_overheal}%||||&7Perk stoji &e4.150 Ⓩ&7.||&7 ➥ &cNemas dostatek zlataku pro zakoupeni."
+				else:
+					if {activatedperk%{_nperk}%::overheal::%player%} is not set:
+						create a gui slot 37 of player with mushroom stew named "&6Renown Perk&7: &eOverheal" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Moznost mit u sebe &fdvojnasobek||    &7uzdravovacich predmetu (&f2&d×2 &7➠ &f4&7,||    &f1&d×2 &7➠ &f2&7).%{_overheal}%||||&aKlikni zde pro aktivaci perku." to run:
+							close player's inventory
+							play "ORB_PICKUP" to player
+							message ""
+							message "&aUspesne jsi zakoupil perk &8""&6Renown Perk&7: &eOverheal&8""&7."
+							message ""
+
+							if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+								loop items in player's inventory:
+									if loop-item is fishing rod:
+										name of loop-item is not "&cCatcher"
+										delete loop-item
+								delete {inventoryslot::%player%::fishingrod}
+							if {activatedperk%{_nperk}%::%player%} is "lava":
+								loop items in player's inventory:
+									if loop-item is lava bucket:
+										delete loop-item
+								delete {inventoryslot::%player%::lava}
+							if {activatedperk%{_nperk}%::%player%} is "barbarian":
+								set {_num} to 0
+								loop 36 times:
+									set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+									set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+									if {enderchest::%{_num}%::%player%} is diamond axe:
+										set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+									if {enderchest::%{_num}%::%player%} is iron axe:
+										set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+									add 1 to {_num}
+								loop all items in player's inventory:
+									set {_name} to name of loop-item
+									set {_lore} to lore of loop-item
+
+									if loop-item is diamond axe:
+										set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+									if loop-item is iron axe:
+										set loop-item to unbreakable iron sword named "%{_name}%"
+							if {activatedperk%{_nperk}%::%player%} is "rambo":
+								if {ragepit} is set:
+									set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+								else:
+									set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+								wait 1 tick
+								heal player
+							set {activatedperk%{_nperk}%::%player%} to "overheal"
+			else:
+				create a gui slot 37 of player with bedrock named "&6Renown Perk&7: &eOverheal" with lore "||&7Pro tento perk potrebujes level &a+&230&7.||&r"
+		else:			
+			create a gui slot 37 of player with bedrock named "&6Renown Perk&7: &eOverheal" with lore "||&7Tento perk lze zakoupit v &erenown vylepseni&7,||&7od prestige &a+&6##&eI&7.||&r"
+#-----------------------------------
+		if {renown::%player%::barbarian} is set:	
+			if {level::%player%} is higher or equal to 25:
+				if {perk::%player%::barbarian} is not set:
+					if {_shop} is greater than or equal to 3200:
+						create a gui slot 38 of player with iron axe with no nbt named "&6Renown Perk&7: &eBarbarian" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Nahrazeni mece za silnejsi &fsekeru&7.||    &7&o(Zvyseni poskozeni o &a&o+15%%&7&o.)||||&7Perk stoji &e3.200 Ⓩ&7.||&7 ➥ &aKlikni zde pro zakoupeni perku." to run:
+							close player's inventory
+							close inventory of player
+							Zlataky("remove", 3200, player)
+							play "ORB_PICKUP" to player
+							message ""
+							message "&aUspesne jsi zakoupil perk &8""&6Renown Perk&7: &eBarbarian&8""&7."
+							message "&f ➥ &7Z uctu ti bylo odebrano &e3.200 Ⓩ&7."
+							message ""
+
+							set {_num} to 0
+							loop 36 times:
+								set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+								set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+								if {enderchest::%{_num}%::%player%} is diamond sword:
+									set {enderchest::%{_num}%::%player%} to unbreakable diamond axe with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:8,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "%{_name.ec}%" with lore "%{_lore.ec}%"
+								if {enderchest::%{_num}%::%player%} is iron sword:
+									set {enderchest::%{_num}%::%player%} to unbreakable iron axe with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:7,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "%{_name.ec}%"
+								add 1 to {_num}
+							loop all items in player's inventory:
+								set {_name} to name of loop-item
+								set {_lore} to lore of loop-item
+
+								if loop-item is diamond sword:
+									set loop-item to unbreakable diamond axe with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:8,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "%{_name}%" with lore "%{_lore}%"
+								if loop-item is iron sword:
+									set loop-item to unbreakable iron axe with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:7,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "%{_name}%"
+							if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+								loop items in player's inventory:
+									if loop-item is fishing rod:
+										name of loop-item is not "&cCatcher"
+										delete loop-item
+								delete {inventoryslot::%player%::fishingrod}
+							if {activatedperk%{_nperk}%::%player%} is "lava":
+								loop items in player's inventory:
+									if loop-item is lava bucket:
+										delete loop-item
+								delete {inventoryslot::%player%::lava}
+							if {activatedperk%{_nperk}%::%player%} is "rambo":
+								if {ragepit} is set:
+									set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+								else:
+									set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+								wait 1 tick
+								heal player
+							set {activatedperk%{_nperk}%::%player%} to "barbarian"
+							set {perk::%player%::barbarian} to true
+					else:
+						create a gui slot 38 of player with iron axe with no nbt named "&6Renown Perk&7: &eBarbarian" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Nahrazeni mece za silnejsi &fsekeru&7.||    &7&o(Zvyseni poskozeni o &a&o+15%%&7&o.)||||&7Perk stoji &e3.200 Ⓩ&7.||&7 ➥ &cNemas dostatek zlataku pro zakoupeni."
+				else:
+					if {activatedperk%{_nperk}%::barbarian::%player%} is not set:
+						create a gui slot 38 of player with iron axe with no nbt named "&6Renown Perk&7: &eBarbarian" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Nahrazeni mece za silnejsi &fsekeru&7.||    &7&o(Zvyseni poskozeni o &a&o+15%%&7&o.)||||&aKlikni zde pro aktivaci perku." to run:
+							close player's inventory
+							play "ORB_PICKUP" to player
+							message ""
+							message "&aUspesne jsi zakoupil perk &8""&6Renown Perk&7: &eBarbarian&8""&7."
+							message ""
+
+							set {_num} to 0
+							loop 36 times:
+								set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+								set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+								if {enderchest::%{_num}%::%player%} is diamond sword:
+									set {enderchest::%{_num}%::%player%} to unbreakable diamond axe with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:8,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "%{_name.ec}%" with lore "%{_lore.ec}%"
+								if {enderchest::%{_num}%::%player%} is iron sword:
+									set {enderchest::%{_num}%::%player%} to unbreakable iron axe with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:7,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "%{_name.ec}%"
+								add 1 to {_num}
+							loop all items in player's inventory:
+								set {_name} to name of loop-item
+								set {_lore} to lore of loop-item
+
+								if loop-item is diamond sword:
+									set loop-item to unbreakable diamond axe with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:8,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "%{_name}%" with lore "%{_lore}%"
+								if loop-item is iron sword:
+									set loop-item to unbreakable iron axe with custom nbt "{AttributeModifiers:[{Slot:""mainhand"", AttributeName:""generic.attackDamage"",Name:""generic.attackDamage"",Amount:7,Operation:0,UUIDLeast:1,UUIDMost:1}]}" named "%{_name}%"
+							if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+								loop items in player's inventory:
+									if loop-item is fishing rod:
+										name of loop-item is not "&cCatcher"
+										delete loop-item
+								delete {inventoryslot::%player%::fishingrod}
+							if {activatedperk%{_nperk}%::%player%} is "lava":
+								loop items in player's inventory:
+									if loop-item is lava bucket:
+										delete loop-item
+								delete {inventoryslot::%player%::lava}
+							if {activatedperk%{_nperk}%::%player%} is "rambo":
+								if {ragepit} is set:
+									set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+								else:
+									set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+								wait 1 tick
+								heal player
+							set {activatedperk%{_nperk}%::%player%} to "barbarian"
+			else:
+				create a gui slot 38 of player with bedrock named "&6Renown Perk&7: &eBarbarian" with lore "||&7Pro tento perk potrebujes level &a+&325&7.||&r"
+		else:			
+			create a gui slot 38 of player with bedrock named "&6Renown Perk&7: &eBarbarian" with lore "||&7Tento perk lze zakoupit v &erenown vylepseni&7,||&7od prestige &a+&6##&eII&7.||&r"
+
+#-----------------------------------
+		if {renown::%player%::dirty} is set:	
+			if {level::%player%} is higher or equal to 20:
+				if {perk::%player%::dirty} is not set:
+					if {_shop} is greater than or equal to 2400:
+						create a gui slot 39 of player with podzol named "&6Renown Perk&7: &eDirty" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pri zabiti ziskas &dResistance II &7(&f5s&7).||||&7Perk stoji &e2.400 Ⓩ&7.||&7 ➥ &aKlikni zde pro zakoupeni perku." to run:
+							close player's inventory
+							close inventory of player
+							Zlataky("remove", 2400, player)
+							play "ORB_PICKUP" to player
+							message ""
+							message "&aUspesne jsi zakoupil perk &8""&6Renown Perk&7: &eDirty&8""&7."
+							message "&f ➥ &7Z uctu ti bylo odebrano &e2.400 Ⓩ&7."
+							message ""
+
+							if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+								loop items in player's inventory:
+									if loop-item is fishing rod:
+										name of loop-item is not "&cCatcher"
+										delete loop-item
+								delete {inventoryslot::%player%::fishingrod}
+							if {activatedperk%{_nperk}%::%player%} is "lava":
+								loop items in player's inventory:
+									if loop-item is lava bucket:
+										delete loop-item
+								delete {inventoryslot::%player%::lava}
+							if {activatedperk%{_nperk}%::%player%} is "barbarian":
+								set {_num} to 0
+								loop 36 times:
+									set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+									set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+									if {enderchest::%{_num}%::%player%} is diamond axe:
+										set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+									if {enderchest::%{_num}%::%player%} is iron axe:
+										set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+									add 1 to {_num}
+								loop all items in player's inventory:
+									set {_name} to name of loop-item
+									set {_lore} to lore of loop-item
+
+									if loop-item is diamond axe:
+										set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+									if loop-item is iron axe:
+										set loop-item to unbreakable iron sword named "%{_name}%"
+							if {activatedperk%{_nperk}%::%player%} is "rambo":
+								if {ragepit} is set:
+									set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+								else:
+									set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+								wait 1 tick
+								heal player
+							set {activatedperk%{_nperk}%::%player%} to "dirty"
+							set {perk::%player%::dirty} to true
+					else:
+						create a gui slot 39 of player with podzol named "&6Renown Perk&7: &eDirty" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pri zabiti ziskas &dResistance II &7(&f5s&7).||||&7Perk stoji &e2.400 Ⓩ&7.||&7 ➥ &cNemas dostatek zlataku pro zakoupeni."
+				else:
+					if {activatedperk%{_nperk}%::dirty::%player%} is not set:
+						create a gui slot 39 of player with podzol named "&6Renown Perk&7: &eDirty" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pri zabiti ziskas &dResistance II &7(&f5s&7).||||&aKlikni zde pro aktivaci perku." to run:
+							close player's inventory
+							play "ORB_PICKUP" to player
+							message ""
+							message "&aUspesne jsi zakoupil perk &8""&6Renown Perk&7: &eDirty&8""&7."
+							message ""
+
+							if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+								loop items in player's inventory:
+									if loop-item is fishing rod:
+										name of loop-item is not "&cCatcher"
+										delete loop-item
+								delete {inventoryslot::%player%::fishingrod}
+							if {activatedperk%{_nperk}%::%player%} is "lava":
+								loop items in player's inventory:
+									if loop-item is lava bucket:
+										delete loop-item
+								delete {inventoryslot::%player%::lava}
+							if {activatedperk%{_nperk}%::%player%} is "barbarian":
+								set {_num} to 0
+								loop 36 times:
+									set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+									set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+									if {enderchest::%{_num}%::%player%} is diamond axe:
+										set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+									if {enderchest::%{_num}%::%player%} is iron axe:
+										set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+									add 1 to {_num}
+								loop all items in player's inventory:
+									set {_name} to name of loop-item
+									set {_lore} to lore of loop-item
+
+									if loop-item is diamond axe:
+										set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+									if loop-item is iron axe:
+										set loop-item to unbreakable iron sword named "%{_name}%"
+							if {activatedperk%{_nperk}%::%player%} is "rambo":
+								if {ragepit} is set:
+									set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+								else:
+									set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+								wait 1 tick
+								heal player
+							set {activatedperk%{_nperk}%::%player%} to "dirty"
+			else:
+				create a gui slot 39 of player with bedrock named "&6Renown Perk&7: &eDirty" with lore "||&7Pro tento perk potrebujes level &a+&320&7.||&r"
+		else:			
+			create a gui slot 39 of player with bedrock named "&6Renown Perk&7: &eDirty" with lore "||&7Tento perk lze zakoupit v &erenown vylepseni&7,||&7od prestige &a+&6##&eII&7.||&r"
+#-----------------------------------
+		if {renown::%player%::rambo} is set:	
+			if {level::%player%} is higher or equal to 50:
+				if {perk::%player%::rambo} is not set:
+					if {_shop} is greater than or equal to 6000:
+						create a gui slot 40 of player with stick named "&6Renown Perk&7: &eRambo" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Jiz neziskas uzdravovaci predmety,||    &7pocet srdicek budes mit omezen na &c5&4❤&7.||&8&l ▶ &7&7Kazde zabiti te &duzdravi &7do maxima.%{_rambo}%||||&7Perk stoji &e6.000 Ⓩ&7.||&7 ➥ &aKlikni zde pro zakoupeni perku." to run:
+							close player's inventory
+							close inventory of player
+							Zlataky("remove", 6000, player)
+							play "ORB_PICKUP" to player
+							message ""
+							message "&aUspesne jsi zakoupil perk &8""&6Renown Perk&7: &eRambo&8""&7."
+							message "&f ➥ &7Z uctu ti bylo odebrano &e6.000 Ⓩ&7."
+							message ""
+
+							if {ragepit} is set:
+								set the maximum health of the player to 15 + {renown::%player%::bonusovesrdicko}
+							else:
+								set the maximum health of the player to 5 + {renown::%player%::bonusovesrdicko}
+							if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+								loop items in player's inventory:
+									if loop-item is fishing rod:
+										name of loop-item is not "&cCatcher"
+										delete loop-item
+								delete {inventoryslot::%player%::fishingrod}
+							if {activatedperk%{_nperk}%::%player%} is "lava":
+								loop items in player's inventory:
+									if loop-item is lava bucket:
+										delete loop-item
+								delete {inventoryslot::%player%::lava}
+							if {activatedperk%{_nperk}%::%player%} is "barbarian":
+								set {_num} to 0
+								loop 36 times:
+									set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+									set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+									if {enderchest::%{_num}%::%player%} is diamond axe:
+										set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+									if {enderchest::%{_num}%::%player%} is iron axe:
+										set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+									add 1 to {_num}
+								loop all items in player's inventory:
+									set {_name} to name of loop-item
+									set {_lore} to lore of loop-item
+
+									if loop-item is diamond axe:
+										set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+									if loop-item is stick:
+										set loop-item to unbreakable iron sword named "%{_name}%"
+							set {activatedperk%{_nperk}%::%player%} to "rambo"
+							set {perk::%player%::rambo} to true
+					else:
+						create a gui slot 40 of player with stick named "&6Renown Perk&7: &eRambo" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Jiz neziskas uzdravovaci predmety,||    &7pocet srdicek budes mit omezen na &c5&4❤&7.||&8&l ▶ &7&7Kazde zabiti te &duzdravi &7do maxima.%{_rambo}%||||&7Perk stoji &e6.000 Ⓩ&7.||&7 ➥ &cNemas dostatek zlataku pro zakoupeni."
+				else:
+					if {activatedperk%{_nperk}%::rambo::%player%} is not set:
+						create a gui slot 40 of player with stick named "&6Renown Perk&7: &eRambo" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Jiz neziskas uzdravovaci predmety,||    &7pocet srdicek budes mit omezen na &c5&4❤&7.||&8&l ▶ &7&7Kazde zabiti te &duzdravi &7do maxima.%{_rambo}%||||&aKlikni zde pro aktivaci perku." to run:
+							close player's inventory
+							play "ORB_PICKUP" to player
+							message ""
+							message "&aUspesne jsi zakoupil perk &8""&6Renown Perk&7: &eRambo&8""&7."
+							message ""
+
+							if {ragepit} is set:
+								set the maximum health of the player to 15 + {renown::%player%::bonusovesrdicko}
+							else:
+								set the maximum health of the player to 5 + {renown::%player%::bonusovesrdicko}
+							if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+								loop items in player's inventory:
+									if loop-item is fishing rod:
+										name of loop-item is not "&cCatcher"
+										delete loop-item
+								delete {inventoryslot::%player%::fishingrod}
+							if {activatedperk%{_nperk}%::%player%} is "lava":
+								loop items in player's inventory:
+									if loop-item is lava bucket:
+										delete loop-item
+								delete {inventoryslot::%player%::lava}
+							if {activatedperk%{_nperk}%::%player%} is "barbarian":
+								set {_num} to 0
+								loop 36 times:
+									set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+									set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+									if {enderchest::%{_num}%::%player%} is diamond axe:
+										set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+									if {enderchest::%{_num}%::%player%} is iron axe:
+										set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+									add 1 to {_num}
+								loop all items in player's inventory:
+									set {_name} to name of loop-item
+									set {_lore} to lore of loop-item
+
+									if loop-item is diamond axe:
+										set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+									if loop-item is stick:
+										set loop-item to unbreakable iron sword named "%{_name}%"
+							set {activatedperk%{_nperk}%::%player%} to "rambo"
+			else:
+				create a gui slot 40 of player with bedrock named "&6Renown Perk&7: &eRambo" with lore "||&7Pro tento perk potrebujes level &a+&e50&7.||&r"
+		else:			
+			create a gui slot 40 of player with bedrock named "&6Renown Perk&7: &eRambo" with lore "||&7Tento perk lze zakoupit v &erenown vylepseni&7,||&7od prestige &a+&6##&eIII&7.||&r"
+#-----------------------------------
+		if {renown::%player%::olympus} is set:	
+			if {level::%player%} is higher or equal to 60:
+				if {perk::%player%::olympus} is not set:
+					if {_shop} is greater than or equal to 6300:
+						create a gui slot 41 of player with water_bottle:8203 with no nbt named "&6Renown Perk&7: &eOlympus" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pri zabiti dostanes &bOlympus Potion&7.||&8&l ▶ &9Rychlost II (0:15)||&8&l ▶ &9Regenerace III (0:10)||&8&l ▶ &7Pri vypiti ziskas &3+&b20xp&7.||&7&o(Lze mit u sebe pouze jeden!)%{_olympus}%||||&7Perk stoji &e6.300 Ⓩ&7.||&7 ➥ &aKlikni zde pro zakoupeni perku." to run:
+							close player's inventory
+							close inventory of player
+							play "ORB_PICKUP" to player
+							Zlataky("remove", 6300, player)
+							message ""
+							message "&aUspesne jsi zakoupil perk &8""&6Renown Perk&7: &eOlympus&8""&7."
+							message "&f ➥ &7Z uctu ti bylo odebrano &e6.300 Ⓩ&7."
+							message ""
+
+							if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+								loop items in player's inventory:
+									if loop-item is fishing rod:
+										name of loop-item is not "&cCatcher"
+										delete loop-item
+								delete {inventoryslot::%player%::fishingrod}
+							if {activatedperk%{_nperk}%::%player%} is "lava":
+								loop items in player's inventory:
+									if loop-item is lava bucket:
+										delete loop-item
+								delete {inventoryslot::%player%::lava}
+							if {activatedperk%{_nperk}%::%player%} is "barbarian":
+								set {_num} to 0
+								loop 36 times:
+									set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+									set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+									if {enderchest::%{_num}%::%player%} is diamond axe:
+										set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+									if {enderchest::%{_num}%::%player%} is iron axe:
+										set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+									add 1 to {_num}
+								loop all items in player's inventory:
+									set {_name} to name of loop-item
+									set {_lore} to lore of loop-item
+
+									if loop-item is diamond axe:
+										set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+									if loop-item is iron axe:
+										set loop-item to unbreakable iron sword named "%{_name}%"
+							if {activatedperk%{_nperk}%::%player%} is "rambo":
+								if {ragepit} is set:
+									set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+								else:
+									set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+								wait 1 tick
+								heal player
+							set {activatedperk%{_nperk}%::%player%} to "olympus"
+							set {perk::%player%::olympus} to true
+					else:
+						create a gui slot 41 of player with water_bottle:8203 with no nbt named "&6Renown Perk&7: &eOlympus" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pri zabiti dostanes &bOlympus Potion&7.||&8&l ▶ &9Rychlost II (0:15)||&8&l ▶ &9Regenerace III (0:10)||&8&l ▶ &7Pri vypiti ziskas &3+&b20xp&7.||&7&o(Lze mit u sebe pouze jeden!)%{_olympus}%||||&7Perk stoji &e6.300 Ⓩ&7.||&7 ➥ &cNemas dostatek zlataku pro zakoupeni."
+				else:
+					if {activatedperk%{_nperk}%::olympus::%player%} is not set:
+						create a gui slot 41 of player with water_bottle:8203 with no nbt named "&6Renown Perk&7: &eOlympus" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pri zabiti dostanes &bOlympus Potion&7.||&8&l ▶ &9Rychlost II (0:15)||&8&l ▶ &9Regenerace III (0:10)||&8&l ▶ &7Pri vypiti ziskas &3+&b20xp&7.||&7&o(Lze mit u sebe pouze jeden!)%{_olympus}%||||&aKlikni zde pro aktivaci perku." to run:
+							close player's inventory
+							play "ORB_PICKUP" to player
+							message ""
+							message "&aUspesne jsi zakoupil perk &8""&6Renown Perk&7: &eOlympus&8""&7."
+							message ""
+
+							if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+								loop items in player's inventory:
+									if loop-item is fishing rod:
+										name of loop-item is not "&cCatcher"
+										delete loop-item
+								delete {inventoryslot::%player%::fishingrod}
+							if {activatedperk%{_nperk}%::%player%} is "lava":
+								loop items in player's inventory:
+									if loop-item is lava bucket:
+										delete loop-item
+								delete {inventoryslot::%player%::lava}
+							if {activatedperk%{_nperk}%::%player%} is "barbarian":
+								set {_num} to 0
+								loop 36 times:
+									set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+									set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+									if {enderchest::%{_num}%::%player%} is diamond axe:
+										set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+									if {enderchest::%{_num}%::%player%} is iron axe:
+										set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+									add 1 to {_num}
+								loop all items in player's inventory:
+									set {_name} to name of loop-item
+									set {_lore} to lore of loop-item
+
+									if loop-item is diamond axe:
+										set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+									if loop-item is iron axe:
+										set loop-item to unbreakable iron sword named "%{_name}%"
+							if {activatedperk%{_nperk}%::%player%} is "rambo":
+								if {ragepit} is set:
+									set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+								else:
+									set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+								wait 1 tick
+								heal player
+							set {activatedperk%{_nperk}%::%player%} to "olympus"
+			else:
+				create a gui slot 41 of player with bedrock named "&6Renown Perk&7: &eOlympus" with lore "||&7Pro tento perk potrebujes level &a+&6&l60&7.||&r"
+		else:			
+			create a gui slot 41 of player with bedrock named "&6Renown Perk&7: &eOlympus" with lore "||&7Tento perk lze zakoupit v &erenown vylepseni&7,||&7od prestige &a+&6##&eIV&7.||&r"
+#-----------------------------------
+		if {renown::%player%::1ststrike} is set:	
+			if {level::%player%} is higher or equal to 70:
+				if {perk::%player%::1ststrike} is not set:
+					if {_shop} is greater than or equal to 8000:
+						create a gui slot 42 of player with cooked chicken named "&6Renown Perk&7: &e1st Strike" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Prvni zasah hrace prida &a+35%% &7poskozeni.||&7&o(K resetovani dojde pri objeveni se na spawnu.)||||&7Perk stoji &e8.000 Ⓩ&7.||&7 ➥ &aKlikni zde pro zakoupeni perku." to run:
+							close player's inventory
+							close inventory of player
+							play "ORB_PICKUP" to player
+							Zlataky("remove", 8000, player)
+							message ""
+							message "&aUspesne jsi zakoupil perk &8""&6Renown Perk&7: &e1st Strike&8""&7."
+							message "&f ➥ &7Z uctu ti bylo odebrano &e8.000 Ⓩ&7."
+							message ""
+
+							if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+								loop items in player's inventory:
+									if loop-item is fishing rod:
+										name of loop-item is not "&cCatcher"
+										delete loop-item
+								delete {inventoryslot::%player%::fishingrod}
+							if {activatedperk%{_nperk}%::%player%} is "lava":
+								loop items in player's inventory:
+									if loop-item is lava bucket:
+										delete loop-item
+								delete {inventoryslot::%player%::lava}
+							if {activatedperk%{_nperk}%::%player%} is "barbarian":
+								set {_num} to 0
+								loop 36 times:
+									set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+									set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+									if {enderchest::%{_num}%::%player%} is diamond axe:
+										set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+									if {enderchest::%{_num}%::%player%} is iron axe:
+										set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+									add 1 to {_num}
+								loop all items in player's inventory:
+									set {_name} to name of loop-item
+									set {_lore} to lore of loop-item
+
+									if loop-item is diamond axe:
+										set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+									if loop-item is iron axe:
+										set loop-item to unbreakable iron sword named "%{_name}%"
+							if {activatedperk%{_nperk}%::%player%} is "rambo":
+								if {ragepit} is set:
+									set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+								else:
+									set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+								wait 1 tick
+								heal player
+							set {activatedperk%{_nperk}%::%player%} to "1ststrike"
+							set {perk::%player%::1ststrike} to true
+					else:
+						create a gui slot 42 of player with cooked chicken named "&6Renown Perk&7: &e1st Strike" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Prvni zasah hrace prida &a+35%% &7poskozeni.||&7&o(K resetovani dojde pri objeveni se na spawnu.)||||&7Perk stoji &e8.000 Ⓩ&7.||&7 ➥ &cNemas dostatek zlataku pro zakoupeni."
+				else:
+					if {activatedperk%{_nperk}%::1ststrike::%player%} is not set:
+						create a gui slot 42 of player with cooked chicken named "&6Renown Perk&7: &e1st Strike" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Prvni zasah hrace prida &a+35%% &7poskozeni.||&7&o(K resetovani dojde pri objeveni se na spawnu.)||||&aKlikni zde pro aktivaci perku." to run:
+							close player's inventory
+							play "ORB_PICKUP" to player
+							message ""
+							message "&aUspesne jsi zakoupil perk &8""&6Renown Perk&7: &e1st Strike&8""&7."
+							message ""
+
+							if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+								loop items in player's inventory:
+									if loop-item is fishing rod:
+										name of loop-item is not "&cCatcher"
+										delete loop-item
+								delete {inventoryslot::%player%::fishingrod}
+							if {activatedperk%{_nperk}%::%player%} is "lava":
+								loop items in player's inventory:
+									if loop-item is lava bucket:
+										delete loop-item
+								delete {inventoryslot::%player%::lava}
+							if {activatedperk%{_nperk}%::%player%} is "barbarian":
+								set {_num} to 0
+								loop 36 times:
+									set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+									set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+									if {enderchest::%{_num}%::%player%} is diamond axe:
+										set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+									if {enderchest::%{_num}%::%player%} is iron axe:
+										set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+									add 1 to {_num}
+								loop all items in player's inventory:
+									set {_name} to name of loop-item
+									set {_lore} to lore of loop-item
+
+									if loop-item is diamond axe:
+										set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+									if loop-item is iron axe:
+										set loop-item to unbreakable iron sword named "%{_name}%"
+							if {activatedperk%{_nperk}%::%player%} is "rambo":
+								if {ragepit} is set:
+									set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+								else:
+									set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+								wait 1 tick
+								heal player
+							set {activatedperk%{_nperk}%::%player%} to "1ststrike"
+			else:
+				create a gui slot 42 of player with bedrock named "&6Renown Perk&7: &e1st Strike" with lore "||&7Pro tento perk potrebujes level &a+&c&l70&7.||&r"
+		else:			
+			create a gui slot 42 of player with bedrock named "&6Renown Perk&7: &e1st Strike" with lore "||&7Tento perk lze zakoupit v &erenown vylepseni&7,||&7od prestige &a+&6##&eV&7.||&r"
+
+
+		if {activatedperk%{_nperk}%::%player%} is set:
+
+			create a gui slot 44 of player with barrier named "&cResetovat perk" with lore "||&eKlikni zde pro resetovani perku.||&r" to run:
+				close player's inventory
+				close inventory of player
+				message ""
+				message "&aPerk ##%{_nperk}% uspesne resetovan."
+				message ""
+				if {activatedperk%{_nperk}%::%player%} is "fishingrod":
+					loop items in player's inventory:
+						if loop-item is fishing rod:
+							name of loop-item is not "&cCatcher"
+							delete loop-item
+					delete {inventoryslot::%player%::fishingrod}
+				if {activatedperk%{_nperk}%::%player%} is "lava":
+					loop items in player's inventory:
+						if loop-item is lava bucket:
+							delete loop-item
+					delete {inventoryslot::%player%::lava}
+				if {activatedperk%{_nperk}%::%player%} is "barbarian":
+					set {_num} to 0
+					loop 36 times:
+						set {_name.ec} to name of {enderchest::%{_num}%::%player%}
+						set {_lore.ec} to lore of {enderchest::%{_num}%::%player%}
+
+						if {enderchest::%{_num}%::%player%} is diamond axe:
+							set {enderchest::%{_num}%::%player%} to unbreakable diamond sword named "%{_name.ec}%" with lore "%{_lore.ec}%"
+						if {enderchest::%{_num}%::%player%} is iron axe:
+							set {enderchest::%{_num}%::%player%} to unbreakable iron sword named "%{_name.ec}%"
+						add 1 to {_num}
+					loop all items in player's inventory:
+						set {_name} to name of loop-item
+						set {_lore} to lore of loop-item
+
+						if loop-item is diamond axe:
+							set loop-item to unbreakable diamond sword named "%{_name}%" with lore "%{_lore}%"
+						if loop-item is iron axe:
+							set loop-item to unbreakable iron sword named "%{_name}%"
+				if {activatedperk%{_nperk}%::%player%} is "rambo":
+					if {ragepit} is set:
+						set the maximum health of the player to 20 + {renown::%player%::bonusovesrdicko}
+					else:
+						set the maximum health of the player to 10 + {renown::%player%::bonusovesrdicko}
+					wait 1 tick
+					heal player
+				delete {activatedperk%{_nperk}%::%player%}
+
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "goldenhead":
+			create a gui slot 19 of player with player head with custom nbt "{SkullOwner:{Id:""2dca1967-0d3e-4eb2-807b-daf8f735ad16"",Properties:{textures:[{Value:""eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGFiZDcwM2U1YjhjODhkNGIxZmNmYTk0YTkzNmEwZDZhNGY2YWJhNDQ1Njk2NjNkMzM5MWQ0ODgzMjIzYzUifX19""}]}}}" named "&6Zlata Hlava" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pri zabiti dostanes &6Zlatou Hlavu&7.||&8&l ▶ &9Regenerace II (0:10)||&8&l ▶ &9Absorpce I (0:10)%{_goldenhead}%||||&5Tento perk mas jiz aktivovany."
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "fishingrod":
+			create a gui slot 20 of player with fishing rod named "&bRybarsky Prut" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Ziskas permanentni &fRybarsky prut&7.||&8&l ▶ &7Lze upravit slot &d/inventar&7.||||&5Tento perk mas jiz aktivovany."
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "lava":
+			create a gui slot 21 of player with lava bucket named "&cLava" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Ziskas &fkyblik lavy&7, ktery dostanes||    &7vzdy, kdy se vratis na spawn.||&8&l ▶ &7Lze upravit slot &d/inventar&7.||||&5Tento perk mas jiz aktivovany."
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "arrow":
+			create a gui slot 22 of player with arrow named "&7Sipy" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pri kazdem zasahu hrace sipem||    &7dostanes &a+2 &7sipy.||||&5Tento perk mas jiz aktivovany."
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "obsidian":
+			create a gui slot 23 of player with obsidian named "&eBorek Stavitel" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pri zabiti hrace dostanes||    &7dohromady &a+2 &7obsidiany.||||&5Tento perk mas jiz aktivovany."
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "spammer":
+			create a gui slot 24 of player with cobweb named "&4Spammer" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pokud zabijes hrace, ktereho jsi||    &7zasahl &fsipem&7 ziskas &62x &ezlataku&7.||&8&l ▶ &7Pri assistu ziskas &6+&e2 Ⓩ&7.||||&5Tento perk mas jiz aktivovany."
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "bountyhunter":
+			create a gui slot 28 of player with golden leggings with no nbt named "&cBounty Hunter" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Za assist a zabiti ziskas &6+&e4 Ⓩ&7.||&8&l ▶ &c+1%%&7/&e50 Ⓩ &7poskozeni, pokud||    &7ma protihrac &ebounty&7.||||&5Tento perk mas jiz aktivovany."
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "strength":
+			create a gui slot 29 of player with diamond sword with no nbt named "&dSila" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Za kazde zabiti hrace ziskas||    &dStrength &a+&fI &7(&f7s&7), max uroven &fV&7.||||&6TIP&7: Postupne se vylepsuje, ale||    &7musis si davat &cpozor &7na cas.||||&5Tento perk mas jiz aktivovany."
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "vampire":
+			create a gui slot 31 of player with fermented spider eye named "&cVampire" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Jiz neziskas uzdravovaci predmety,||    &7zasah uzdravi &c0.5&4❤&7, zasah lukem &c1.5&4❤&7,||    &7ale pouze pri &fplnem &7natazeni luku.||&8&l ▶ &7Zabitim hrace ziskas &dRegenerace I &7(&f8s&7).%{_vampire}%||||&5Tento perk mas jiz aktivovany."
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "gladiator":
+			create a gui slot 30 of player with bone named "&9Gladiator" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Obdrzis &c-3%% poskozeni &7za kazdeho||    &7hrace, ktery je v rozmezi &f12 bloku&7.||&8&l ▶ &7Minimalne &e3&7, max &e10 hracu&7.||||&5Tento perk mas jiz aktivovany."
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "streaker":
+			create a gui slot 32 of player with wheat item named "&9Streaker" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Cim vyssi &fstreak&7, tim vice &bxp &7dostanes.||&8&l ▶ &7Struktura streaker bonusu||     &8▪ &7Streak &f3 &7➠ &f9&7: &b2xp||     &8▪ &7Streak &f10 &7➠ &f19&7: &b3xp||     &8▪ &7Streak &f20 &7➠ &f29&7: &b4xp||     &8▪ &7.. az do &f80&7: &b10xp&7/zabiti||||&5Tento perk mas jiz aktivovany."
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "gold":
+			create a gui slot 33 of player with gold ingot named "&6Gold Bonus" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pri sebrani goldu dostanes &6+&e10 Ⓩ&7,||    &7a take jako bonus ti doplni &c2&4❤&7.||||&5Tento perk mas jiz aktivovany."
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "overheal":
+			create a gui slot 37 of player with mushroom stew named "&6Renown Perk&7: &eOverheal" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Moznost mit u sebe &fdvojnasobek||    &7uzdravovacich predmetu (&f2&d×2 &7➠ &f4&7,||    &f1&d×2 &7➠ &f2&7).%{_overheal}%||||&5Tento perk mas jiz aktivovany."
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "barbarian":
+			create a gui slot 38 of player with iron axe with no nbt named "&6Renown Perk&7: &eBarbarian" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Nahrazeni mece za silnejsi &fsekeru&7.||    &7&o(Zvyseni poskozeni o &a&o+15%%&7&o.)||||&5Tento perk mas jiz aktivovany."
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "dirty":
+			create a gui slot 39 of player with podzol named "&6Renown Perk&7: &eDirty" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pri zabiti ziskas &dResistance II &7(&f5s&7).||||&5Tento perk mas jiz aktivovany."
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "rambo":
+			create a gui slot 40 of player with stick named "&6Renown Perk&7: &eRambo" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Jiz neziskas uzdravovaci predmety,||    &7pocet srdicek budes mit omezen na &c5&4❤&7.||&8&l ▶ &7&7Kazde zabiti te &duzdravi &7do maxima.%{_rambo}%||||&5Tento perk mas jiz aktivovany."
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "olympus":
+			create a gui slot 41 of player with water_bottle:8203 with no nbt named "&6Renown Perk&7: &eOlympus" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Pri zabiti dostanes &bOlympus Potion&7.||&8&l ▶ &9Rychlost II (0:15)||&8&l ▶ &9Regenerace III (0:10)||&8&l ▶ &7Pri vypiti ziskas &3+&b20xp&7.||&7&o(Lze mit u sebe pouze jeden!)%{_olympus}%||||&5Tento perk mas jiz aktivovany."
+		if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "1ststrike":
+			create a gui slot 42 of player with cooked chicken named "&6Renown Perk&7: &e1st Strike" with lore "||&5Info o &lperku&5!||&8&l ▶ &7Prvni zasah hrace prida &a+35%% &7poskozeni.||&7&o(K resetovani dojde pri objeveni se na spawnu.)||||&5Tento perk mas jiz aktivovany."
+
+
+
+
+
+
+
+
+
+
+#-----------------------------------
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	victim is a player
+	attacker is a player
+	{floor::%attacker%} is not set
+	if {tdm::%attacker%} is "&c":
+		if {tdm::%victim%} is "&c":
+			stop
+	else if {tdm::%attacker%} is "&9":
+		if {tdm::%victim%} is "&9":
+			stop
+	if {activatedperk1::%victim%} or {activatedperk2::%victim%} or {activatedperk3::%victim%} or {activatedperk4::%victim%} is "gladiator":
+		set {_num} to number of all players in radius 12 around victim
+		if {_num} is higher or equal to 3:
+			if {_num} is higher than 10:
+				set {_num} to 10
+			set damage to damage / 100 * (100 - ({_num} * 3))
+	if {activatedperk1::%attacker%} or {activatedperk2::%attacker%} or {activatedperk3::%attacker%} or {activatedperk4::%attacker%} is "vampire":
+		projectile doesn't exist
+		heal attacker by 0.5 hearts	
+
+
+on death of a player:
+	attacker is a player
+	{floor::%attacker%} is not set
+	if {activatedperk1::%attacker%} or {activatedperk2::%attacker%} or {activatedperk3::%attacker%} or {activatedperk4::%attacker%} is "obsidian":
+		give attacker 2 obsidian
+	if {activatedperk1::%attacker%} or {activatedperk2::%attacker%} or {activatedperk3::%attacker%} or {activatedperk4::%attacker%} is "strength":
+		if attacker has strength:
+			set {_duration} to duration of potion effect strength of attacker
+			set {_tier} to tier of potion effect strength of attacker
+			if {_duration} is less or equal to 7 seconds:
+				remove strength from attacker
+				if {_tier} is 1:
+					apply potion of strength of tier 2 to the attacker for 7 seconds
+				if {_tier} is 2:
+					apply potion of strength of tier 3 to the attacker for 7 seconds
+				if {_tier} is 3:
+					apply potion of strength of tier 4 to the attacker for 7 seconds
+				if {_tier} is 4:
+					apply potion of strength of tier 5 to the attacker for 7 seconds
+				if {_tier} is 5:
+					apply potion of strength of tier 5 to the attacker for 7 seconds
+
+		else:					
+			apply potion of strength of tier 1 to the attacker for 7 seconds
+
+	if {activatedperk1::%attacker%} or {activatedperk2::%attacker%} or {activatedperk3::%attacker%} or {activatedperk4::%attacker%} is "vampire":
+		if attacker has regeneration:
+			set {_duration} to duration of potion effect regeneration of attacker
+			if {_duration} is less or equal to 8 seconds:
+				remove regeneration from attacker
+				apply potion of regeneration of tier 1 to the attacker for 8 seconds
+
+		else:					
+			apply potion of regeneration of tier 1 to the attacker for 8 seconds
+
+on damage:
+	check ["%region at victim%" doesn't contain "nopvpzone"]->["%region at attacker%" doesn't contain "nopvpzone"]
+	projectile exists
+	projectile is arrow
+	if {activatedperk1::%attacker%} or {activatedperk2::%attacker%} or {activatedperk3::%attacker%} or {activatedperk4::%attacker%} is "arrow":
+		give attacker glowing 2 arrow named "&7Síp"
+
+on pickup gold ingot:
+	if {activatedperk1::%player%} or {activatedperk2::%player%} or {activatedperk3::%player%} or {activatedperk4::%player%} is "gold":
+		heal player by 2 hearts	
+
+on eat of golden apple:
+	if {renown::%player%::yummy} is set:
+		set {_x} to 2
+		set {_x} to TierGBoost({_x}, player)
+		Zlataky("add", {_x}, player)
+		message "&dYummy! &e+&62g"
+
+on rightclick:
+	if lore of event-item contains "&5Bonusy &lzlate hlavy&5!":
+		remove player head from the player's tool
+		remove skeleton head from the player's tool
+		if {renown::%player%::yummy} is set:
+			set {_x} to 2
+			set {_x} to TierGBoost({_x}, player)
+			Zlataky("add", {_x}, player)
+			message "&dYummy! &e+&62g"
+
+		if player has absorption:
+			set {_tier} to tier of potion effect absorption of player
+			if {_tier} is less or equal to 1:
+				remove absorption from player
+				apply potion of absorption of tier 1 to player for 10 seconds
+		else:
+			apply potion of absorption of tier 1 to player for 10 seconds
+
+		if player has regeneration:
+			set {_tier} to tier of potion effect regeneration of player
+			if {_tier} is less or equal to 2:
+				remove regeneration from player
+				apply potion of regeneration of tier 2 to player for 10 seconds
+		else:
+			apply potion of regeneration of tier 2 to player for 10 seconds
+
+on consume:
+	if lore of event-item contains "&5Bonusy &lolympus potionu&5!":
+		cancel event
+		remove event-item from the player's tool
+
+		if {level::%player%} is not 120:
+			show an actionbar from "&7Olympus! &3+&b20xp" to player
+			XP("remove", 20, player)
+		else:
+			show an actionbar from "&cDosahl jsi maximalniho levelu!" to player
+
+		LevelSystem(player)
+
+		if player has speed:
+			set {_tier} to tier of potion effect speed of player
+			if {_tier} is less or equal to 2:
+				remove speed from player
+				apply potion of speed of tier 2 to the player for 15 seconds
+		else:
+			apply potion of speed of tier 2 to the player for 15 seconds
+
+		apply potion of regeneration of tier 3 to player for 10 seconds
+
+		wait 15 seconds and 2 ticks
+		if lore of player's helmet contains "Rychlost":
+			if player has speed:
+				set {_tier} to tier of potion effect speed of player
+				if {_tier} is 1:
+					remove speed from player
+					apply potion of speed of tier 1 to the player for 999 days
+			else:
+				apply potion of speed of tier 1 to the player for 999 days
+
+
+on flow:
+	if event-block is lava:
+		cancel event

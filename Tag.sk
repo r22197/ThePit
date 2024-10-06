@@ -1,0 +1,47 @@
+function Tag(s: number, n: text, pref: text, t: text, p: player):
+	if {_p} has permission "pit.tag.%{_t}%":
+		if {tag::%{_p}%::%{_t}%} is set:
+			create a gui slot {_s} of {_p} with Yellow_Wool_block named "&e%{_n}%" with lore "&8&m---------------------------||&3» &fPrefix&7: %{_pref}%||||  &eKlikni zde pro deaktivaci tagu.||&8&m---------------------------" to run:
+				set {tag::%{_p}%} to ""
+				close {_p}'s inventory
+				play "ORB_PICKUP" to {_p}
+				message "&7Tvuj tag byl uspesne &fresetovan&7."
+				delete {tag::%{_p}%::*}
+		else:
+			create a gui slot {_s} of {_p} with Light_Green_Wool_block named "&e%{_n}%" with lore "&8&m---------------------------||&3» &fPrefix&7: %{_pref}%||||  &aKlikni zde pro aktivaci tagu.||&8&m---------------------------" to run:
+				close {_p}'s inventory
+				play "ORB_PICKUP" to {_p}
+				delete {tag::%{_p}%::*}
+				set {tag::%{_p}%} to "%{_pref}% &8┃ &r"
+				set {tag::%{_p}%::%{_t}%} to true
+				message "&7Tvuj tag byl zmenen na &8""%{_pref}%&8""&7."
+	else:
+		format a gui slot {_s} of {_p} with Red_Wool_block named "&e%{_n}%" with lore "&8&m---------------------------||&3» &fPrefix&7: %{_pref}%||||  &cNemas opravneni pro tag.||&8&m---------------------------" 
+
+command /tag:
+	trigger:
+		close player's inventory
+		wait 2 ticks
+		open chest with 6 rows named "&eKoukas na tagy.." to player
+		wait 1 tick
+		format a gui slot 0 of player with rose red named "&cOpustit menu" with lore "||&eKlikni zde pro hlavni menu!||&r" to run:
+			make player execute "/menu"
+
+		set {_blackSlots::*} to 9, 10, 11, 12, 13, 14, 15, 16, 17, 45, 46, 47, 48, 49, 50, 51, 52 and 53
+		format a gui slot {_blackSlots::*} of player with Black Stained Glass Pane named "&7:^)" 
+#------------------------------
+		Tag(19, "Srdce", "&4❤", "heart", player)
+		Tag(20, "Dolar", "&2$", "dollar", player)
+		Tag(21, "Koronavirus", "&5##corona", "corona", player)
+		Tag(22, "Overeny", "&a✔", "verified", player)
+		Tag(23, "Shrug", "&d¯\_(ツ)_/¯", "shrug", player)
+		Tag(24, "patrick", "&2☘&a&oSt. Patrick", "patrick", player)
+		Tag(25, "Smajlik", "&8(&eɔ&f◔‿◔&8)&eɔ &4♥", "smajlik", player)
+		Tag(28, "Smajlik V2", "&8(&6✿&f◠‿◠&8)", "smajlikv2", player)
+		Tag(29, "420", "&7##&24&a20", "420", player)
+		Tag(30, "Pepega", "&2Pepega", "pepega", player)
+		if "%player%" is "ARGHONY":
+			Tag(31, "Rainbow", "&4r&ca&6i&an&2b&bo&3w", "rainbow", player)
+
+on first join:
+	set {tag::%player%} to ""
